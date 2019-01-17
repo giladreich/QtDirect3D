@@ -11,12 +11,14 @@
 
 #include <iostream>
 
+#define RENDER_FRAME_MSECONDS 16
 
 
 QDirect3D9Widget::QDirect3D9Widget(QWidget *parent)
 	: QWidget(parent)
 	, m_hWnd(reinterpret_cast<HWND>(winId()))
 	, m_bDeviceInitialized(false)
+	, m_bRenderActive(false)
 {
 	qDebug() << "[QDirect3D9Widget::QDirect3D9Widget] - Widget Handle: " << m_hWnd;
 
@@ -33,8 +35,10 @@ QDirect3D9Widget::QDirect3D9Widget(QWidget *parent)
 	setAttribute(Qt::WA_PaintOnScreen);
 	setAttribute(Qt::WA_NoSystemBackground);
 
+	// Activate the timer
 	connect(&m_qTimer, &QTimer::timeout, this, &QDirect3D9Widget::onFrame);
-	m_qTimer.start(5);
+	m_qTimer.start(RENDER_FRAME_MSECONDS);
+	m_bRenderActive = true;
 }
 
 QDirect3D9Widget::~QDirect3D9Widget()
@@ -43,8 +47,10 @@ QDirect3D9Widget::~QDirect3D9Widget()
 
 void QDirect3D9Widget::release()
 {
+	m_bDeviceInitialized = false;
 	disconnect(&m_qTimer, &QTimer::timeout, this, &QDirect3D9Widget::onFrame);
 	m_qTimer.stop();
+
 	m_lpD3DDev->Release();
 }
 
@@ -68,67 +74,95 @@ bool QDirect3D9Widget::init()
 	}
 
 	memset(&m_DevParams, 0, sizeof(m_DevParams));
-	m_DevParams.Windowed = TRUE;
+	m_DevParams.Windowed = true;
 	m_DevParams.SwapEffect = D3DSWAPEFFECT_DISCARD;
 	m_DevParams.BackBufferFormat = D3DFMT_UNKNOWN;
-	m_DevParams.EnableAutoDepthStencil = TRUE;
+	m_DevParams.EnableAutoDepthStencil = true;
 	m_DevParams.AutoDepthStencilFormat = D3DFMT_D16;
-	m_DevParams.PresentationInterval = D3DPRESENT_INTERVAL_ONE; // Present with vsync
-	//m_DevParam.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE; // Present without vsync, maximum unthrottled framerate
+	m_DevParams.BackBufferWidth = width();
+	m_DevParams.BackBufferHeight = height();
+	m_DevParams.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
+	m_DevParams.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
 
-	if (m_lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, m_hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_DevParams, &m_lpD3DDev) < 0)
+	HRESULT hr = m_lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, m_hWnd, 
+									   D3DCREATE_HARDWARE_VERTEXPROCESSING, 
+									   &m_DevParams, &m_lpD3DDev);
+	if (hr != D3D_OK)
 	{
 		m_lpD3D->Release();
 		QMessageBox::critical(this, tr("ERROR"), tr("Failed to create Direct3D device."), QMessageBox::Ok);
 		return false;
 	}
 
-	onReset();
+	resetEnvironment();
 
 	return true;
 }
 
 void QDirect3D9Widget::onFrame()
 {
-	tick();
+	// The ImGui and scene frames will always be rendered so the user can interact with the gui even if m_bRenderActive is false.
+	// But we are not going to update the scene so it remains frozen.
+	if (m_bRenderActive) tick();
+
+	beginScene();
 	render();
+	endScene();
 }
 
-void QDirect3D9Widget::tick()
+void QDirect3D9Widget::beginScene()
 {
-	//m_pCamera->Tick();
-
-	emit ticked(); // Signal the parent to do it's own update before we start rendering.
-}
-
-void QDirect3D9Widget::render()
-{
-	D3DCOLOR bColor = D3DCOLOR_RGBA((int)(0.45f*255.0f), (int)(0.55f*255.0f), (int)(0.60f*255.0f), (int)(1.00f*255.0f));
-	m_lpD3DDev->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, bColor, 1.0f, 0);
-
+	m_lpD3DDev->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_ARGB(155, 0, 51, 102), 1.0f, 0);
 	m_lpD3DDev->BeginScene();
+}
 
-	//m_pCamera->Apply();
-
-	emit rendered(); // Signal the parent to do it's own rendering before we presenting the scene.
-
+void QDirect3D9Widget::endScene()
+{
 	m_lpD3DDev->EndScene();
-	//RECT rc = { rect().left(), rect().top(), rect().right(), rect().bottom() };
-	HRESULT hr = m_lpD3DDev->Present(NULL, NULL, NULL, NULL);
+	RECT rc = { rect().left(), rect().top(), rect().right(), rect().bottom() };
+	HRESULT hr = m_lpD3DDev->Present(&rc, &rc, m_hWnd, NULL);
 	if (hr == D3DERR_DEVICELOST && m_lpD3DDev->TestCooperativeLevel() == D3DERR_DEVICENOTRESET)
 	{
 		onReset();
 	}
 }
 
+void QDirect3D9Widget::tick()
+{
+	// TODO: Do your own widget updating before emitting ticked, i.e:
+	//m_pCamera->Tick();
+
+	emit ticked(); // Signals the parent to do it's own update before we start rendering.
+}
+
+void QDirect3D9Widget::render()
+{
+	// TODO: Do your own widget rendering before emitting rendered, i.e:
+	//m_pCamera->Apply();
+
+	emit rendered(); // Signals the parent to do it's own rendering before we presenting the scene.
+}
+
 void QDirect3D9Widget::onReset()
 {
+	m_DevParams.BackBufferWidth = width();
+	m_DevParams.BackBufferHeight = height();
 	m_lpD3DDev->Reset(&m_DevParams);
 }
 
 void QDirect3D9Widget::resetEnvironment()
 {
+	// TODO: Do your own custom default environment, i.e:
 	//m_pCamera->resetCamera();
+	m_lpD3DDev->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_ARGB(155, 0, 51, 102), 1.0f, 0);
+	m_lpD3DDev->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
+	m_lpD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+	m_lpD3DDev->SetRenderState(D3DRS_SCISSORTESTENABLE, false);
+	m_lpD3DDev->SetRenderState(D3DRS_DITHERENABLE, TRUE);
+	m_lpD3DDev->SetRenderState(D3DRS_SPECULARENABLE, TRUE);
+	onReset();
+
+	if (!m_bRenderActive) tick();
 }
 
 QPaintEngine * QDirect3D9Widget::paintEngine() const
@@ -143,11 +177,10 @@ void QDirect3D9Widget::resizeEvent(QResizeEvent* event)
 {
 	if (m_bDeviceInitialized)
 	{
-		m_DevParams.BackBufferWidth = width();
-		m_DevParams.BackBufferHeight = height();
 		onReset();
 		emit widgetResized();
 	}
+
 	QWidget::resizeEvent(event);
 }
 
@@ -156,20 +189,19 @@ bool QDirect3D9Widget::event(QEvent * event)
 	switch (event->type())
 	{
 	// Workaround for https://bugreports.qt.io/browse/QTBUG-42183 to get key strokes.
+	// To make sure that we always have focus on the widget when we enter the rect area.
 	case QEvent::Enter:
 	case QEvent::FocusIn:
 	case QEvent::FocusAboutToChange:
-		if (/*this->hasFocus() && */::GetFocus() != m_hWnd)
+		if (::GetFocus() != m_hWnd)
 		{
-			QWidget* nativeParent = this;
+			QWidget * nativeParent = this;
 			while (true)
 			{
-				if (nativeParent->isWindow())
-					break;
+				if (nativeParent->isWindow()) break;
 
-				auto parent = nativeParent->nativeParentWidget();
-				if (!parent)
-					break;
+				QWidget * parent = nativeParent->nativeParentWidget();
+				if (!parent) break;
 
 				nativeParent = parent;
 			}
@@ -185,8 +217,12 @@ bool QDirect3D9Widget::event(QEvent * event)
 
 LRESULT QDirect3D9Widget::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	// NOTE(Gilad): Windows messages can be handled here or you can also use the build-in Qt events.
+	//switch (msg)
+	//{
+	//}
 
-	return FALSE;
+	return false;
 }
 
 #if QT_VERSION >= 0x050000

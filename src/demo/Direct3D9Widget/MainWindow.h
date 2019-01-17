@@ -1,3 +1,7 @@
+/*
+ *
+ */
+
 #pragma once
 
 #include <QtWidgets/QMainWindow>
@@ -9,10 +13,14 @@ class MainWindow : public QMainWindow
 
 public:
 	MainWindow(QWidget *parent = Q_NULLPTR);
+	~MainWindow();
+
+	void adjustWindowSize();
 
 	bool init(bool success);
 	void tick();
 	void render();
+
 
 private:
 	void closeEvent(QCloseEvent * event) override;
@@ -23,5 +31,6 @@ private:
 
 	bool                      m_bWindowInit;
 	bool                      m_bWindowClosing;
+
 
 };

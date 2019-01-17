@@ -10,6 +10,7 @@
 
 #include <d3d9.h>
 
+
 class QDirect3D9Widget : public QWidget
 {
 	Q_OBJECT
@@ -23,9 +24,12 @@ public:
 
 private:
 	bool init();
+
+	void beginScene();
+	void endScene();
+
 	void tick();
 	void render();
-
 	
 // Qt Events
 private:
@@ -67,6 +71,8 @@ public:
 	D3DCAPS9 * deviceCapabilities() { return &m_DevCaps; }
 	LPDIRECT3D9 direct3D() const { return m_lpD3D; }
 
+	bool renderActive() const { return m_bRenderActive; }
+	void setRenderActive(bool active) { m_bRenderActive = active; }
 
 
 private:
@@ -80,5 +86,7 @@ private:
 
 	HWND                      m_hWnd;
 	bool                      m_bDeviceInitialized;
+
+	bool                      m_bRenderActive;
 
 };
