@@ -113,12 +113,6 @@
     </QtRcc>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\QDirect3D9ImGuiWidget\imgui\imgui.cpp" />
-    <ClCompile Include="..\..\QDirect3D9ImGuiWidget\imgui\imgui_demo.cpp" />
-    <ClCompile Include="..\..\QDirect3D9ImGuiWidget\imgui\imgui_draw.cpp" />
-    <ClCompile Include="..\..\QDirect3D9ImGuiWidget\imgui\imgui_impl_dx9.cpp" />
-    <ClCompile Include="..\..\QDirect3D9ImGuiWidget\imgui\imgui_impl_win32.cpp" />
-    <ClCompile Include="..\..\QDirect3D9ImGuiWidget\imgui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="..\..\QDirect3D9ImGuiWidget\QDirect3D9Widget.cpp" />
@@ -139,16 +133,6 @@
       <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
       <Define Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB</Define>
     </QtMoc>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\QDirect3D9ImGuiWidget\imgui\imconfig.h" />
-    <ClInclude Include="..\..\QDirect3D9ImGuiWidget\imgui\imgui.h" />
-    <ClInclude Include="..\..\QDirect3D9ImGuiWidget\imgui\imgui_impl_dx9.h" />
-    <ClInclude Include="..\..\QDirect3D9ImGuiWidget\imgui\imgui_impl_win32.h" />
-    <ClInclude Include="..\..\QDirect3D9ImGuiWidget\imgui\imgui_internal.h" />
-    <ClInclude Include="..\..\QDirect3D9ImGuiWidget\imgui\imstb_rectpack.h" />
-    <ClInclude Include="..\..\QDirect3D9ImGuiWidget\imgui\imstb_textedit.h" />
-    <ClInclude Include="..\..\QDirect3D9ImGuiWidget\imgui\imstb_truetype.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

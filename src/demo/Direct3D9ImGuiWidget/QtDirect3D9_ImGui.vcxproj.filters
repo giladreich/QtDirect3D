@@ -28,9 +28,6 @@
       <Extensions>moc;h;cpp</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
-    <Filter Include="imgui">
-      <UniqueIdentifier>{561caade-87b8-4e85-910c-d250f13788aa}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Widgets">
       <UniqueIdentifier>{74fdec2c-12c9-46ec-b4c9-72621a3c805c}</UniqueIdentifier>
     </Filter>
@@ -41,24 +38,6 @@
     </ClCompile>
     <ClCompile Include="MainWindow.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\QDirect3D9ImGuiWidget\imgui\imgui.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\QDirect3D9ImGuiWidget\imgui\imgui_demo.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\QDirect3D9ImGuiWidget\imgui\imgui_draw.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\QDirect3D9ImGuiWidget\imgui\imgui_impl_dx9.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\QDirect3D9ImGuiWidget\imgui\imgui_impl_win32.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\QDirect3D9ImGuiWidget\imgui\imgui_widgets.cpp">
-      <Filter>imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\QDirect3D9ImGuiWidget\QDirect3D9Widget.cpp">
       <Filter>Widgets</Filter>
@@ -81,31 +60,5 @@
     <QtRcc Include="MainWindow.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\QDirect3D9ImGuiWidget\imgui\imconfig.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\QDirect3D9ImGuiWidget\imgui\imgui.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\QDirect3D9ImGuiWidget\imgui\imgui_impl_dx9.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\QDirect3D9ImGuiWidget\imgui\imgui_impl_win32.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\QDirect3D9ImGuiWidget\imgui\imgui_internal.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\QDirect3D9ImGuiWidget\imgui\imstb_rectpack.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\QDirect3D9ImGuiWidget\imgui\imstb_textedit.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\QDirect3D9ImGuiWidget\imgui\imstb_truetype.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
