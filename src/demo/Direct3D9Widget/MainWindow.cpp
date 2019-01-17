@@ -21,6 +21,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
 	ui->setupUi(this);
 
+	adjustWindowSize();
+
 	connect(ui->view, &QDirect3D9Widget::deviceInitialized, this, &MainWindow::init);
 	connect(ui->view, &QDirect3D9Widget::ticked, this, &MainWindow::tick);
 	connect(ui->view, &QDirect3D9Widget::rendered, this, &MainWindow::render);

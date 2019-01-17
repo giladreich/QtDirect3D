@@ -17,13 +17,16 @@ public:
 
 	void adjustWindowSize();
 
+
+private:
+	void closeEvent(QCloseEvent * event) override;
+
+
+public Q_SLOTS:
 	bool init(bool success);
 	void tick();
 	void render();
 	void uiRender();
-
-private:
-	void closeEvent(QCloseEvent * event) override;
 
 
 private:
