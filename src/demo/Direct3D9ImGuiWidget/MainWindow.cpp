@@ -1,16 +1,20 @@
-
+/*
+ *
+ */
 
 #include "MainWindow.h"
 
 #include <Windows.h>
 
+#include <QDesktopWidget>
+#include <QStyle>
 #include <QDebug>
 #include <QTime>
 #include <QMessageBox>
 #include <QCloseEvent>
 
 
-#include "imgui/imgui.h"
+#include "imgui.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -27,12 +31,27 @@ MainWindow::MainWindow(QWidget *parent)
 	connect(ui->view, &QDirect3D9Widget::uiRendered, this, &MainWindow::uiRender);
 }
 
+MainWindow::~MainWindow() = default;
+
+void MainWindow::adjustWindowSize()
+{
+	resize(1280, 800);
+	setGeometry(
+		QStyle::alignedRect(
+			Qt::LeftToRight,
+			Qt::AlignCenter,
+			size(),
+			qApp->desktop()->availableGeometry()
+		)
+	);
+}
+
 bool MainWindow::init(bool success)
 {
 	if (!success)
 		return false;
 
-	
+	ui->view->setRenderActive(true);
 
 	m_bWindowInit = true;
 	disconnect(ui->view, &QDirect3D9Widget::deviceInitialized, this, &MainWindow::init);
@@ -41,7 +60,7 @@ bool MainWindow::init(bool success)
 
 void MainWindow::tick()
 {
-
+	
 }
 
 void MainWindow::render()

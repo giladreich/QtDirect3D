@@ -63,7 +63,7 @@ public:
 	HWND const & nativeHandle() const { return m_hWnd; }
 
 	LPDIRECT3DDEVICE9 device() const { return m_lpD3DDev; }
-	D3DPRESENT_PARAMETERS * devicePresentParams() { return &m_DevParam; }
+	D3DPRESENT_PARAMETERS * devicePresentParams() { return &m_DevParams; }
 	D3DCAPS9 * deviceCapabilities() { return &m_DevCaps; }
 	LPDIRECT3D9 direct3D() const { return m_lpD3D; }
 
@@ -71,7 +71,7 @@ public:
 
 private:
 	LPDIRECT3DDEVICE9        m_lpD3DDev;
-	D3DPRESENT_PARAMETERS    m_DevParam;
+	D3DPRESENT_PARAMETERS    m_DevParams;
 	D3DCAPS9                 m_DevCaps;
 	LPDIRECT3D9              m_lpD3D;
 

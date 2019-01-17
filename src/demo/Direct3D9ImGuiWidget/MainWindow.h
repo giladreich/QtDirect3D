@@ -1,3 +1,7 @@
+/*
+ *
+ */
+
 #pragma once
 
 #include <QtWidgets/QMainWindow>
@@ -9,6 +13,9 @@ class MainWindow : public QMainWindow
 
 public:
 	MainWindow(QWidget *parent = Q_NULLPTR);
+	~MainWindow();
+
+	void adjustWindowSize();
 
 	bool init(bool success);
 	void tick();

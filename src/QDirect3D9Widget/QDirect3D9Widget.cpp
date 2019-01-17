@@ -67,16 +67,16 @@ bool QDirect3D9Widget::init()
 		return false;
 	}
 
-	memset(&m_DevParam, 0, sizeof(m_DevParam));
-	m_DevParam.Windowed = TRUE;
-	m_DevParam.SwapEffect = D3DSWAPEFFECT_DISCARD;
-	m_DevParam.BackBufferFormat = D3DFMT_UNKNOWN;
-	m_DevParam.EnableAutoDepthStencil = TRUE;
-	m_DevParam.AutoDepthStencilFormat = D3DFMT_D16;
-	m_DevParam.PresentationInterval = D3DPRESENT_INTERVAL_ONE; // Present with vsync
+	memset(&m_DevParams, 0, sizeof(m_DevParams));
+	m_DevParams.Windowed = TRUE;
+	m_DevParams.SwapEffect = D3DSWAPEFFECT_DISCARD;
+	m_DevParams.BackBufferFormat = D3DFMT_UNKNOWN;
+	m_DevParams.EnableAutoDepthStencil = TRUE;
+	m_DevParams.AutoDepthStencilFormat = D3DFMT_D16;
+	m_DevParams.PresentationInterval = D3DPRESENT_INTERVAL_ONE; // Present with vsync
 	//m_DevParam.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE; // Present without vsync, maximum unthrottled framerate
 
-	if (m_lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, m_hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_DevParam, &m_lpD3DDev) < 0)
+	if (m_lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, m_hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_DevParams, &m_lpD3DDev) < 0)
 	{
 		m_lpD3D->Release();
 		QMessageBox::critical(this, tr("ERROR"), tr("Failed to create Direct3D device."), QMessageBox::Ok);
@@ -123,7 +123,7 @@ void QDirect3D9Widget::render()
 
 void QDirect3D9Widget::onReset()
 {
-	m_lpD3DDev->Reset(&m_DevParam);
+	m_lpD3DDev->Reset(&m_DevParams);
 }
 
 void QDirect3D9Widget::resetEnvironment()
@@ -143,8 +143,8 @@ void QDirect3D9Widget::resizeEvent(QResizeEvent* event)
 {
 	if (m_bDeviceInitialized)
 	{
-		m_DevParam.BackBufferWidth = width();
-		m_DevParam.BackBufferHeight = height();
+		m_DevParams.BackBufferWidth = width();
+		m_DevParams.BackBufferHeight = height();
 		onReset();
 		emit widgetResized();
 	}

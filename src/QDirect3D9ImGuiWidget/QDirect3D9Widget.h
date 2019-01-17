@@ -24,10 +24,13 @@ public:
 
 private:
 	bool init();
+
+	void beginScene();
+	void endScene();
+
 	void tick();
 	void render();
 	void uiRender();
-
 	
 // Qt Events
 private:
@@ -66,15 +69,17 @@ public:
 	HWND const & nativeHandle() const { return m_hWnd; }
 
 	LPDIRECT3DDEVICE9 device() const { return m_lpD3DDev; }
-	D3DPRESENT_PARAMETERS * devicePresentParams() { return &m_DevParam; }
+	D3DPRESENT_PARAMETERS * devicePresentParams() { return &m_DevParams; }
 	D3DCAPS9 * deviceCapabilities() { return &m_DevCaps; }
 	LPDIRECT3D9 direct3D() const { return m_lpD3D; }
 
+	bool renderActive() const { return m_bRenderActive; }
+	void setRenderActive(bool active) { m_bRenderActive = active; }
 
 
 private:
 	LPDIRECT3DDEVICE9        m_lpD3DDev;
-	D3DPRESENT_PARAMETERS    m_DevParam;
+	D3DPRESENT_PARAMETERS    m_DevParams;
 	D3DCAPS9                 m_DevCaps;
 	LPDIRECT3D9              m_lpD3D;
 
@@ -83,5 +88,7 @@ private:
 
 	HWND                      m_hWnd;
 	bool                      m_bDeviceInitialized;
+
+	bool                      m_bRenderActive;
 
 };
