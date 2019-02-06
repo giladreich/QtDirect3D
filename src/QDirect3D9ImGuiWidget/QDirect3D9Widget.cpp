@@ -192,6 +192,7 @@ void QDirect3D9Widget::resetEnvironment()
 	m_lpD3DDev->SetRenderState(D3DRS_SCISSORTESTENABLE, false);
 	m_lpD3DDev->SetRenderState(D3DRS_DITHERENABLE, TRUE);
 	m_lpD3DDev->SetRenderState(D3DRS_SPECULARENABLE, TRUE);
+
 	onReset();
 
 	if (!m_bRenderActive) tick();
