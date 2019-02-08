@@ -4,30 +4,12 @@ cmake_minimum_required(VERSION 3.12)
 ##################################################################################################################
 # Setup
 ##################################################################################################################
-project(Direct3D9Widget)
-
-find_package(Qt5 REQUIRED COMPONENTS
-    Core
-    Widgets
-    Gui
-)
-
-if (Qt5_FOUND)
-    message(STATUS "[INFO] Qt5 Found: ${Qt5_DIR}")
-else()
-    message(FATAL_ERROR "[ERROR] Could not find Qt5 package...")
-endif()
+project(Direct3D10Widget)
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${QtDirect3D_Widgets_Dir}/QDirect3D9Widget
 )
-
-message(STATUS "[INFO] Include Directories:")
-get_property(_dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-foreach(dir ${_dirs})
-  message(STATUS "Dir: ${dir}")
-endforeach()
 
 ##################################################################################################################
 # Project Files

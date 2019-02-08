@@ -4,26 +4,31 @@ cmake_minimum_required(VERSION 3.12)
 ##################################################################################################################
 # Setup
 ##################################################################################################################
-project(QtDirect3D
-    LANGUAGES C CXX
-    DESCRIPTION "DirectX Widgets for Qt and demos."
-)
-
+string(TOLOWER ${CMAKE_CXX_COMPILER_ARCHITECTURE_ID} _ARCHITECTURE)
+set(BUILD_DIR ${CMAKE_BINARY_DIR}/bin/${_ARCHITECTURE}-vc${MSVC_TOOLSET_VERSION})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BUILD_DIR})
 
 ##################################################################################################################
-# IDE Representation
+# Packages
 ##################################################################################################################
-
-# Groups CMake pre-defined projects into filter.
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
-set_property (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY 
-    VS_STARTUP_PROJECT Direct3D9Widget
+find_package(Qt5 REQUIRED COMPONENTS
+    Core
+    Widgets
+    Gui
 )
+
+if (Qt5_FOUND)
+    message(STATUS "[INFO] Qt5 Found: ${Qt5_DIR}")
+else()
+    message(FATAL_ERROR "[ERROR] Could not find Qt5 package...")
+endif()
 
 ##################################################################################################################
 # Submodules
 ##################################################################################################################
-add_subdirectory(src)
-add_subdirectory(examples)
-
+add_subdirectory(Direct3D9Widget)
+#add_subdirectory(Direct3D9ImGuiWidget)
+#add_subdirectory(Direct3D10Widget)
+#add_subdirectory(Direct3D10ImGuiWidget)
+#add_subdirectory(Direct3D11Widget)
+#add_subdirectory(Direct3D11ImGuiWidget)
