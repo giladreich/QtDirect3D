@@ -9,6 +9,7 @@ project(QtDirect3D
     DESCRIPTION "DirectX Widgets for Qt and demos."
 )
 
+include(CMakeOptions.cmake)
 
 ##################################################################################################################
 # IDE Representation

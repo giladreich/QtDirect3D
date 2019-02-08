@@ -23,12 +23,24 @@ else()
     message(FATAL_ERROR "[ERROR] Could not find Qt5 package...")
 endif()
 
+if (BUILD_WITH_IMGUI)
+    # TODO: Find package or use Conan.
+    message(STATUS "[INFO] Building with Dear ImGui -> ENABLED.")
+else()
+    message(STATUS "[INFO] Building with Dear ImGui -> DISABLED.")
+endif()
+
 ##################################################################################################################
 # Submodules
 ##################################################################################################################
 add_subdirectory(Direct3D9Widget)
-#add_subdirectory(Direct3D9ImGuiWidget)
 #add_subdirectory(Direct3D10Widget)
-#add_subdirectory(Direct3D10ImGuiWidget)
 #add_subdirectory(Direct3D11Widget)
-#add_subdirectory(Direct3D11ImGuiWidget)
+#add_subdirectory(Direct3D12Widget)
+
+if (BUILD_WITH_IMGUI)
+    #add_subdirectory(Direct3D9ImGuiWidget)
+    #add_subdirectory(Direct3D10ImGuiWidget)
+    #add_subdirectory(Direct3D11ImGuiWidget)
+    #add_subdirectory(Direct3D12ImGuiWidget)
+endif()
