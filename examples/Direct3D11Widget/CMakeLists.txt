@@ -8,15 +8,15 @@ project(Direct3D11Widget)
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${QtDirect3D_Widgets_Dir}/QDirect3D9Widget
+    ${QtDirect3D_Widgets_Dir}/QDirect3D11Widget
 )
 
 ##################################################################################################################
 # Project Files
 ##################################################################################################################
 set(WIDGETS_CXX_FILES
-    ${QtDirect3D_Widgets_Dir}/QDirect3D9Widget/QDirect3D9Widget.h
-    ${QtDirect3D_Widgets_Dir}/QDirect3D9Widget/QDirect3D9Widget.cpp
+    ${QtDirect3D_Widgets_Dir}/QDirect3D11Widget/QDirect3D11Widget.h
+    ${QtDirect3D_Widgets_Dir}/QDirect3D11Widget/QDirect3D11Widget.cpp
 )
 set(HEADERS_CXX_FILES
     MainWindow.h
@@ -78,7 +78,7 @@ add_executable(${PROJECT_NAME} WIN32
     ${GENERATED_CXX_FILES}
 )
 target_link_libraries(${PROJECT_NAME} PUBLIC
-    d3d9
+    d3d11
     Qt5::Core
     Qt5::Gui
     Qt5::Widgets
