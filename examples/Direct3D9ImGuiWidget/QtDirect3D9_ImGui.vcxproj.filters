@@ -29,38 +29,38 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\QDirect3D9ImGuiWidget\QDirect3D9Widget.cpp">
-      <Filter>Widgets</Filter>
-    </ClCompile>
     <ClCompile Include="MainWindow.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="..\..\..\thirdparty\imgui\imgui.cpp">
+    <ClCompile Include="..\..\src\QDirect3D9Widget\ImGui\QDirect3D9Widget.cpp">
+      <Filter>Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\imgui\imgui.cpp">
       <Filter>thirdparty\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\thirdparty\imgui\imgui_demo.cpp">
+    <ClCompile Include="..\..\thirdparty\imgui\imgui_demo.cpp">
       <Filter>thirdparty\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\thirdparty\imgui\imgui_draw.cpp">
+    <ClCompile Include="..\..\thirdparty\imgui\imgui_draw.cpp">
       <Filter>thirdparty\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\thirdparty\imgui\examples\imgui_impl_dx9.cpp">
+    <ClCompile Include="..\..\thirdparty\imgui\imgui_widgets.cpp">
       <Filter>thirdparty\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\thirdparty\imgui\examples\imgui_impl_win32.cpp">
+    <ClCompile Include="..\..\thirdparty\imgui\examples\imgui_impl_dx9.cpp">
       <Filter>thirdparty\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\thirdparty\imgui\imgui_widgets.cpp">
+    <ClCompile Include="..\..\thirdparty\imgui\examples\imgui_impl_win32.cpp">
       <Filter>thirdparty\ImGui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="..\..\QDirect3D9ImGuiWidget\QDirect3D9Widget.h">
-      <Filter>Widgets</Filter>
-    </QtMoc>
     <QtMoc Include="MainWindow.h">
       <Filter>Sources</Filter>
+    </QtMoc>
+    <QtMoc Include="..\..\src\QDirect3D9Widget\ImGui\QDirect3D9Widget.h">
+      <Filter>Widgets</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
@@ -69,28 +69,28 @@
     </QtUic>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\thirdparty\imgui\imconfig.h">
+    <ClInclude Include="..\..\thirdparty\imgui\imconfig.h">
       <Filter>thirdparty\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\thirdparty\imgui\imgui.h">
+    <ClInclude Include="..\..\thirdparty\imgui\imgui.h">
       <Filter>thirdparty\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\thirdparty\imgui\examples\imgui_impl_dx9.h">
+    <ClInclude Include="..\..\thirdparty\imgui\imgui_internal.h">
       <Filter>thirdparty\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\thirdparty\imgui\examples\imgui_impl_win32.h">
+    <ClInclude Include="..\..\thirdparty\imgui\imstb_rectpack.h">
       <Filter>thirdparty\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\thirdparty\imgui\imgui_internal.h">
+    <ClInclude Include="..\..\thirdparty\imgui\imstb_textedit.h">
       <Filter>thirdparty\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\thirdparty\imgui\imstb_rectpack.h">
+    <ClInclude Include="..\..\thirdparty\imgui\imstb_truetype.h">
       <Filter>thirdparty\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\thirdparty\imgui\imstb_textedit.h">
+    <ClInclude Include="..\..\thirdparty\imgui\examples\imgui_impl_dx9.h">
       <Filter>thirdparty\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\thirdparty\imgui\imstb_truetype.h">
+    <ClInclude Include="..\..\thirdparty\imgui\examples\imgui_impl_win32.h">
       <Filter>thirdparty\ImGui</Filter>
     </ClInclude>
   </ItemGroup>

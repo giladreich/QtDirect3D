@@ -15,7 +15,7 @@ include(CMakeOptions.cmake)
 # IDE Representation
 ##################################################################################################################
 
-# Groups CMake pre-defined projects into filter.
+# Groups CMake pre-defined projects
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 set_property (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY 

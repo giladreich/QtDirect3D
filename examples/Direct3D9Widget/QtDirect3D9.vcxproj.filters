@@ -23,20 +23,20 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\QDirect3D9Widget\QDirect3D9Widget.cpp">
-      <Filter>Widgets</Filter>
-    </ClCompile>
     <ClCompile Include="MainWindow.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="..\..\src\QDirect3D9Widget\QDirect3D9Widget.cpp">
+      <Filter>Widgets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="..\..\QDirect3D9Widget\QDirect3D9Widget.h">
-      <Filter>Widgets</Filter>
-    </QtMoc>
     <QtMoc Include="MainWindow.h">
       <Filter>Sources</Filter>
+    </QtMoc>
+    <QtMoc Include="..\..\src\QDirect3D9Widget\QDirect3D9Widget.h">
+      <Filter>Widgets</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>

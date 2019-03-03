@@ -53,7 +53,7 @@
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PreprocessorDefinitions>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;$(SolutionDir)QDirect3D9ImGuiWidget;$(SolutionDir)..\thirdparty\imgui;$(SolutionDir)..\thirdparty\imgui\examples;.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\QDirect3D9Widget\ImGui;$(SolutionDir)..\thirdparty\imgui;$(SolutionDir)..\thirdparty\imgui\examples;.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -62,14 +62,14 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>$(DXSDK_DIR)lib\$(PlatformTarget);$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d9.lib;qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <QtMoc>
       <OutputFile>.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
-      <IncludePath>$(DXSDK_DIR)Include;$(SolutionDir)QDirect3D9ImGuiWidget;$(SolutionDir)..\thirdparty\imgui;$(SolutionDir)..\thirdparty\imgui\examples;.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;%(AdditionalIncludeDirectories)</IncludePath>
+      <IncludePath>$(SolutionDir)..\src\QDirect3D9Widget\ImGui;$(SolutionDir)..\thirdparty\imgui;$(SolutionDir)..\thirdparty\imgui\examples;.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;%(AdditionalIncludeDirectories)</IncludePath>
       <Define>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;%(PreprocessorDefinitions)</Define>
     </QtMoc>
     <QtUic>
@@ -85,7 +85,7 @@
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PreprocessorDefinitions>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(DXSDK_DIR)Include;$(SolutionDir)QDirect3D9ImGuiWidget;$(SolutionDir)..\thirdparty\imgui;$(SolutionDir)..\thirdparty\imgui\examples;;.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\src\QDirect3D9Widget\ImGui;$(SolutionDir)..\thirdparty\imgui;$(SolutionDir)..\thirdparty\imgui\examples;;.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat />
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -93,14 +93,14 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>$(DXSDK_DIR)lib\$(PlatformTarget);$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>d3d9.lib;qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <QtMoc>
       <OutputFile>.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
-      <IncludePath>$(DXSDK_DIR)Include;$(SolutionDir)QDirect3D9ImGuiWidget;$(SolutionDir)..\thirdparty\imgui;$(SolutionDir)..\thirdparty\imgui\examples;;.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;%(AdditionalIncludeDirectories)</IncludePath>
+      <IncludePath>$(SolutionDir)..\src\QDirect3D9Widget\ImGui;$(SolutionDir)..\thirdparty\imgui;$(SolutionDir)..\thirdparty\imgui\examples;;.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets;%(AdditionalIncludeDirectories)</IncludePath>
       <Define>UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;%(PreprocessorDefinitions)</Define>
     </QtMoc>
     <QtUic>
@@ -113,15 +113,15 @@
     </QtRcc>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\thirdparty\imgui\examples\imgui_impl_dx9.cpp" />
-    <ClCompile Include="..\..\..\thirdparty\imgui\examples\imgui_impl_win32.cpp" />
-    <ClCompile Include="..\..\..\thirdparty\imgui\imgui.cpp" />
-    <ClCompile Include="..\..\..\thirdparty\imgui\imgui_demo.cpp" />
-    <ClCompile Include="..\..\..\thirdparty\imgui\imgui_draw.cpp" />
-    <ClCompile Include="..\..\..\thirdparty\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="..\..\src\QDirect3D9Widget\ImGui\QDirect3D9Widget.cpp" />
+    <ClCompile Include="..\..\thirdparty\imgui\examples\imgui_impl_dx9.cpp" />
+    <ClCompile Include="..\..\thirdparty\imgui\examples\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\..\thirdparty\imgui\imgui.cpp" />
+    <ClCompile Include="..\..\thirdparty\imgui\imgui_demo.cpp" />
+    <ClCompile Include="..\..\thirdparty\imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\..\thirdparty\imgui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
-    <ClCompile Include="..\..\QDirect3D9ImGuiWidget\QDirect3D9Widget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="MainWindow.h" />
@@ -130,22 +130,20 @@
     <QtUic Include="MainWindow.ui" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="..\..\QDirect3D9ImGuiWidget\QDirect3D9Widget.h">
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB</Define>
-      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName)\.;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
-      <Define Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;QT_DLL;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB</Define>
+    <QtMoc Include="..\..\src\QDirect3D9Widget\ImGui\QDirect3D9Widget.h">
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)..\src\QDirect3D9Widget\ImGui;$(SolutionDir)..\thirdparty\imgui;$(SolutionDir)..\thirdparty\imgui\examples;.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
+      <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)..\src\QDirect3D9Widget\ImGui;$(SolutionDir)..\thirdparty\imgui;$(SolutionDir)..\thirdparty\imgui\examples;.\GeneratedFiles;.;$(QTDIR)\include;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\QtWidgets</IncludePath>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\thirdparty\imgui\examples\imgui_impl_dx9.h" />
-    <ClInclude Include="..\..\..\thirdparty\imgui\examples\imgui_impl_win32.h" />
-    <ClInclude Include="..\..\..\thirdparty\imgui\imconfig.h" />
-    <ClInclude Include="..\..\..\thirdparty\imgui\imgui.h" />
-    <ClInclude Include="..\..\..\thirdparty\imgui\imgui_internal.h" />
-    <ClInclude Include="..\..\..\thirdparty\imgui\imstb_rectpack.h" />
-    <ClInclude Include="..\..\..\thirdparty\imgui\imstb_textedit.h" />
-    <ClInclude Include="..\..\..\thirdparty\imgui\imstb_truetype.h" />
+    <ClInclude Include="..\..\thirdparty\imgui\examples\imgui_impl_dx9.h" />
+    <ClInclude Include="..\..\thirdparty\imgui\examples\imgui_impl_win32.h" />
+    <ClInclude Include="..\..\thirdparty\imgui\imconfig.h" />
+    <ClInclude Include="..\..\thirdparty\imgui\imgui.h" />
+    <ClInclude Include="..\..\thirdparty\imgui\imgui_internal.h" />
+    <ClInclude Include="..\..\thirdparty\imgui\imstb_rectpack.h" />
+    <ClInclude Include="..\..\thirdparty\imgui\imstb_textedit.h" />
+    <ClInclude Include="..\..\thirdparty\imgui\imstb_truetype.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
