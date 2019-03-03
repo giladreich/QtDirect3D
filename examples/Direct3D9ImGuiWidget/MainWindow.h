@@ -9,34 +9,34 @@
 
 class MainWindow : public QMainWindow
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	MainWindow(QWidget *parent = Q_NULLPTR);
-	~MainWindow();
+    MainWindow(QWidget *parent = Q_NULLPTR);
+    ~MainWindow();
 
-	void adjustWindowSize();
+    void adjustWindowSize();
 
 
 private:
-	void closeEvent(QCloseEvent * event) override;
+    void closeEvent(QCloseEvent * event) override;
 
 
 public Q_SLOTS:
-	bool init(bool success);
-	void tick();
-	void render();
-	void uiRender();
+    bool init(bool success);
+    void tick();
+    void render();
+    void uiRender();
 
 
 private:
-	Ui::MainWindowClass * ui;
+    Ui::MainWindowClass * ui;
 
-	bool                      m_bWindowInit;
-	bool                      m_bWindowClosing;
+    bool             m_bWindowInit;
+    bool             m_bWindowClosing;
 
-	bool m_bShowDemoWindow;
-	bool m_bShowAnotherWindow;
+    bool             m_bShowDemoWindow;
+    bool             m_bShowAnotherWindow;
 
 
 };

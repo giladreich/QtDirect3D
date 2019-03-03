@@ -68,20 +68,18 @@ private Q_SLOTS:
 public:
 	HWND const & nativeHandle() const { return m_hWnd; }
 
-	LPDIRECT3DDEVICE9 device() const { return m_lpD3DDev; }
-	D3DPRESENT_PARAMETERS * devicePresentParams() { return &m_DevParams; }
-	D3DCAPS9 * deviceCapabilities() { return &m_DevCaps; }
-	LPDIRECT3D9 direct3D() const { return m_lpD3D; }
+    IDirect3DDevice9 * device() const { return m_pDevice; }
+    D3DPRESENT_PARAMETERS * devicePresentParams() { return &m_PresentParams; }
+    IDirect3D9 * direct3D() const { return m_pD3D; }
 
 	bool renderActive() const { return m_bRenderActive; }
 	void setRenderActive(bool active) { m_bRenderActive = active; }
 
 
 private:
-	LPDIRECT3DDEVICE9        m_lpD3DDev;
-	D3DPRESENT_PARAMETERS    m_DevParams;
-	D3DCAPS9                 m_DevCaps;
-	LPDIRECT3D9              m_lpD3D;
+    IDirect3DDevice9 *       m_pDevice;
+    IDirect3D9 *             m_pD3D;
+    D3DPRESENT_PARAMETERS    m_PresentParams;
 
 
 	QTimer                    m_qTimer;
