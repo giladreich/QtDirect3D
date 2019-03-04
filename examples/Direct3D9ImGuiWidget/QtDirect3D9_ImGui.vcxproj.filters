@@ -27,6 +27,9 @@
     <Filter Include="thirdparty\ImGui">
       <UniqueIdentifier>{2d39d1d7-a6c1-4cad-97d9-5caa3e85bbe8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="thirdparty\ImGui\Impl">
+      <UniqueIdentifier>{653ca88f-16ec-49ca-a1db-5162fc51c636}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainWindow.cpp">
@@ -49,10 +52,10 @@
       <Filter>thirdparty\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\thirdparty\imgui\examples\imgui_impl_dx9.cpp">
-      <Filter>thirdparty\ImGui</Filter>
+      <Filter>thirdparty\ImGui\Impl</Filter>
     </ClCompile>
     <ClCompile Include="..\..\thirdparty\imgui\examples\imgui_impl_win32.cpp">
-      <Filter>thirdparty\ImGui</Filter>
+      <Filter>thirdparty\ImGui\Impl</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -87,11 +90,11 @@
     <ClInclude Include="..\..\thirdparty\imgui\imstb_truetype.h">
       <Filter>thirdparty\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\thirdparty\imgui\examples\imgui_impl_dx9.h">
-      <Filter>thirdparty\ImGui</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\thirdparty\imgui\examples\imgui_impl_win32.h">
-      <Filter>thirdparty\ImGui</Filter>
+      <Filter>thirdparty\ImGui\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\imgui\examples\imgui_impl_dx9.h">
+      <Filter>thirdparty\ImGui\Impl</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
