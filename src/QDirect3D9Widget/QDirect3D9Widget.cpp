@@ -107,8 +107,6 @@ bool QDirect3D9Widget::init()
 
 void QDirect3D9Widget::onFrame()
 {
-    // The ImGui and scene frames will always be rendered so the user can interact with the gui even if m_bRenderActive is false.
-    // But we are not going to update the scene so it remains frozen.
     if (m_bRenderActive) tick();
 
     beginScene();

@@ -2,10 +2,10 @@
  *
  */
 
-#pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "d3d10.lib")
 
 
-#include "QDirect3D11Widget.h"
+#include "QDirect3D10Widget.h"
 
 #include <QDebug>
 #include <QEvent>
@@ -14,13 +14,16 @@
 
 #include <exception>
 
+#include "imgui.h"
+#include "imgui_impl_dx10.h"
+#include "imgui_impl_win32.h"
+
 #define RENDER_FRAME_MSECONDS 16
 
 
-QDirect3D11Widget::QDirect3D11Widget(QWidget *parent)
+QDirect3D10Widget::QDirect3D10Widget(QWidget *parent)
     : QWidget(parent)
     , m_pDevice(nullptr)
-    , m_pDeviceContext(nullptr)
     , m_pSwapChain(nullptr)
     , m_pRTView(nullptr)
     , m_hWnd(reinterpret_cast<HWND>(winId()))
@@ -28,7 +31,7 @@ QDirect3D11Widget::QDirect3D11Widget(QWidget *parent)
     , m_bRenderActive(false)
     , m_BackColor{ 0.0f, 0.135f, 0.481f, 1.0f }
 {
-    qDebug() << "[QDirect3D11Widget::QDirect3D11Widget] - Widget Handle: " << m_hWnd;
+    qDebug() << "[QDirect3D10Widget::QDirect3D10Widget] - Widget Handle: " << m_hWnd;
 
     QPalette pal = palette();
     pal.setColor(QPalette::Background, Qt::black);
@@ -44,22 +47,25 @@ QDirect3D11Widget::QDirect3D11Widget(QWidget *parent)
     setAttribute(Qt::WA_NoSystemBackground);
 }
 
-QDirect3D11Widget::~QDirect3D11Widget()
+QDirect3D10Widget::~QDirect3D10Widget()
 { }
 
-void QDirect3D11Widget::release()
+void QDirect3D10Widget::release()
 {
     m_bDeviceInitialized = false;
-    disconnect(&m_qTimer, &QTimer::timeout, this, &QDirect3D11Widget::onFrame);
+    disconnect(&m_qTimer, &QTimer::timeout, this, &QDirect3D10Widget::onFrame);
     m_qTimer.stop();
+
+    ImGui_ImplDX10_Shutdown();
+    ImGui_ImplWin32_Shutdown();
+    ImGui::DestroyContext();
 
     ReleaseObject(m_pRTView);
     ReleaseObject(m_pSwapChain);
-    ReleaseObject(m_pDeviceContext);
     ReleaseObject(m_pDevice);
 }
 
-void QDirect3D11Widget::showEvent(QShowEvent * event)
+void QDirect3D10Widget::showEvent(QShowEvent * event)
 {
     if (!m_bDeviceInitialized)
     {
@@ -70,7 +76,7 @@ void QDirect3D11Widget::showEvent(QShowEvent * event)
     QWidget::showEvent(event);
 }
 
-bool QDirect3D11Widget::init()
+bool QDirect3D10Widget::init()
 {
     DXGI_SWAP_CHAIN_DESC sd = {};
     sd.BufferCount = 2;
@@ -89,54 +95,56 @@ bool QDirect3D11Widget::init()
 
     UINT iCreateFlags = 0;
 #if defined(DEBUG) || defined(_DEBUG)  
-    iCreateFlags |= D3D11_CREATE_DEVICE_DEBUG;
+    iCreateFlags |= D3D10_CREATE_DEVICE_DEBUG;
 #endif
 
-    D3D_FEATURE_LEVEL featureLevel;
-    D3D_FEATURE_LEVEL featureLevels[] = {
-        D3D_FEATURE_LEVEL_11_0,
-        D3D_FEATURE_LEVEL_10_1,
-        D3D_FEATURE_LEVEL_10_0
-    };
-
-    HRESULT hr = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE,
-        NULL, iCreateFlags,
-        featureLevels, ARRAYSIZE(featureLevels),
-        D3D11_SDK_VERSION, &sd,
-        &m_pSwapChain, &m_pDevice,
-        &featureLevel, &m_pDeviceContext);
+    HRESULT hr = D3D10CreateDeviceAndSwapChain(NULL, D3D10_DRIVER_TYPE_HARDWARE,
+                                               NULL, iCreateFlags,
+                                               D3D10_SDK_VERSION, &sd,
+                                               &m_pSwapChain, &m_pDevice);
     if (hr != S_OK)
     {
         QMessageBox::critical(this, tr("ERROR"), tr("Failed to create Direct3D device and swap-chain."), QMessageBox::Ok);
         throw std::exception("Failed to create Direct3D device and swap-chain.");
     }
 
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    //ImGuiIO & io = ImGui::GetIO();
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    ImGui::StyleColorsClassic();
+    ImGui_ImplWin32_Init(m_hWnd);
+    ImGui_ImplDX10_Init(m_pDevice);
+
     resetEnvironment();
 
     // Activates the timer to render frames
-    connect(&m_qTimer, &QTimer::timeout, this, &QDirect3D11Widget::onFrame);
+    connect(&m_qTimer, &QTimer::timeout, this, &QDirect3D10Widget::onFrame);
     m_qTimer.start(RENDER_FRAME_MSECONDS);
     m_bRenderActive = true;
 
     return true;
 }
 
-void QDirect3D11Widget::onFrame()
+void QDirect3D10Widget::onFrame()
 {
+    // The ImGui and scene frames will always be rendered so the user can interact with the gui even if m_bRenderActive is false.
+    // But we are not going to update the scene so it remains frozen.
     if (m_bRenderActive) tick();
 
     beginScene();
     render();
+    uiRender();
     endScene();
 }
 
-void QDirect3D11Widget::beginScene()
+void QDirect3D10Widget::beginScene()
 {
-    m_pDeviceContext->OMSetRenderTargets(1, &m_pRTView, NULL);
-    m_pDeviceContext->ClearRenderTargetView(m_pRTView, reinterpret_cast<const float *>(&m_BackColor));
+    m_pDevice->OMSetRenderTargets(1, &m_pRTView, NULL);
+    m_pDevice->ClearRenderTargetView(m_pRTView, reinterpret_cast<const float *>(&m_BackColor));
 }
 
-void QDirect3D11Widget::endScene()
+void QDirect3D10Widget::endScene()
 {
     if (FAILED(m_pSwapChain->Present(1, 0)))
     {
@@ -144,7 +152,7 @@ void QDirect3D11Widget::endScene()
     }
 }
 
-void QDirect3D11Widget::tick()
+void QDirect3D10Widget::tick()
 {
     // TODO: Do your own widget updating before emitting ticked, i.e:
     //m_pCamera->Tick();
@@ -152,7 +160,7 @@ void QDirect3D11Widget::tick()
     emit ticked(); // Signals the parent to do it's own update before we start rendering.
 }
 
-void QDirect3D11Widget::render()
+void QDirect3D10Widget::render()
 {
     // TODO: Do your own widget rendering before emitting rendered, i.e:
     //m_pCamera->Apply();
@@ -160,18 +168,30 @@ void QDirect3D11Widget::render()
     emit rendered(); // Signals the parent to do it's own rendering before we presenting the scene.
 }
 
-void QDirect3D11Widget::onReset()
+void QDirect3D10Widget::uiRender()
+{
+    ImGui_ImplDX10_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    ImGui::NewFrame();
+
+    emit uiRendered(); // Signals the parent to add it's own ImGui widgets.
+
+    ImGui::EndFrame();
+    ImGui::Render();
+    ImGui_ImplDX10_RenderDrawData(ImGui::GetDrawData());
+}
+
+void QDirect3D10Widget::onReset()
 {
     ReleaseObject(m_pRTView);
-
     m_pSwapChain->ResizeBuffers(0, width(), height(), DXGI_FORMAT_UNKNOWN, 0);
-    ID3D11Texture2D* pBackBuffer;
+    ID3D10Texture2D* pBackBuffer;
     m_pSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
     m_pDevice->CreateRenderTargetView(pBackBuffer, NULL, &m_pRTView);
     ReleaseObject(pBackBuffer);
 }
 
-void QDirect3D11Widget::resetEnvironment()
+void QDirect3D10Widget::resetEnvironment()
 {
     // TODO: Do your own custom default environment, i.e:
     //m_pCamera->resetCamera();
@@ -181,15 +201,15 @@ void QDirect3D11Widget::resetEnvironment()
     if (!m_bRenderActive) tick();
 }
 
-QPaintEngine * QDirect3D11Widget::paintEngine() const
+QPaintEngine * QDirect3D10Widget::paintEngine() const
 {
     return nullptr;
 }
 
-void QDirect3D11Widget::paintEvent(QPaintEvent * event)
+void QDirect3D10Widget::paintEvent(QPaintEvent * event)
 { }
 
-void QDirect3D11Widget::resizeEvent(QResizeEvent* event)
+void QDirect3D10Widget::resizeEvent(QResizeEvent* event)
 {
     if (m_bDeviceInitialized)
     {
@@ -200,7 +220,7 @@ void QDirect3D11Widget::resizeEvent(QResizeEvent* event)
     QWidget::resizeEvent(event);
 }
 
-bool QDirect3D11Widget::event(QEvent * event)
+bool QDirect3D10Widget::event(QEvent * event)
 {
     switch (event->type())
     {
@@ -231,8 +251,13 @@ bool QDirect3D11Widget::event(QEvent * event)
     return QWidget::event(event);
 }
 
-LRESULT QDirect3D11Widget::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+LRESULT QDirect3D10Widget::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+    if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+        return true;
+
     // NOTE(Gilad): Windows messages can be handled here or you can also use the build-in Qt events.
     //switch (msg)
     //{
@@ -242,7 +267,7 @@ LRESULT QDirect3D11Widget::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lP
 }
 
 #if QT_VERSION >= 0x050000
-bool QDirect3D11Widget::nativeEvent(const QByteArray & eventType, void * message, long * result)
+bool QDirect3D10Widget::nativeEvent(const QByteArray & eventType, void * message, long * result)
 {
     Q_UNUSED(eventType);
     Q_UNUSED(result);
@@ -256,7 +281,7 @@ bool QDirect3D11Widget::nativeEvent(const QByteArray & eventType, void * message
 }
 
 #else // QT_VERSION < 0x050000
-bool QDirect3D11Widget::winEvent(MSG * message, long * result)
+bool QDirect3D10Widget::winEvent(MSG * message, long * result)
 {
     Q_UNUSED(result);
 

@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D9", "Direct3D9Wid
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D11", "Direct3D11Widget\QtDirect3D11.vcxproj", "{B9E907AC-964B-415F-8F45-49A7483B285D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D10", "Direct3D10Widget\QtDirect3D10.vcxproj", "{21D450F4-D4EB-4C32-82F6-73E439591B1D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -21,6 +23,10 @@ Global
 		{B9E907AC-964B-415F-8F45-49A7483B285D}.Debug|x86.Build.0 = Debug|Win32
 		{B9E907AC-964B-415F-8F45-49A7483B285D}.Release|x86.ActiveCfg = Release|Win32
 		{B9E907AC-964B-415F-8F45-49A7483B285D}.Release|x86.Build.0 = Release|Win32
+		{21D450F4-D4EB-4C32-82F6-73E439591B1D}.Debug|x86.ActiveCfg = Debug|Win32
+		{21D450F4-D4EB-4C32-82F6-73E439591B1D}.Debug|x86.Build.0 = Debug|Win32
+		{21D450F4-D4EB-4C32-82F6-73E439591B1D}.Release|x86.ActiveCfg = Release|Win32
+		{21D450F4-D4EB-4C32-82F6-73E439591B1D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

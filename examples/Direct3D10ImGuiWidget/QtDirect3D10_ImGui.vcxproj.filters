@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Form Files">
+      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
+      <Extensions>ui</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
+      <Extensions>moc;h;cpp</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Widgets">
+      <UniqueIdentifier>{74fdec2c-12c9-46ec-b4c9-72621a3c805c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{117313b1-48da-45be-8339-e6d04c436254}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thirdparty">
+      <UniqueIdentifier>{33ae4c45-aef6-4edc-833d-efdf38837009}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thirdparty\ImGui">
+      <UniqueIdentifier>{346f7c6e-de35-4e6e-b2ce-ed791d755a4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="thirdparty\ImGui\Impl">
+      <UniqueIdentifier>{175369fc-9e7a-4a39-aff4-1fa1e174d6b6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MainWindow.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="..\..\src\QDirect3D10Widget\ImGui\QDirect3D10Widget.cpp">
+      <Filter>Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\imgui\imgui.cpp">
+      <Filter>thirdparty\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\imgui\imgui_demo.cpp">
+      <Filter>thirdparty\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\imgui\imgui_draw.cpp">
+      <Filter>thirdparty\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\imgui\imgui_widgets.cpp">
+      <Filter>thirdparty\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\imgui\examples\imgui_impl_dx10.cpp">
+      <Filter>thirdparty\ImGui\Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\imgui\examples\imgui_impl_win32.cpp">
+      <Filter>thirdparty\ImGui\Impl</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="MainWindow.h">
+      <Filter>Sources</Filter>
+    </QtMoc>
+    <QtMoc Include="..\..\src\QDirect3D10Widget\ImGui\QDirect3D10Widget.h">
+      <Filter>Widgets</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="MainWindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\thirdparty\imgui\imconfig.h">
+      <Filter>thirdparty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\imgui\imgui.h">
+      <Filter>thirdparty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\imgui\imgui_internal.h">
+      <Filter>thirdparty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\imgui\imstb_rectpack.h">
+      <Filter>thirdparty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\imgui\imstb_textedit.h">
+      <Filter>thirdparty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\imgui\imstb_truetype.h">
+      <Filter>thirdparty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\imgui\examples\imgui_impl_dx10.h">
+      <Filter>thirdparty\ImGui\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\imgui\examples\imgui_impl_win32.h">
+      <Filter>thirdparty\ImGui\Impl</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -11,6 +11,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D9", "Direct3D9Wid
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D11_ImGui", "Direct3D11ImGuiWidget\QtDirect3D11_ImGui.vcxproj", "{A7639B86-7FF9-495D-B6D1-53D9785EBA48}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D10_ImGui", "Direct3D10ImGuiWidget\QtDirect3D10_ImGui.vcxproj", "{3714A2DD-57EA-49F6-845F-FAF1C1AFA156}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D10", "Direct3D10Widget\QtDirect3D10.vcxproj", "{21D450F4-D4EB-4C32-82F6-73E439591B1D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImGui", "ImGui", "{C7362413-E4F9-4012-875F-A7D81D9EBE96}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -33,9 +39,22 @@ Global
 		{A7639B86-7FF9-495D-B6D1-53D9785EBA48}.Debug|x86.Build.0 = Debug|Win32
 		{A7639B86-7FF9-495D-B6D1-53D9785EBA48}.Release|x86.ActiveCfg = Release|Win32
 		{A7639B86-7FF9-495D-B6D1-53D9785EBA48}.Release|x86.Build.0 = Release|Win32
+		{3714A2DD-57EA-49F6-845F-FAF1C1AFA156}.Debug|x86.ActiveCfg = Debug|Win32
+		{3714A2DD-57EA-49F6-845F-FAF1C1AFA156}.Debug|x86.Build.0 = Debug|Win32
+		{3714A2DD-57EA-49F6-845F-FAF1C1AFA156}.Release|x86.ActiveCfg = Release|Win32
+		{3714A2DD-57EA-49F6-845F-FAF1C1AFA156}.Release|x86.Build.0 = Release|Win32
+		{21D450F4-D4EB-4C32-82F6-73E439591B1D}.Debug|x86.ActiveCfg = Debug|Win32
+		{21D450F4-D4EB-4C32-82F6-73E439591B1D}.Debug|x86.Build.0 = Debug|Win32
+		{21D450F4-D4EB-4C32-82F6-73E439591B1D}.Release|x86.ActiveCfg = Release|Win32
+		{21D450F4-D4EB-4C32-82F6-73E439591B1D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B12702AD-ABFB-343A-A199-8E24837244A3} = {C7362413-E4F9-4012-875F-A7D81D9EBE96}
+		{A7639B86-7FF9-495D-B6D1-53D9785EBA48} = {C7362413-E4F9-4012-875F-A7D81D9EBE96}
+		{3714A2DD-57EA-49F6-845F-FAF1C1AFA156} = {C7362413-E4F9-4012-875F-A7D81D9EBE96}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B3FAF30B-443F-405A-927E-1FDA8DD61552}
