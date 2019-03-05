@@ -10,7 +10,7 @@
 
 #include <d3d10.h>
 #include <DirectXMath.h>
-
+#include <D3Dcompiler.h>
 
 class QDirect3D10Widget : public QWidget
 {
