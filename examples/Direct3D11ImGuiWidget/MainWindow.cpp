@@ -85,7 +85,8 @@ void MainWindow::uiRender()
         ImGui::Checkbox("Another Window", &m_bShowAnotherWindow);
 
         ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f 
-        ImGui::ColorEdit3("clear color", (float*)ui->view->BackColor()); // Edit 3 floats representing a color
+        ImGui::ColorEdit4("BackColor", (float*)ui->view->BackColor()); // Edit 3 floats representing a color
+        ImGui::SetColorEditOptions(ImGuiColorEditFlags_Float | ImGuiColorEditFlags_HDR | ImGuiColorEditFlags_PickerHueWheel);
 
         if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
             counter++;

@@ -34,5 +34,4 @@ private:
     bool             m_bWindowInit;
     bool             m_bWindowClosing;
 
-
 };
