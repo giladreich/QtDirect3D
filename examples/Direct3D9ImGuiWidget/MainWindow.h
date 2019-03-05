@@ -38,5 +38,4 @@ private:
     bool             m_bShowDemoWindow;
     bool             m_bShowAnotherWindow;
 
-
 };

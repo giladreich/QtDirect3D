@@ -28,6 +28,7 @@ QDirect3D9Widget::QDirect3D9Widget(QWidget *parent)
     , m_hWnd(reinterpret_cast<HWND>(winId()))
     , m_bDeviceInitialized(false)
     , m_bRenderActive(false)
+    , m_BackColor{ 0.0f, 0.135f, 0.481f, 1.0f }
 {
     qDebug() << "[QDirect3D9Widget::QDirect3D9Widget] - Widget Handle: " << m_hWnd;
 
@@ -64,7 +65,7 @@ void QDirect3D9Widget::release()
     ImGui_ImplWin32_Shutdown();
     ImGui::DestroyContext();
 
-    m_pDevice->Release();
+    ReleaseObject(m_pDevice);
 }
 
 void QDirect3D9Widget::showEvent(QShowEvent * event)
@@ -97,12 +98,12 @@ bool QDirect3D9Widget::init()
     m_PresentParams.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
     m_PresentParams.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
 
-    HRESULT hr = m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, m_hWnd,
-                                      D3DCREATE_HARDWARE_VERTEXPROCESSING,
+    HRESULT hr = m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, 
+                                      m_hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING,
                                       &m_PresentParams, &m_pDevice);
     if (hr != D3D_OK)
     {
-        m_pD3D->Release();
+        ReleaseObject(m_pD3D);
         QMessageBox::critical(this, tr("ERROR"), tr("Failed to create Direct3D device."), QMessageBox::Ok);
         return false;
     }
@@ -134,7 +135,8 @@ void QDirect3D9Widget::onFrame()
 
 void QDirect3D9Widget::beginScene()
 {
-    m_pDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_ARGB(155, 0, 51, 102), 1.0f, 0);
+    D3DCOLOR clearColor = D3DCOLOR_ARGB(155, (int)(m_BackColor[0]*255.0f), (int)(m_BackColor[1]*255.0f), (int)(m_BackColor[2]*255.0f));
+    m_pDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, clearColor, 1.0f, 0);
     m_pDevice->BeginScene();
 }
 
@@ -191,7 +193,8 @@ void QDirect3D9Widget::resetEnvironment()
 {
     // TODO: Do your own custom default environment, i.e:
     //m_pCamera->resetCamera();
-    m_pDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_ARGB(155, 0, 51, 102), 1.0f, 0);
+    D3DCOLOR clearColor = D3DCOLOR_ARGB(155, (int)(m_BackColor[0]*255.0f), (int)(m_BackColor[1]*255.0f), (int)(m_BackColor[2]*255.0f));
+    m_pDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, clearColor, 1.0f, 0);
     m_pDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
     m_pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
     m_pDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, false);
