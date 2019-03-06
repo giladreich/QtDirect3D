@@ -99,7 +99,6 @@ bool QDirect3D11Widget::init()
 #if defined(DEBUG) || defined(_DEBUG)  
     iCreateFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
-
     D3D_FEATURE_LEVEL featureLevel;
     D3D_FEATURE_LEVEL featureLevels[] = {
         D3D_FEATURE_LEVEL_11_0,
@@ -109,7 +108,7 @@ bool QDirect3D11Widget::init()
 
     HRESULT hr = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE,
         NULL, iCreateFlags,
-        featureLevels, ARRAYSIZE(featureLevels),
+        featureLevels, _countof(featureLevels),
         D3D11_SDK_VERSION, &sd,
         &m_pSwapChain, &m_pDevice,
         &featureLevel, &m_pDeviceContext);

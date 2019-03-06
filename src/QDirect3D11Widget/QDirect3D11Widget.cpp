@@ -101,7 +101,7 @@ bool QDirect3D11Widget::init()
 
     HRESULT hr = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE,
         NULL, iCreateFlags,
-        featureLevels, ARRAYSIZE(featureLevels),
+        featureLevels, _countof(featureLevels),
         D3D11_SDK_VERSION, &sd,
         &m_pSwapChain, &m_pDevice,
         &featureLevel, &m_pDeviceContext);
