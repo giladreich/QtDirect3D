@@ -118,17 +118,31 @@ bool QDirect3D12Widget::init()
 
 void QDirect3D12Widget::create3DDevice()
 {
+    UINT factoryFlags = 0;
+
 #ifdef _DEBUG
     {
         ComPtr<ID3D12Debug> dx12Debug;
         if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&dx12Debug))))
+        {
             dx12Debug->EnableDebugLayer();
+
+            // Enable additional debug layers.
+            factoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
+        }
     }
 #endif
 
-    // TODO(Gilad): Iterate through all adapters to find the best GPU.
-    D3D_FEATURE_LEVEL featureLevel = D3D_FEATURE_LEVEL_11_0;
-    ThrowIfFailed(D3D12CreateDevice(NULL, featureLevel, IID_PPV_ARGS(&m_pDevice)));
+    ComPtr<IDXGIFactory4> factory;
+    ThrowIfFailed(CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(factory.GetAddressOf())));
+
+    // Try and get hardware adapter compatible with d3d12, if not found, use wrap.
+    ComPtr<IDXGIAdapter1> adapter;
+    getHardwareAdapter(factory.Get(), adapter.GetAddressOf());
+    if (!adapter)
+        ThrowIfFailed(factory->EnumWarpAdapter(IID_PPV_ARGS(&adapter)));
+
+    ThrowIfFailed(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_pDevice)));
 
     // Describe and create the command queue.
     D3D12_COMMAND_QUEUE_DESC queueDesc = {};
@@ -138,9 +152,6 @@ void QDirect3D12Widget::create3DDevice()
 
     // Describe and create the swap chain.
     {
-        ComPtr<IDXGIFactory4> factory;
-        ThrowIfFailed(CreateDXGIFactory1(IID_PPV_ARGS(factory.GetAddressOf())));
-
         DXGI_SWAP_CHAIN_DESC1 sd = {};
         sd.BufferCount = FRAME_COUNT;
         sd.Width = width();
@@ -191,10 +202,10 @@ void QDirect3D12Widget::create3DDevice()
         ThrowIfFailed(m_pDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_pCommandAllocators[i])));
     }
 
-    // Create command list. We don't create PSO here, so we set it to NULL to use the default PSO.
+    // Create command list. We don't create PSO here, so we set it to nullptr to use the default PSO.
     // Command list by default set on recording state when created, therefore we close it for now.
     ThrowIfFailed(m_pDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_pCommandAllocators[m_iCurrFrameIndex],
-        NULL, IID_PPV_ARGS(&m_pCommandList)));
+        nullptr, IID_PPV_ARGS(&m_pCommandList)));
     ThrowIfFailed(m_pCommandList->Close());
 
 
@@ -240,7 +251,7 @@ void QDirect3D12Widget::onFrame()
 void QDirect3D12Widget::beginScene()
 {
     ThrowIfFailed(m_pCommandAllocators[m_iCurrFrameIndex]->Reset());
-    ThrowIfFailed(m_pCommandList->Reset(m_pCommandAllocators[m_iCurrFrameIndex], NULL));
+    ThrowIfFailed(m_pCommandList->Reset(m_pCommandAllocators[m_iCurrFrameIndex], nullptr));
 
     m_pCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
         m_pRTVResources[m_iCurrFrameIndex], D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET)
@@ -280,8 +291,8 @@ void QDirect3D12Widget::tick()
 void QDirect3D12Widget::render()
 {
     // Start recording the render commands
-    m_pCommandList->ClearRenderTargetView(m_RTVDescriptors[m_iCurrFrameIndex], reinterpret_cast<const float *>(&m_BackColor), 0, NULL);
-    m_pCommandList->OMSetRenderTargets(1, &m_RTVDescriptors[m_iCurrFrameIndex], FALSE, NULL);
+    m_pCommandList->ClearRenderTargetView(m_RTVDescriptors[m_iCurrFrameIndex], reinterpret_cast<const float *>(&m_BackColor), 0, nullptr);
+    m_pCommandList->OMSetRenderTargets(1, &m_RTVDescriptors[m_iCurrFrameIndex], FALSE, nullptr);
     m_pCommandList->SetDescriptorHeaps(1, &m_pSrvDescHeap);
 
 
@@ -318,7 +329,7 @@ void QDirect3D12Widget::createRenderTarget()
     for (UINT i = 0; i < FRAME_COUNT; i++)
     {
         m_pSwapChain->GetBuffer(i, IID_PPV_ARGS(&m_pRTVResources[i]));
-        m_pDevice->CreateRenderTargetView(m_pRTVResources[i], NULL, m_RTVDescriptors[i]);
+        m_pDevice->CreateRenderTargetView(m_pRTVResources[i], nullptr, m_RTVDescriptors[i]);
     }
 }
 
@@ -361,22 +372,21 @@ void QDirect3D12Widget::resizeSwapChain(int width, int height)
     sd.Width = width;
     sd.Height = height;
 
-    IDXGIFactory4* factory = NULL;
+    IDXGIFactory4* factory = nullptr;
     ThrowIfFailed(m_pSwapChain->GetParent(IID_PPV_ARGS(&factory)));
 
     ReleaseObject(m_pSwapChain);
     ReleaseHandle(m_hSwapChainEvent);
 
-    IDXGISwapChain1* swapChain1 = NULL;
-    ThrowIfFailed(factory->CreateSwapChainForHwnd(m_pCommandQueue, m_hWnd, &sd, NULL, NULL, &swapChain1));
+    IDXGISwapChain1* swapChain1 = nullptr;
+    ThrowIfFailed(factory->CreateSwapChainForHwnd(m_pCommandQueue, m_hWnd, &sd, nullptr, nullptr, &swapChain1));
     ThrowIfFailed(swapChain1->QueryInterface(IID_PPV_ARGS(&m_pSwapChain)));
     ReleaseObject(swapChain1);
     ReleaseObject(factory);
 
     ThrowIfFailed(m_pSwapChain->SetMaximumFrameLatency(FRAME_COUNT));
     m_hSwapChainEvent = m_pSwapChain->GetFrameLatencyWaitableObject();
-
-    assert(m_hSwapChainEvent != NULL);
+    Q_ASSERT(m_hSwapChainEvent != nullptr);
 }
 
 void QDirect3D12Widget::getHardwareAdapter(IDXGIFactory2* pFactory, IDXGIAdapter1** ppAdapter)
@@ -389,19 +399,13 @@ void QDirect3D12Widget::getHardwareAdapter(IDXGIFactory2* pFactory, IDXGIAdapter
         DXGI_ADAPTER_DESC1 desc;
         adapter->GetDesc1(&desc);
 
+        // Skip software adapter.
         if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
-        {
-            // Don't select the Basic Render Driver adapter.
-            // If you want a software adapter, pass in "/warp" on the command line.
             continue;
-        }
 
-        // Check to see if the adapter supports Direct3D 12, but don't create the
-        // actual device yet.
+        // Check to see if the adapter supports Direct3D 12, but don't create the actual device yet.
         if (SUCCEEDED(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0, _uuidof(ID3D12Device), nullptr)))
-        {
             break;
-        }
     }
 
     *ppAdapter = adapter.Detach();
