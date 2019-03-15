@@ -29,6 +29,7 @@ QDirect3D12Widget::QDirect3D12Widget(QWidget *parent)
     : QWidget(parent)
     , m_iCurrFrameIndex(0)
     , m_pDevice(nullptr)
+    , m_pFactory(nullptr)
     , m_pSwapChain(nullptr)
     , m_pCommandQueue(nullptr)
     , m_pCommandList(nullptr)
@@ -88,6 +89,7 @@ void QDirect3D12Widget::release()
     ReleaseObject(m_pFence);
     ReleaseHandle(m_hFenceEvent);
     ReleaseObject(m_pDevice);
+    ReleaseObject(m_pFactory);
 }
 
 void QDirect3D12Widget::showEvent(QShowEvent * event)
@@ -133,14 +135,13 @@ void QDirect3D12Widget::create3DDevice()
     }
 #endif
 
-    ComPtr<IDXGIFactory4> factory;
-    DXCall(CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(factory.GetAddressOf())));
+    DXCall(CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(&m_pFactory)));
 
     // Try and get hardware adapter compatible with d3d12, if not found, use wrap.
     ComPtr<IDXGIAdapter1> adapter;
-    getHardwareAdapter(factory.Get(), adapter.GetAddressOf());
+    getHardwareAdapter(m_pFactory, adapter.GetAddressOf());
     if (!adapter)
-        DXCall(factory->EnumWarpAdapter(IID_PPV_ARGS(&adapter)));
+        DXCall(m_pFactory->EnumWarpAdapter(IID_PPV_ARGS(&adapter)));
 
     DXCall(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_pDevice)));
 
@@ -157,7 +158,8 @@ void QDirect3D12Widget::create3DDevice()
         sd.Width = width();
         sd.Height = height();
         sd.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-        sd.Flags = DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
+        //sd.Flags = DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
+        sd.Flags = 0;
         sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
         sd.SampleDesc.Count = 1;
         sd.SampleDesc.Quality = 0;
@@ -166,8 +168,11 @@ void QDirect3D12Widget::create3DDevice()
         sd.Scaling = DXGI_SCALING_NONE;
         sd.Stereo = FALSE;
 
+        DXGI_SWAP_CHAIN_FULLSCREEN_DESC fsSd = {};
+        fsSd.Windowed = TRUE;
+
         ComPtr<IDXGISwapChain1> swapChain1;
-        DXCall(factory->CreateSwapChainForHwnd(m_pCommandQueue, m_hWnd, &sd, nullptr, nullptr, swapChain1.GetAddressOf()));
+        DXCall(m_pFactory->CreateSwapChainForHwnd(m_pCommandQueue, m_hWnd, &sd, &fsSd, nullptr, swapChain1.GetAddressOf()));
         DXCall(swapChain1->QueryInterface(IID_PPV_ARGS(&m_pSwapChain)));
         m_iCurrFrameIndex = m_pSwapChain->GetCurrentBackBufferIndex();
     }
@@ -217,8 +222,8 @@ void QDirect3D12Widget::create3DDevice()
     if (!m_hFenceEvent)
         DXCall(HRESULT_FROM_WIN32(GetLastError()));
 
-    DXCall(m_pSwapChain->SetMaximumFrameLatency(FRAME_COUNT));
-    m_hSwapChainEvent = m_pSwapChain->GetFrameLatencyWaitableObject();
+    //DXCall(m_pSwapChain->SetMaximumFrameLatency(FRAME_COUNT));
+    //m_hSwapChainEvent = m_pSwapChain->GetFrameLatencyWaitableObject();
 
     // Wait for the GPU to complete our setup before proceeding.
     waitForGpu();
@@ -282,7 +287,7 @@ void QDirect3D12Widget::endScene()
 void QDirect3D12Widget::tick()
 {
     // Wait for the previous Present to complete.
-    WaitForSingleObject(m_hSwapChainEvent, 100);
+    //WaitForSingleObject(m_hSwapChainEvent, 100);
 
 
     emit ticked(); // Signals the parent to do it's own update before we start rendering.
@@ -306,12 +311,9 @@ void QDirect3D12Widget::uiRender()
 
 void QDirect3D12Widget::onReset()
 {
-    //return;
     m_qTimer.stop();
     ImGui_ImplDX12_InvalidateDeviceObjects();
-    cleanupRenderTarget();
     resizeSwapChain(width(), height());
-    createRenderTarget();
     ImGui_ImplDX12_CreateDeviceObjects();
     m_qTimer.start(RENDER_FRAME_MSECONDS);
 }
@@ -321,14 +323,17 @@ void QDirect3D12Widget::cleanupRenderTarget()
     waitForGpu();
 
     for (UINT i = 0; i < FRAME_COUNT; i++)
+    {
         ReleaseObject(m_pRTVResources[i]);
+        m_iFenceValues[i] = m_iFenceValues[m_iCurrFrameIndex];
+    }
 }
 
 void QDirect3D12Widget::createRenderTarget()
 {
     for (UINT i = 0; i < FRAME_COUNT; i++)
     {
-        m_pSwapChain->GetBuffer(i, IID_PPV_ARGS(&m_pRTVResources[i]));
+        DXCall(m_pSwapChain->GetBuffer(i, IID_PPV_ARGS(&m_pRTVResources[i])));
         m_pDevice->CreateRenderTargetView(m_pRTVResources[i], nullptr, m_RTVDescriptors[i]);
     }
 }
@@ -360,33 +365,45 @@ void QDirect3D12Widget::moveToNextFrame()
 
 void QDirect3D12Widget::resizeSwapChain(int width, int height)
 {
-    // Won't work
     //ReleaseHandle(m_hSwapChainEvent);
-    //m_pSwapChain->ResizeBuffers(FRAME_COUNT, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
-    //m_hSwapChainEvent = m_pSwapChain->GetFrameLatencyWaitableObject();
+    cleanupRenderTarget();
 
+    if (m_pSwapChain)
+    {
+        DXCall(m_pSwapChain->ResizeBuffers(FRAME_COUNT, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 0));
+    }
+    else
+    {
+        DXGI_SWAP_CHAIN_DESC1 sd = {};
+        sd.BufferCount = FRAME_COUNT;
+        sd.Width = width;
+        sd.Height = height;
+        sd.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+        //sd.Flags = DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
+        sd.Flags = 0;
+        sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+        sd.SampleDesc.Count = 1;
+        sd.SampleDesc.Quality = 0;
+        sd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+        sd.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
+        sd.Scaling = DXGI_SCALING_NONE;
+        sd.Stereo = FALSE;
 
-    // Alternative
-    DXGI_SWAP_CHAIN_DESC1 sd;
-    DXCall(m_pSwapChain->GetDesc1(&sd));
-    sd.Width = width;
-    sd.Height = height;
+        DXGI_SWAP_CHAIN_FULLSCREEN_DESC fsSd = {};
+        fsSd.Windowed = TRUE;
 
-    IDXGIFactory4* factory = nullptr;
-    DXCall(m_pSwapChain->GetParent(IID_PPV_ARGS(&factory)));
+        ComPtr<IDXGISwapChain1> swapChain;
+        DXCall(m_pFactory->CreateSwapChainForHwnd(m_pCommandQueue, m_hWnd, &sd, &fsSd, nullptr, 
+            swapChain.GetAddressOf()));
+        DXCall(swapChain->QueryInterface(IID_PPV_ARGS(&m_pSwapChain)));
 
-    ReleaseObject(m_pSwapChain);
-    ReleaseHandle(m_hSwapChainEvent);
+        //DXCall(m_pSwapChain->SetMaximumFrameLatency(FRAME_COUNT));
+        //m_hSwapChainEvent = m_pSwapChain->GetFrameLatencyWaitableObject();
+    }
 
-    IDXGISwapChain1* swapChain1 = nullptr;
-    DXCall(factory->CreateSwapChainForHwnd(m_pCommandQueue, m_hWnd, &sd, nullptr, nullptr, &swapChain1));
-    DXCall(swapChain1->QueryInterface(IID_PPV_ARGS(&m_pSwapChain)));
-    ReleaseObject(swapChain1);
-    ReleaseObject(factory);
+    createRenderTarget();
 
-    DXCall(m_pSwapChain->SetMaximumFrameLatency(FRAME_COUNT));
-    m_hSwapChainEvent = m_pSwapChain->GetFrameLatencyWaitableObject();
-    Q_ASSERT(m_hSwapChainEvent != nullptr);
+    m_iCurrFrameIndex = m_pSwapChain->GetCurrentBackBufferIndex();
 }
 
 void QDirect3D12Widget::getHardwareAdapter(IDXGIFactory2* pFactory, IDXGIAdapter1** ppAdapter)

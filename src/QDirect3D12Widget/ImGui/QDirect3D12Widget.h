@@ -100,6 +100,7 @@ private:
     UINT                         m_iCurrFrameIndex;
 
     ID3D12Device *               m_pDevice;
+    IDXGIFactory4 *              m_pFactory;
     IDXGISwapChain3 *            m_pSwapChain;
     ID3D12CommandQueue *         m_pCommandQueue;
     ID3D12CommandAllocator *     m_pCommandAllocators[FRAME_COUNT];
