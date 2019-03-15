@@ -134,21 +134,21 @@ void QDirect3D12Widget::create3DDevice()
 #endif
 
     ComPtr<IDXGIFactory4> factory;
-    ThrowIfFailed(CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(factory.GetAddressOf())));
+    DXCall(CreateDXGIFactory2(factoryFlags, IID_PPV_ARGS(factory.GetAddressOf())));
 
     // Try and get hardware adapter compatible with d3d12, if not found, use wrap.
     ComPtr<IDXGIAdapter1> adapter;
     getHardwareAdapter(factory.Get(), adapter.GetAddressOf());
     if (!adapter)
-        ThrowIfFailed(factory->EnumWarpAdapter(IID_PPV_ARGS(&adapter)));
+        DXCall(factory->EnumWarpAdapter(IID_PPV_ARGS(&adapter)));
 
-    ThrowIfFailed(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_pDevice)));
+    DXCall(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_pDevice)));
 
     // Describe and create the command queue.
     D3D12_COMMAND_QUEUE_DESC queueDesc = {};
     queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
     queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
-    ThrowIfFailed(m_pDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&m_pCommandQueue)));
+    DXCall(m_pDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&m_pCommandQueue)));
 
     // Describe and create the swap chain.
     {
@@ -167,8 +167,8 @@ void QDirect3D12Widget::create3DDevice()
         sd.Stereo = FALSE;
 
         ComPtr<IDXGISwapChain1> swapChain1;
-        ThrowIfFailed(factory->CreateSwapChainForHwnd(m_pCommandQueue, m_hWnd, &sd, nullptr, nullptr, swapChain1.GetAddressOf()));
-        ThrowIfFailed(swapChain1->QueryInterface(IID_PPV_ARGS(&m_pSwapChain)));
+        DXCall(factory->CreateSwapChainForHwnd(m_pCommandQueue, m_hWnd, &sd, nullptr, nullptr, swapChain1.GetAddressOf()));
+        DXCall(swapChain1->QueryInterface(IID_PPV_ARGS(&m_pSwapChain)));
         m_iCurrFrameIndex = m_pSwapChain->GetCurrentBackBufferIndex();
     }
 
@@ -177,14 +177,14 @@ void QDirect3D12Widget::create3DDevice()
     rtvDesc.NumDescriptors = FRAME_COUNT;
     rtvDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
     rtvDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-    ThrowIfFailed(m_pDevice->CreateDescriptorHeap(&rtvDesc, IID_PPV_ARGS(&m_pRTVDescHeap)));
+    DXCall(m_pDevice->CreateDescriptorHeap(&rtvDesc, IID_PPV_ARGS(&m_pRTVDescHeap)));
     m_iRTVDescSize = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
     CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_pRTVDescHeap->GetCPUDescriptorHandleForHeapStart());
     for (UINT i = 0; i < FRAME_COUNT; i++)
     {
         m_RTVDescriptors[i] = rtvHandle;
-        ThrowIfFailed(m_pSwapChain->GetBuffer(i, IID_PPV_ARGS(&m_pRTVResources[i])));
+        DXCall(m_pSwapChain->GetBuffer(i, IID_PPV_ARGS(&m_pRTVResources[i])));
         m_pDevice->CreateRenderTargetView(m_pRTVResources[i], nullptr, m_RTVDescriptors[i]);
         rtvHandle.Offset(1, m_iRTVDescSize);
     }
@@ -194,30 +194,30 @@ void QDirect3D12Widget::create3DDevice()
     srvDesc.NumDescriptors = 1;
     srvDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
     srvDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-    ThrowIfFailed(m_pDevice->CreateDescriptorHeap(&srvDesc, IID_PPV_ARGS(&m_pSrvDescHeap)));
+    DXCall(m_pDevice->CreateDescriptorHeap(&srvDesc, IID_PPV_ARGS(&m_pSrvDescHeap)));
 
     // Create command allocator for each frame.
     for (UINT i = 0; i < FRAME_COUNT; i++)
     {
-        ThrowIfFailed(m_pDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_pCommandAllocators[i])));
+        DXCall(m_pDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_pCommandAllocators[i])));
     }
 
     // Create command list. We don't create PSO here, so we set it to nullptr to use the default PSO.
     // Command list by default set on recording state when created, therefore we close it for now.
-    ThrowIfFailed(m_pDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_pCommandAllocators[m_iCurrFrameIndex],
+    DXCall(m_pDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_pCommandAllocators[m_iCurrFrameIndex],
         nullptr, IID_PPV_ARGS(&m_pCommandList)));
-    ThrowIfFailed(m_pCommandList->Close());
+    DXCall(m_pCommandList->Close());
 
 
     // Create synchronized objects.
-    ThrowIfFailed(m_pDevice->CreateFence(m_iFenceValues[m_iCurrFrameIndex], D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_pFence)));
+    DXCall(m_pDevice->CreateFence(m_iFenceValues[m_iCurrFrameIndex], D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_pFence)));
     m_iFenceValues[m_iCurrFrameIndex]++;
 
     m_hFenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
     if (!m_hFenceEvent)
-        ThrowIfFailed(HRESULT_FROM_WIN32(GetLastError()));
+        DXCall(HRESULT_FROM_WIN32(GetLastError()));
 
-    ThrowIfFailed(m_pSwapChain->SetMaximumFrameLatency(FRAME_COUNT));
+    DXCall(m_pSwapChain->SetMaximumFrameLatency(FRAME_COUNT));
     m_hSwapChainEvent = m_pSwapChain->GetFrameLatencyWaitableObject();
 
     // Wait for the GPU to complete our setup before proceeding.
@@ -250,8 +250,8 @@ void QDirect3D12Widget::onFrame()
 
 void QDirect3D12Widget::beginScene()
 {
-    ThrowIfFailed(m_pCommandAllocators[m_iCurrFrameIndex]->Reset());
-    ThrowIfFailed(m_pCommandList->Reset(m_pCommandAllocators[m_iCurrFrameIndex], nullptr));
+    DXCall(m_pCommandAllocators[m_iCurrFrameIndex]->Reset());
+    DXCall(m_pCommandList->Reset(m_pCommandAllocators[m_iCurrFrameIndex], nullptr));
 
     m_pCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
         m_pRTVResources[m_iCurrFrameIndex], D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET)
@@ -271,10 +271,10 @@ void QDirect3D12Widget::endScene()
         m_pRTVResources[m_iCurrFrameIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT)
     );
 
-    ThrowIfFailed(m_pCommandList->Close());
+    DXCall(m_pCommandList->Close());
     m_pCommandQueue->ExecuteCommandLists(1, reinterpret_cast<ID3D12CommandList* const*>(&m_pCommandList));
 
-    ThrowIfFailed(m_pSwapChain->Present(1, 0));
+    DXCall(m_pSwapChain->Present(1, 0));
 
     moveToNextFrame();
 }
@@ -306,7 +306,7 @@ void QDirect3D12Widget::uiRender()
 
 void QDirect3D12Widget::onReset()
 {
-    return;
+    //return;
     m_qTimer.stop();
     ImGui_ImplDX12_InvalidateDeviceObjects();
     cleanupRenderTarget();
@@ -335,9 +335,9 @@ void QDirect3D12Widget::createRenderTarget()
 
 void QDirect3D12Widget::waitForGpu()
 {
-    ThrowIfFailed(m_pCommandQueue->Signal(m_pFence, m_iFenceValues[m_iCurrFrameIndex]));
+    DXCall(m_pCommandQueue->Signal(m_pFence, m_iFenceValues[m_iCurrFrameIndex]));
 
-    ThrowIfFailed(m_pFence->SetEventOnCompletion(m_iFenceValues[m_iCurrFrameIndex], m_hFenceEvent));
+    DXCall(m_pFence->SetEventOnCompletion(m_iFenceValues[m_iCurrFrameIndex], m_hFenceEvent));
     WaitForSingleObject(m_hFenceEvent, INFINITE);
 
     m_iFenceValues[m_iCurrFrameIndex]++;
@@ -346,12 +346,12 @@ void QDirect3D12Widget::waitForGpu()
 void QDirect3D12Widget::moveToNextFrame()
 {
     const UINT64 currentFenceValue = m_iFenceValues[m_iCurrFrameIndex];
-    ThrowIfFailed(m_pCommandQueue->Signal(m_pFence, currentFenceValue));
+    DXCall(m_pCommandQueue->Signal(m_pFence, currentFenceValue));
 
     m_iCurrFrameIndex = m_pSwapChain->GetCurrentBackBufferIndex();
     if (m_pFence->GetCompletedValue() < m_iFenceValues[m_iCurrFrameIndex])
     {
-        ThrowIfFailed(m_pFence->SetEventOnCompletion(m_iFenceValues[m_iCurrFrameIndex], m_hFenceEvent));
+        DXCall(m_pFence->SetEventOnCompletion(m_iFenceValues[m_iCurrFrameIndex], m_hFenceEvent));
         WaitForSingleObject(m_hFenceEvent, INFINITE);
     }
 
@@ -368,23 +368,23 @@ void QDirect3D12Widget::resizeSwapChain(int width, int height)
 
     // Alternative
     DXGI_SWAP_CHAIN_DESC1 sd;
-    ThrowIfFailed(m_pSwapChain->GetDesc1(&sd));
+    DXCall(m_pSwapChain->GetDesc1(&sd));
     sd.Width = width;
     sd.Height = height;
 
     IDXGIFactory4* factory = nullptr;
-    ThrowIfFailed(m_pSwapChain->GetParent(IID_PPV_ARGS(&factory)));
+    DXCall(m_pSwapChain->GetParent(IID_PPV_ARGS(&factory)));
 
     ReleaseObject(m_pSwapChain);
     ReleaseHandle(m_hSwapChainEvent);
 
     IDXGISwapChain1* swapChain1 = nullptr;
-    ThrowIfFailed(factory->CreateSwapChainForHwnd(m_pCommandQueue, m_hWnd, &sd, nullptr, nullptr, &swapChain1));
-    ThrowIfFailed(swapChain1->QueryInterface(IID_PPV_ARGS(&m_pSwapChain)));
+    DXCall(factory->CreateSwapChainForHwnd(m_pCommandQueue, m_hWnd, &sd, nullptr, nullptr, &swapChain1));
+    DXCall(swapChain1->QueryInterface(IID_PPV_ARGS(&m_pSwapChain)));
     ReleaseObject(swapChain1);
     ReleaseObject(factory);
 
-    ThrowIfFailed(m_pSwapChain->SetMaximumFrameLatency(FRAME_COUNT));
+    DXCall(m_pSwapChain->SetMaximumFrameLatency(FRAME_COUNT));
     m_hSwapChainEvent = m_pSwapChain->GetFrameLatencyWaitableObject();
     Q_ASSERT(m_hSwapChainEvent != nullptr);
 }

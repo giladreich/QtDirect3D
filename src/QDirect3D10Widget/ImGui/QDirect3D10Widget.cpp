@@ -98,15 +98,10 @@ bool QDirect3D10Widget::init()
     iCreateFlags |= D3D10_CREATE_DEVICE_DEBUG;
 #endif
 
-    HRESULT hr = D3D10CreateDeviceAndSwapChain(NULL, D3D10_DRIVER_TYPE_HARDWARE,
-                                               NULL, iCreateFlags,
-                                               D3D10_SDK_VERSION, &sd,
-                                               &m_pSwapChain, &m_pDevice);
-    if (hr != S_OK)
-    {
-        QMessageBox::critical(this, tr("ERROR"), tr("Failed to create Direct3D device and swap-chain."), QMessageBox::Ok);
-        throw std::exception("Failed to create Direct3D device and swap-chain.");
-    }
+    DXCall(D3D10CreateDeviceAndSwapChain(NULL, D3D10_DRIVER_TYPE_HARDWARE,
+                                         NULL, iCreateFlags,
+                                         D3D10_SDK_VERSION, &sd,
+                                         &m_pSwapChain, &m_pDevice));
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -183,11 +178,11 @@ void QDirect3D10Widget::uiRender()
 
 void QDirect3D10Widget::onReset()
 {
-    ReleaseObject(m_pRTView);
-    m_pSwapChain->ResizeBuffers(0, width(), height(), DXGI_FORMAT_UNKNOWN, 0);
     ID3D10Texture2D* pBackBuffer;
-    m_pSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
-    m_pDevice->CreateRenderTargetView(pBackBuffer, NULL, &m_pRTView);
+    ReleaseObject(m_pRTView);
+    DXCall(m_pSwapChain->ResizeBuffers(0, width(), height(), DXGI_FORMAT_UNKNOWN, 0));
+    DXCall(m_pSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer)));
+    DXCall(m_pDevice->CreateRenderTargetView(pBackBuffer, NULL, &m_pRTView));
     ReleaseObject(pBackBuffer);
 }
 

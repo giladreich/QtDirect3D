@@ -130,9 +130,12 @@ private:
 
 };
 
-// Utils
+// ############################################################################
+// ############################## Utils #######################################
+// ############################################################################
 #define ReleaseObject(object) if((object) != nullptr) { object->Release(); object = nullptr; }
 #define ReleaseHandle(object) if((object) != nullptr) { CloseHandle(object); object = nullptr; }
+
 
 inline std::string HrToString(HRESULT hr)
 {
@@ -157,3 +160,6 @@ inline void ThrowIfFailed(HRESULT hr)
         throw HrException(hr);
     }
 }
+
+#define DXCall(func) ThrowIfFailed(func)
+

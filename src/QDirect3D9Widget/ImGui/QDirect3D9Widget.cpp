@@ -98,15 +98,9 @@ bool QDirect3D9Widget::init()
     m_PresentParams.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
     m_PresentParams.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
 
-    HRESULT hr = m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, 
-                                      m_hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING,
-                                      &m_PresentParams, &m_pDevice);
-    if (hr != D3D_OK)
-    {
-        ReleaseObject(m_pD3D);
-        QMessageBox::critical(this, tr("ERROR"), tr("Failed to create Direct3D device."), QMessageBox::Ok);
-        return false;
-    }
+    DXCall(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL,
+                                m_hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING,
+                                &m_PresentParams, &m_pDevice));
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -136,13 +130,13 @@ void QDirect3D9Widget::onFrame()
 void QDirect3D9Widget::beginScene()
 {
     D3DCOLOR clearColor = D3DCOLOR_ARGB(155, (int)(m_BackColor[0]*255.0f), (int)(m_BackColor[1]*255.0f), (int)(m_BackColor[2]*255.0f));
-    m_pDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, clearColor, 1.0f, 0);
-    m_pDevice->BeginScene();
+    DXCall(m_pDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, clearColor, 1.0f, 0));
+    DXCall(m_pDevice->BeginScene());
 }
 
 void QDirect3D9Widget::endScene()
 {
-    m_pDevice->EndScene();
+    DXCall(m_pDevice->EndScene());
     RECT rc = { rect().left(), rect().top(), rect().right(), rect().bottom() };
     HRESULT hr = m_pDevice->Present(&rc, &rc, m_hWnd, NULL);
     if (hr == D3DERR_DEVICELOST && m_pDevice->TestCooperativeLevel() == D3DERR_DEVICENOTRESET)
@@ -185,7 +179,7 @@ void QDirect3D9Widget::onReset()
     ImGui_ImplDX9_InvalidateDeviceObjects();
     m_PresentParams.BackBufferWidth = width();
     m_PresentParams.BackBufferHeight = height();
-    m_pDevice->Reset(&m_PresentParams);
+    DXCall(m_pDevice->Reset(&m_PresentParams));
     ImGui_ImplDX9_CreateDeviceObjects();
 }
 
@@ -194,12 +188,12 @@ void QDirect3D9Widget::resetEnvironment()
     // TODO: Do your own custom default environment, i.e:
     //m_pCamera->resetCamera();
     D3DCOLOR clearColor = D3DCOLOR_ARGB(155, (int)(m_BackColor[0]*255.0f), (int)(m_BackColor[1]*255.0f), (int)(m_BackColor[2]*255.0f));
-    m_pDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, clearColor, 1.0f, 0);
-    m_pDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
-    m_pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-    m_pDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, false);
-    m_pDevice->SetRenderState(D3DRS_DITHERENABLE, TRUE);
-    m_pDevice->SetRenderState(D3DRS_SPECULARENABLE, TRUE);
+    DXCall(m_pDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, clearColor, 1.0f, 0));
+    DXCall(m_pDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE));
+    DXCall(m_pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE));
+    DXCall(m_pDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, false));
+    DXCall(m_pDevice->SetRenderState(D3DRS_DITHERENABLE, TRUE));
+    DXCall(m_pDevice->SetRenderState(D3DRS_SPECULARENABLE, TRUE));
 
     onReset();
 
