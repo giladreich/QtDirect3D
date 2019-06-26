@@ -14,7 +14,7 @@ There are also Direct3D widgets that supports [Dear ImGui](https://github.com/oc
 
 Under the `src` directory you'll find the widgets sources for each version. If you want the ImGui widget, you'll find it under `src/QDirect3D*Widget/ImGui`.
 
-Under the `examples` directory there are few samples to demostrate how to interact with the widget and how easy it is to get started.
+Under the `examples` directory there are few samples to demonstrate how to interact with the widget and how easy it is to get started.
 
 When you start a new `Qt GUI Application` project, do the following steps:
 
@@ -55,7 +55,7 @@ At this point everything should be up and running.
 
 ##### Handling close event
 
-To properly clean up the application, we override the [closeEvent](http://doc.qt.io/archives/qt-4.8/qcloseevent.html), call `release` and give it atleast 500 miliseconds delay before we close the application:
+To properly clean up the application, we override the [closeEvent](http://doc.qt.io/archives/qt-4.8/qcloseevent.html), call `release` and give it at least 500 milliseconds delay before we close the application:
 
 ```cpp
 void MainWindow::closeEvent(QCloseEvent * event)
@@ -83,6 +83,8 @@ Using the widget with ImGui and creating a scene:
 
 ![Qt and ImGui](/pictures/Qt_and_ImGui.gif)
 
+[![YouTube Link](https://i.imgur.com/3wEI0cl.jpg)](https://www.youtube.com/watch?v=UGLJHiLUWI0 "YouTube Link")
+
 
 ## Motivation
 
@@ -92,7 +94,7 @@ When it comes to Desktop GUI Application, I think there is no question or doubt 
 
 In my spare time I made few more projects using the MFC framework because they are easier to use when working with the WinAPI, because I wanted to render 3D stuff using DirectX.
 
-Qt always seem to me more of a OpenGL thing, the fact that they only provide `QOpenGLWidget` build-in and not `QDirect3DWidget` and it's based on OpenGL in general.
+Qt always seem to me more of an OpenGL thing, the fact that they only provide `QOpenGLWidget` build-in and not `QDirect3DWidget` and it's based on OpenGL in general.
 
 I therefore decided to challenge myself using DirectX in Qt and was happy to see the end-results.
 
