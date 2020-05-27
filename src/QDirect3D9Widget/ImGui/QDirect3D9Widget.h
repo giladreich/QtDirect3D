@@ -52,7 +52,7 @@ private:
 #endif
 
 
-Q_SIGNALS:
+signals:
     void deviceInitialized(bool success);
 
     void eventHandled();
@@ -63,7 +63,7 @@ Q_SIGNALS:
     void uiRendered();
 
 
-private Q_SLOTS:
+private slots:
     void onFrame();
     void onReset();
 

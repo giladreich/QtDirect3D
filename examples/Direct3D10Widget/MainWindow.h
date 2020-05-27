@@ -22,7 +22,7 @@ private:
     void closeEvent(QCloseEvent * event) override;
 
 
-public Q_SLOTS:
+public slots:
     bool init(bool success);
     void tick();
     void render();
