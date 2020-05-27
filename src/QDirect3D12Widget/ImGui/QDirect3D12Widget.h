@@ -4,17 +4,17 @@
 
 #pragma once
 
+#include <stdexcept>
 
 #include <QWidget>
 #include <QTimer>
 
+#include <wrl.h>
 #include <d3d12.h>
 #include <dxgi1_4.h>
 #include <DirectXMath.h>
 #include <D3Dcompiler.h>
 #include "d3dx12.h"
-
-#include <wrl.h>
 
 
 class QDirect3D12Widget : public QWidget

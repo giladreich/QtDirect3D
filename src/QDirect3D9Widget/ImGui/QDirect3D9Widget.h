@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <stdexcept>
 
 #include <QWidget>
 #include <QTimer>
