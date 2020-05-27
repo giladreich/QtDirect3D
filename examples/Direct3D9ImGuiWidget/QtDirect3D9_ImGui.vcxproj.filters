@@ -5,29 +5,16 @@
       <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
       <Extensions>ui</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
-      <Extensions>qrc;*</Extensions>
-      <ParseFiles>false</ParseFiles>
-    </Filter>
-    <Filter Include="Generated Files">
-      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
-      <Extensions>moc;h;cpp</Extensions>
-      <SourceControlFiles>False</SourceControlFiles>
-    </Filter>
     <Filter Include="Widgets">
       <UniqueIdentifier>{74fdec2c-12c9-46ec-b4c9-72621a3c805c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="thirdparty">
-      <UniqueIdentifier>{a770e597-8999-4401-be26-5eef225609eb}</UniqueIdentifier>
     </Filter>
     <Filter Include="Sources">
       <UniqueIdentifier>{117313b1-48da-45be-8339-e6d04c436254}</UniqueIdentifier>
     </Filter>
-    <Filter Include="thirdparty\ImGui">
+    <Filter Include="ImGui">
       <UniqueIdentifier>{2d39d1d7-a6c1-4cad-97d9-5caa3e85bbe8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="thirdparty\ImGui\Impl">
+    <Filter Include="ImGui\Impl">
       <UniqueIdentifier>{653ca88f-16ec-49ca-a1db-5162fc51c636}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -40,22 +27,22 @@
       <Filter>Widgets</Filter>
     </ClCompile>
     <ClCompile Include="..\..\thirdparty\imgui\imgui.cpp">
-      <Filter>thirdparty\ImGui</Filter>
+      <Filter>ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\thirdparty\imgui\imgui_demo.cpp">
-      <Filter>thirdparty\ImGui</Filter>
+      <Filter>ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\thirdparty\imgui\imgui_draw.cpp">
-      <Filter>thirdparty\ImGui</Filter>
+      <Filter>ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\thirdparty\imgui\imgui_widgets.cpp">
-      <Filter>thirdparty\ImGui</Filter>
+      <Filter>ImGui</Filter>
     </ClCompile>
     <ClCompile Include="..\..\thirdparty\imgui\examples\imgui_impl_dx9.cpp">
-      <Filter>thirdparty\ImGui\Impl</Filter>
+      <Filter>ImGui\Impl</Filter>
     </ClCompile>
     <ClCompile Include="..\..\thirdparty\imgui\examples\imgui_impl_win32.cpp">
-      <Filter>thirdparty\ImGui\Impl</Filter>
+      <Filter>ImGui\Impl</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -73,28 +60,28 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\thirdparty\imgui\imconfig.h">
-      <Filter>thirdparty\ImGui</Filter>
+      <Filter>ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\thirdparty\imgui\imgui.h">
-      <Filter>thirdparty\ImGui</Filter>
+      <Filter>ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\thirdparty\imgui\imgui_internal.h">
-      <Filter>thirdparty\ImGui</Filter>
+      <Filter>ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\thirdparty\imgui\imstb_rectpack.h">
-      <Filter>thirdparty\ImGui</Filter>
+      <Filter>ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\thirdparty\imgui\imstb_textedit.h">
-      <Filter>thirdparty\ImGui</Filter>
+      <Filter>ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\thirdparty\imgui\imstb_truetype.h">
-      <Filter>thirdparty\ImGui</Filter>
+      <Filter>ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\thirdparty\imgui\examples\imgui_impl_win32.h">
-      <Filter>thirdparty\ImGui\Impl</Filter>
+      <Filter>ImGui\Impl</Filter>
     </ClInclude>
     <ClInclude Include="..\..\thirdparty\imgui\examples\imgui_impl_dx9.h">
-      <Filter>thirdparty\ImGui\Impl</Filter>
+      <Filter>ImGui\Impl</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
