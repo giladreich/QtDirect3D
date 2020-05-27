@@ -238,7 +238,7 @@ void QDirect3D12Widget::createImGuiContext()
 
     ImGui_ImplWin32_Init(m_hWnd);
     ImGui_ImplDX12_Init(m_pDevice, FRAME_COUNT,
-        DXGI_FORMAT_R8G8B8A8_UNORM,
+        DXGI_FORMAT_R8G8B8A8_UNORM, m_pSrvDescHeap,
         m_pSrvDescHeap->GetCPUDescriptorHandleForHeapStart(),
         m_pSrvDescHeap->GetGPUDescriptorHandleForHeapStart());
 }
