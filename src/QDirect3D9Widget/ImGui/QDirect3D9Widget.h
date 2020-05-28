@@ -1,7 +1,6 @@
 /*
  *
  */
-
 #pragma once
 
 #include <stdexcept>
@@ -56,7 +55,6 @@ private:
     bool winEvent(MSG * message, long * result) override;
 #endif
 
-
 signals:
     void deviceInitialized(bool success);
 
@@ -71,7 +69,6 @@ signals:
     void mouseMoved(QMouseEvent *);
     void mouseClicked(QMouseEvent *);
     void mouseReleased(QMouseEvent *);
-
 
 private slots:
     void onFrame();
@@ -90,12 +87,10 @@ public:
 
     DirectX::XMVECTORF32 * BackColor() { return &m_BackColor; }
 
-
 private:
     IDirect3DDevice9 *       m_pDevice;
     IDirect3D9 *             m_pD3D;
     D3DPRESENT_PARAMETERS    m_PresentParams;
-
 
     QTimer                    m_qTimer;
 
@@ -105,9 +100,7 @@ private:
     bool                      m_bRenderActive;
     bool                      m_bStarted;
 
-
     DirectX::XMVECTORF32      m_BackColor;
-
 };
 
 

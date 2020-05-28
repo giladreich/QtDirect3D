@@ -24,6 +24,10 @@ public:
     void release();
     void resetEnvironment();
 
+    void run();
+    void pauseFrames();
+    void continueFrames();
+
 private:
     bool init();
 
@@ -32,17 +36,18 @@ private:
 
     void tick();
     void render();
-    void uiRender();
+    void renderUI();
 
 // Qt Events
 private:
-    bool event(QEvent * event) override;
-    void showEvent(QShowEvent * event) override;
-    QPaintEngine * paintEngine() const override;
-    void paintEvent(QPaintEvent * event) override;
-    void resizeEvent(QResizeEvent * event) override;
+    bool                event(QEvent * event) override;
+    void                showEvent(QShowEvent * event) override;
+    QPaintEngine *      paintEngine() const override;
+    void                paintEvent(QPaintEvent * event) override;
+    void                resizeEvent(QResizeEvent * event) override;
+    void                wheelEvent(QWheelEvent * event) override;
 
-    LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+    LRESULT WINAPI WndProc(MSG * pMsg);
 
 #if QT_VERSION >= 0x050000
     bool nativeEvent(const QByteArray & eventType, void * message, long * result) override;
@@ -59,8 +64,12 @@ signals:
 
     void ticked();
     void rendered();
-    void uiRendered();
+    void renderedUI();
 
+    void keyPressed(QKeyEvent *);
+    void mouseMoved(QMouseEvent *);
+    void mouseClicked(QMouseEvent *);
+    void mouseReleased(QMouseEvent *);
 
 private slots:
     void onFrame();
@@ -92,6 +101,7 @@ private:
     bool                      m_bDeviceInitialized;
 
     bool                      m_bRenderActive;
+    bool                      m_bStarted;
 
     DirectX::XMVECTORF32      m_BackColor;
 
@@ -101,8 +111,8 @@ private:
 // ############################################################################
 // ############################## Utils #######################################
 // ############################################################################
-#define ReleaseObject(object) if((object) != nullptr) { object->Release(); object = nullptr; }
-#define ReleaseHandle(object) if((object) != nullptr) { CloseHandle(object); object = nullptr; }
+#define ReleaseObject(object) if((object) != Q_NULLPTR) { object->Release(); object = Q_NULLPTR; }
+#define ReleaseHandle(object) if((object) != Q_NULLPTR) { CloseHandle(object); object = Q_NULLPTR; }
 
 
 inline std::string HrToString(HRESULT hr)

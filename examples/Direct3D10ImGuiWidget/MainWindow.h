@@ -1,11 +1,13 @@
 /*
  *
  */
-
 #pragma once
 
 #include <QtWidgets/QMainWindow>
+#include <QCheckBox>
+
 #include "ui_MainWindow.h"
+
 
 class MainWindow : public QMainWindow
 {
@@ -16,26 +18,22 @@ public:
     ~MainWindow();
 
     void adjustWindowSize();
-
+    void addToolbarWidgets();
+    void connectSlots();
 
 private:
     void closeEvent(QCloseEvent * event) override;
 
-
 public slots:
-    bool init(bool success);
+    void init(bool success);
     void tick();
     void render();
-    void uiRender();
-
+    void renderUI();
 
 private:
     Ui::MainWindowClass * ui;
 
-    bool             m_bWindowInit;
-    bool             m_bWindowClosing;
-
-    bool             m_bShowDemoWindow;
-    bool             m_bShowAnotherWindow;
-
+    QDirect3D10Widget * m_pScene;
+    QSize               m_WindowSize;
+    QCheckBox *         m_pCbxDoFrames;
 };

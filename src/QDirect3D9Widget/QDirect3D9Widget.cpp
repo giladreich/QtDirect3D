@@ -13,7 +13,7 @@ constexpr int FPS_LIMIT    = 60.0f;
 constexpr int MS_PER_FRAME = (int)((1.0f / FPS_LIMIT) * 1000.0f);
 
 
-QDirect3D9Widget::QDirect3D9Widget(QWidget *parent)
+QDirect3D9Widget::QDirect3D9Widget(QWidget * parent)
     : QWidget(parent)
     , m_pDevice(Q_NULLPTR)
     , m_pD3D(Q_NULLPTR)

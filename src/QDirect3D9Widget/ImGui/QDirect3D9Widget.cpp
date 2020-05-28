@@ -17,7 +17,7 @@ constexpr int FPS_LIMIT    = 60.0f;
 constexpr int MS_PER_FRAME = (int)((1.0f / FPS_LIMIT) * 1000.0f);
 
 
-QDirect3D9Widget::QDirect3D9Widget(QWidget *parent)
+QDirect3D9Widget::QDirect3D9Widget(QWidget * parent)
     : QWidget(parent)
     , m_pDevice(Q_NULLPTR)
     , m_pD3D(Q_NULLPTR)
@@ -117,7 +117,7 @@ bool QDirect3D9Widget::init()
                                       m_hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING,
                                       &m_PresentParams, &m_pDevice);
     // Can't create hardware device, try software.
-    if (hr != D3D_OK)
+    if (hr != S_OK)
     {
         DXCall(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_REF,
                                     m_hWnd, D3DCREATE_SOFTWARE_VERTEXPROCESSING,
@@ -268,8 +268,8 @@ bool QDirect3D9Widget::event(QEvent * event)
 {
     switch (event->type())
     {
-        // Workaround for https://bugreports.qt.io/browse/QTBUG-42183 to get key strokes.
-        // To make sure that we always have focus on the widget when we enter the rect area.
+    // Workaround for https://bugreports.qt.io/browse/QTBUG-42183 to get key strokes.
+    // To make sure that we always have focus on the widget when we enter the rect area.
     case QEvent::Enter:
     case QEvent::FocusIn:
     case QEvent::FocusAboutToChange:
