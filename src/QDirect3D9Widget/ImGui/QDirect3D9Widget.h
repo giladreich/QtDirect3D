@@ -25,6 +25,10 @@ public:
     void release();
     void resetEnvironment();
 
+    void run();
+    void pauseFrames();
+    void continueFrames();
+
 private:
     bool init();
 
@@ -60,7 +64,7 @@ signals:
 
     void ticked();
     void rendered();
-    void uiRendered();
+    void renderedUI();
 
 
 private slots:
@@ -93,6 +97,8 @@ private:
     bool                      m_bDeviceInitialized;
 
     bool                      m_bRenderActive;
+    bool                      m_bStarted;
+
 
     DirectX::XMVECTORF32      m_BackColor;
 

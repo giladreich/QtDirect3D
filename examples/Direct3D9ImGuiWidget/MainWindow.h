@@ -5,6 +5,8 @@
 #pragma once
 
 #include <QtWidgets/QMainWindow>
+#include <QCheckBox>
+
 #include "ui_MainWindow.h"
 
 
@@ -17,6 +19,7 @@ public:
     ~MainWindow();
 
     void adjustWindowSize();
+    void addToolbarWidgets();
     void connectSlots();
 
 private:
@@ -35,5 +38,6 @@ private:
 
     QDirect3D9Widget * m_pScene;
     QSize              m_WindowSize;
+    QCheckBox *        m_pCbxDoFrames;
 
 };

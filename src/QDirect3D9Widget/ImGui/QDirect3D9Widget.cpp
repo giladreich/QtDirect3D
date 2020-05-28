@@ -18,7 +18,8 @@
 #include "imgui_impl_dx9.h"
 #include "imgui_impl_win32.h"
 
-#define RENDER_FRAME_MSECONDS 16
+constexpr int FPS_LIMIT    = 60.0f;
+constexpr int MS_PER_FRAME = (int)((1.0f / FPS_LIMIT) * 1000.0f);
 
 
 QDirect3D9Widget::QDirect3D9Widget(QWidget *parent)
@@ -28,6 +29,7 @@ QDirect3D9Widget::QDirect3D9Widget(QWidget *parent)
     , m_hWnd(reinterpret_cast<HWND>(winId()))
     , m_bDeviceInitialized(false)
     , m_bRenderActive(false)
+    , m_bStarted(false)
     , m_BackColor{ 0.0f, 0.135f, 0.481f, 1.0f }
 {
     qDebug() << "[QDirect3D9Widget::QDirect3D9Widget] - Widget Handle: " << m_hWnd;
@@ -44,16 +46,10 @@ QDirect3D9Widget::QDirect3D9Widget(QWidget *parent)
     // tells Qt that we'll handle all drawing and updating the widget ourselves.
     setAttribute(Qt::WA_PaintOnScreen);
     setAttribute(Qt::WA_NoSystemBackground);
-
-    // Activate the timer
-    connect(&m_qTimer, &QTimer::timeout, this, &QDirect3D9Widget::onFrame);
-    m_qTimer.start(RENDER_FRAME_MSECONDS);
-    m_bRenderActive = true;
 }
 
 QDirect3D9Widget::~QDirect3D9Widget()
-{
-}
+{ }
 
 void QDirect3D9Widget::release()
 {
@@ -66,6 +62,30 @@ void QDirect3D9Widget::release()
     ImGui::DestroyContext();
 
     ReleaseObject(m_pDevice);
+}
+
+void QDirect3D9Widget::run()
+{
+    m_qTimer.start(MS_PER_FRAME);
+    m_bRenderActive = m_bStarted = true;
+}
+
+void QDirect3D9Widget::pauseFrames()
+{
+    if (!m_qTimer.isActive() || !m_bStarted) return;
+
+    disconnect(&m_qTimer, &QTimer::timeout, this, &QDirect3D9Widget::onFrame);
+    m_qTimer.stop();
+    m_bRenderActive = false;
+}
+
+void QDirect3D9Widget::continueFrames()
+{
+    if (m_qTimer.isActive() || !m_bStarted) return;
+
+    connect(&m_qTimer, &QTimer::timeout, this, &QDirect3D9Widget::onFrame);
+    m_qTimer.start(MS_PER_FRAME);
+    m_bRenderActive = true;
 }
 
 void QDirect3D9Widget::showEvent(QShowEvent * event)
@@ -111,6 +131,8 @@ bool QDirect3D9Widget::init()
     ImGui_ImplDX9_Init(m_pDevice);
 
     resetEnvironment();
+
+    connect(&m_qTimer, &QTimer::timeout, this, &QDirect3D9Widget::onFrame);
 
     return true;
 }

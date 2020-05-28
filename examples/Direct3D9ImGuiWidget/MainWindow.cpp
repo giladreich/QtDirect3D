@@ -17,11 +17,13 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindowClass)
     , m_WindowSize(QSize(1280, 800))
+    , m_pCbxDoFrames(new QCheckBox(this))
 {
     ui->setupUi(this);
     m_pScene = ui->view;
 
     adjustWindowSize();
+    addToolbarWidgets();
     connectSlots();
 }
 
@@ -38,6 +40,20 @@ void MainWindow::adjustWindowSize()
             qApp->desktop()->availableGeometry()
         )
     );
+}
+
+void MainWindow::addToolbarWidgets()
+{
+    // Add CheckBox to tool-bar to stop/continue frames execution.
+    m_pCbxDoFrames->setText("Do Frames");
+    m_pCbxDoFrames->setChecked(true);
+    connect(m_pCbxDoFrames, &QCheckBox::stateChanged, [&] {
+        if (m_pCbxDoFrames->isChecked())
+            m_pScene->continueFrames();
+        else
+            m_pScene->pauseFrames();
+        });
+    ui->mainToolBar->addWidget(m_pCbxDoFrames);
 }
 
 void MainWindow::connectSlots()
@@ -61,6 +77,8 @@ void MainWindow::init(bool success)
     //ImGui::StyleColorsDark();
     //ImGui::StyleColorsLight();
 
+    // Start processing frames with a short delay in case things are still initializing/loading in the background.
+    QTimer::singleShot(500, this, [&] { m_pScene->run(); });
     disconnect(m_pScene, &QDirect3D9Widget::deviceInitialized, this, &MainWindow::init);
 }
 
