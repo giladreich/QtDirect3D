@@ -46,6 +46,7 @@ private:
     QPaintEngine *      paintEngine() const override;
     void                paintEvent(QPaintEvent * event) override;
     void                resizeEvent(QResizeEvent * event) override;
+    void                wheelEvent(QWheelEvent * event) override;
 
     LRESULT WINAPI WndProc(MSG * pMsg);
 

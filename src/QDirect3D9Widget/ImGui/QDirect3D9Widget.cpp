@@ -1,18 +1,13 @@
 /*
  *
  */
-
 #pragma comment(lib, "d3d9.lib")
-
 
 #include "QDirect3D9Widget.h"
 
 #include <QDebug>
 #include <QEvent>
-#include <QMessageBox>
-#include <QDateTime>
-
-#include <iostream>
+#include <QWheelEvent>
 
 #include "imgui.h"
 #include "imgui_impl_dx9.h"
@@ -103,7 +98,7 @@ bool QDirect3D9Widget::init()
 {
     if ((m_pD3D = Direct3DCreate9(D3D_SDK_VERSION)) == NULL)
     {
-        QMessageBox::critical(this, "ERROR", "Failed to create Direct3D.", QMessageBox::Ok);
+        qDebug() << "[QDirect3D9Widget::init]: Failed to create Direct3D interface.";
         return false;
     }
 
@@ -232,6 +227,24 @@ void QDirect3D9Widget::resetEnvironment()
     if (!m_bRenderActive) tick();
 }
 
+void QDirect3D9Widget::wheelEvent(QWheelEvent * event)
+{
+    if (!ImGui::IsAnyWindowHovered() && event->angleDelta().x() == 0)
+    {
+        // TODO: Update your camera position based on the delta value.
+    }
+    else if (event->angleDelta().x() != 0) // horizontal scrolling - mice with another side scroller.
+    {
+        ImGui::GetIO().MouseWheelH += (float)(event->delta() / WHEEL_DELTA);
+    }
+    else if (event->angleDelta().y() != 0)
+    {
+        ImGui::GetIO().MouseWheel += (float)(event->delta() / WHEEL_DELTA);
+    }
+
+    QWidget::wheelEvent(event);
+}
+
 QPaintEngine * QDirect3D9Widget::paintEngine() const
 {
     return Q_NULLPTR;
@@ -302,6 +315,10 @@ extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam
 // NOTE: Native windows messages can be handled here or you can also use the build-in Qt events.
 LRESULT QDirect3D9Widget::WndProc(MSG * pMsg)
 {
+    // Process wheel events using Qt's event-system.
+    if (pMsg->message == WM_MOUSEWHEEL || pMsg->message == WM_MOUSEHWHEEL)
+        return false;
+
     if (ImGui_ImplWin32_WndProcHandler(pMsg->hwnd, pMsg->message, pMsg->wParam, pMsg->lParam))
         return true;
 
