@@ -27,7 +27,7 @@ public slots:
     void init(bool success);
     void tick();
     void render();
-    void uiRender();
+    void renderUI();
 
 
 private:

@@ -33,7 +33,7 @@ private:
 
     void tick();
     void render();
-    void uiRender();
+    void renderUI();
 
 // Qt Events
 private:

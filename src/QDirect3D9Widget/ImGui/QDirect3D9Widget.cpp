@@ -83,7 +83,7 @@ bool QDirect3D9Widget::init()
 {
     if ((m_pD3D = Direct3DCreate9(D3D_SDK_VERSION)) == NULL)
     {
-        QMessageBox::critical(this, tr("ERROR"), tr("Failed to create Direct3D."), QMessageBox::Ok);
+        QMessageBox::critical(this, "ERROR", "Failed to create Direct3D.", QMessageBox::Ok);
         return false;
     }
 
@@ -123,7 +123,7 @@ void QDirect3D9Widget::onFrame()
 
     beginScene();
     render();
-    uiRender();
+    renderUI();
     endScene();
 }
 
@@ -161,13 +161,13 @@ void QDirect3D9Widget::render()
     emit rendered(); // Signals the parent to do it's own rendering before we presenting the scene.
 }
 
-void QDirect3D9Widget::uiRender()
+void QDirect3D9Widget::renderUI()
 {
     ImGui_ImplDX9_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 
-    emit uiRendered(); // Signals the parent to add it's own ImGui widgets.
+    emit renderedUI();
 
     ImGui::EndFrame();
     ImGui::Render();

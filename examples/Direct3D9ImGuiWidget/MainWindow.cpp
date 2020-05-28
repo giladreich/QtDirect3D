@@ -45,7 +45,7 @@ void MainWindow::connectSlots()
     connect(m_pScene, &QDirect3D9Widget::deviceInitialized, this, &MainWindow::init);
     connect(m_pScene, &QDirect3D9Widget::ticked, this, &MainWindow::tick);
     connect(m_pScene, &QDirect3D9Widget::rendered, this, &MainWindow::render);
-    connect(m_pScene, &QDirect3D9Widget::renderedUI, this, &MainWindow::uiRender);
+    connect(m_pScene, &QDirect3D9Widget::renderedUI, this, &MainWindow::renderUI);
 }
 
 void MainWindow::init(bool success)
@@ -76,7 +76,7 @@ void MainWindow::render()
     //m_pMesh->Render();
 }
 
-void MainWindow::uiRender()
+void MainWindow::renderUI()
 {
     static bool bShowDemoWindow = true;
     static bool bShowAnotherWindow = false;
