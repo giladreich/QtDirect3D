@@ -15,7 +15,7 @@
 
 #include <exception>
 
-//#define ImTextureID D3D12_GPU_DESCRIPTOR_HANDLE * // x32 builds
+#define ImTextureID D3D12_GPU_DESCRIPTOR_HANDLE * // x32 builds
 #include "imgui.h"
 #include "imgui_impl_dx12.h"
 #include "imgui_impl_win32.h"
