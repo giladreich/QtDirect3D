@@ -176,18 +176,20 @@ void QDirect3D9Widget::endScene()
 
 void QDirect3D9Widget::tick()
 {
-    // TODO: Do your own widget updating before emitting ticked, i.e:
+    // TODO: Update your scene here. For aesthetics reasons, only do it here if it's an
+    // important component, otherwise do it in the MainWindow.
     //m_pCamera->Tick();
 
-    emit ticked(); // Signals the parent to do it's own update before we start rendering.
+    emit ticked();
 }
 
 void QDirect3D9Widget::render()
 {
-    // TODO: Do your own widget rendering before emitting rendered, i.e:
+    // TODO: Present your scene here. For aesthetics reasons, only do it here if it's an
+    // important component, otherwise do it in the MainWindow.
     //m_pCamera->Apply();
 
-    emit rendered(); // Signals the parent to do it's own rendering before we presenting the scene.
+    emit rendered();
 }
 
 void QDirect3D9Widget::renderUI()
@@ -214,8 +216,9 @@ void QDirect3D9Widget::onReset()
 
 void QDirect3D9Widget::resetEnvironment()
 {
-    // TODO: Do your own custom default environment, i.e:
+    // TODO: Add your own custom default environment, i.e:
     //m_pCamera->resetCamera();
+
     D3DCOLOR clearColor = D3DCOLOR_ARGB(155, (int)(m_BackColor[0]*255.0f), (int)(m_BackColor[1]*255.0f), (int)(m_BackColor[2]*255.0f));
     DXCall(m_pDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, clearColor, 1.0f, 0));
     DXCall(m_pDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE));
