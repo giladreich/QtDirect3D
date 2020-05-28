@@ -66,6 +66,11 @@ signals:
     void rendered();
     void renderedUI();
 
+    void keyPressed(QKeyEvent *);
+    void mouseMoved(QMouseEvent *);
+    void mouseClicked(QMouseEvent *);
+    void mouseReleased(QMouseEvent *);
+
 
 private slots:
     void onFrame();

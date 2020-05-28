@@ -62,6 +62,12 @@ void MainWindow::connectSlots()
     connect(m_pScene, &QDirect3D9Widget::ticked, this, &MainWindow::tick);
     connect(m_pScene, &QDirect3D9Widget::rendered, this, &MainWindow::render);
     connect(m_pScene, &QDirect3D9Widget::renderedUI, this, &MainWindow::renderUI);
+
+    // NOTE: Additionally, you can listen to some basic IO events.
+    //connect(m_pScene, &QDirect3D9Widget::keyPressed, this, &MainWindow::onKeyPressed);
+    //connect(m_pScene, &QDirect3D9Widget::mouseMoved, this, &MainWindow::onMouseMoved);
+    //connect(m_pScene, &QDirect3D9Widget::mouseClicked, this, &MainWindow::onMouseClicked);
+    //connect(m_pScene, &QDirect3D9Widget::mouseReleased, this, &MainWindow::onMouseReleased);
 }
 
 void MainWindow::init(bool success)

@@ -274,6 +274,21 @@ bool QDirect3D9Widget::event(QEvent * event)
                 ::SetFocus(m_hWnd);
         }
         break;
+    case QEvent::KeyPress:
+        emit keyPressed((QKeyEvent *)event);
+        break;
+    case QEvent::MouseMove:
+        if (!ImGui::IsAnyWindowHovered())
+            emit mouseMoved((QMouseEvent *)event);
+        break;
+    case QEvent::MouseButtonPress:
+        if (!ImGui::IsAnyWindowHovered() && !ImGui::IsAnyWindowFocused())
+            emit mouseClicked((QMouseEvent *)event);
+        break;
+    case QEvent::MouseButtonRelease:
+        if (!ImGui::IsAnyWindowHovered() && !ImGui::IsAnyWindowFocused())
+            emit mouseReleased((QMouseEvent *)event);
+        break;
     }
 
     return QWidget::event(event);
