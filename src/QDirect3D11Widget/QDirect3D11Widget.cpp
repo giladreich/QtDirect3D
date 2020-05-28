@@ -1,28 +1,24 @@
 /*
  *
  */
-
 #pragma comment(lib, "d3d11.lib")
-
 
 #include "QDirect3D11Widget.h"
 
 #include <QDebug>
 #include <QEvent>
-#include <QMessageBox>
-#include <QDateTime>
+#include <QWheelEvent>
 
-#include <exception>
-
-#define RENDER_FRAME_MSECONDS 16
+constexpr int FPS_LIMIT    = 60.0f;
+constexpr int MS_PER_FRAME = (int)((1.0f / FPS_LIMIT) * 1000.0f);
 
 
-QDirect3D11Widget::QDirect3D11Widget(QWidget *parent)
+QDirect3D11Widget::QDirect3D11Widget(QWidget * parent)
     : QWidget(parent)
-    , m_pDevice(nullptr)
-    , m_pDeviceContext(nullptr)
-    , m_pSwapChain(nullptr)
-    , m_pRTView(nullptr)
+    , m_pDevice(Q_NULLPTR)
+    , m_pDeviceContext(Q_NULLPTR)
+    , m_pSwapChain(Q_NULLPTR)
+    , m_pRTView(Q_NULLPTR)
     , m_hWnd(reinterpret_cast<HWND>(winId()))
     , m_bDeviceInitialized(false)
     , m_bRenderActive(false)
@@ -38,7 +34,7 @@ QDirect3D11Widget::QDirect3D11Widget(QWidget *parent)
     setFocusPolicy(Qt::StrongFocus);
     setAttribute(Qt::WA_NativeWindow);
 
-    // Setting these attributes to our widget and returning nullptr on paintEngine event 
+    // Setting these attributes to our widget and returning null on paintEngine event
     // tells Qt that we'll handle all drawing and updating the widget ourselves.
     setAttribute(Qt::WA_PaintOnScreen);
     setAttribute(Qt::WA_NoSystemBackground);
@@ -59,7 +55,31 @@ void QDirect3D11Widget::release()
     ReleaseObject(m_pDevice);
 }
 
-void QDirect3D11Widget::showEvent(QShowEvent * event)
+void QDirect3D11Widget::run()
+{
+    m_qTimer.start(MS_PER_FRAME);
+    m_bRenderActive = m_bStarted = true;
+}
+
+void QDirect3D11Widget::pauseFrames()
+{
+    if (!m_qTimer.isActive() || !m_bStarted) return;
+
+    disconnect(&m_qTimer, &QTimer::timeout, this, &QDirect3D11Widget::onFrame);
+    m_qTimer.stop();
+    m_bRenderActive = false;
+}
+
+void QDirect3D11Widget::continueFrames()
+{
+    if (m_qTimer.isActive() || !m_bStarted) return;
+
+    connect(&m_qTimer, &QTimer::timeout, this, &QDirect3D11Widget::onFrame);
+    m_qTimer.start(MS_PER_FRAME);
+    m_bRenderActive = true;
+}
+
+void QDirect3D11Widget::showEvent(QShowEvent* event)
 {
     if (!m_bDeviceInitialized)
     {
@@ -88,10 +108,9 @@ bool QDirect3D11Widget::init()
     sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
     UINT iCreateFlags = 0;
-#if defined(DEBUG) || defined(_DEBUG)  
+#if defined(DEBUG) || defined(_DEBUG)
     iCreateFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
-
     D3D_FEATURE_LEVEL featureLevel;
     D3D_FEATURE_LEVEL featureLevels[] = {
         D3D_FEATURE_LEVEL_11_0,
@@ -99,19 +118,25 @@ bool QDirect3D11Widget::init()
         D3D_FEATURE_LEVEL_10_0
     };
 
-    DXCall(D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE,
-                                         NULL, iCreateFlags,
-                                         featureLevels, _countof(featureLevels),
-                                         D3D11_SDK_VERSION, &sd,
-                                         &m_pSwapChain, &m_pDevice,
-                                         &featureLevel, &m_pDeviceContext));
+    HRESULT hr = D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE,
+                                               NULL, iCreateFlags,
+                                               featureLevels, _countof(featureLevels),
+                                               D3D11_SDK_VERSION, &sd,
+                                               &m_pSwapChain, &m_pDevice,
+                                               &featureLevel, &m_pDeviceContext);
+    if (hr != S_OK)
+    {
+        DXCall(D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_SOFTWARE,
+                                             NULL, iCreateFlags,
+                                             featureLevels, _countof(featureLevels),
+                                             D3D11_SDK_VERSION, &sd,
+                                             &m_pSwapChain, &m_pDevice,
+                                             &featureLevel, &m_pDeviceContext));
+    }
 
     resetEnvironment();
 
-    // Activates the timer to render frames
     connect(&m_qTimer, &QTimer::timeout, this, &QDirect3D11Widget::onFrame);
-    m_qTimer.start(RENDER_FRAME_MSECONDS);
-    m_bRenderActive = true;
 
     return true;
 }
@@ -128,7 +153,7 @@ void QDirect3D11Widget::onFrame()
 void QDirect3D11Widget::beginScene()
 {
     m_pDeviceContext->OMSetRenderTargets(1, &m_pRTView, NULL);
-    m_pDeviceContext->ClearRenderTargetView(m_pRTView, reinterpret_cast<const float *>(&m_BackColor));
+    m_pDeviceContext->ClearRenderTargetView(m_pRTView, reinterpret_cast<const float*>(&m_BackColor));
 }
 
 void QDirect3D11Widget::endScene()
@@ -141,23 +166,25 @@ void QDirect3D11Widget::endScene()
 
 void QDirect3D11Widget::tick()
 {
-    // TODO: Do your own widget updating before emitting ticked, i.e:
+    // TODO: Update your scene here. For aesthetics reasons, only do it here if it's an
+    // important component, otherwise do it in the MainWindow.
     //m_pCamera->Tick();
 
-    emit ticked(); // Signals the parent to do it's own update before we start rendering.
+    emit ticked();
 }
 
 void QDirect3D11Widget::render()
 {
-    // TODO: Do your own widget rendering before emitting rendered, i.e:
+    // TODO: Present your scene here. For aesthetics reasons, only do it here if it's an
+    // important component, otherwise do it in the MainWindow.
     //m_pCamera->Apply();
 
-    emit rendered(); // Signals the parent to do it's own rendering before we presenting the scene.
+    emit rendered();
 }
 
 void QDirect3D11Widget::onReset()
 {
-    ID3D11Texture2D* pBackBuffer;
+    ID3D11Texture2D* pBackBuffer = Q_NULLPTR;
     ReleaseObject(m_pRTView);
     DXCall(m_pSwapChain->ResizeBuffers(0, width(), height(), DXGI_FORMAT_UNKNOWN, 0));
     DXCall(m_pSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer)));
@@ -167,7 +194,7 @@ void QDirect3D11Widget::onReset()
 
 void QDirect3D11Widget::resetEnvironment()
 {
-    // TODO: Do your own custom default environment, i.e:
+    // TODO: Add your own custom default environment, i.e:
     //m_pCamera->resetCamera();
 
     onReset();
@@ -175,9 +202,27 @@ void QDirect3D11Widget::resetEnvironment()
     if (!m_bRenderActive) tick();
 }
 
-QPaintEngine * QDirect3D11Widget::paintEngine() const
+void QDirect3D11Widget::wheelEvent(QWheelEvent* event)
 {
-    return nullptr;
+    if (event->angleDelta().x() == 0)
+    {
+        // TODO: Update your camera position based on the delta value.
+    }
+    else if (event->angleDelta().x() != 0) // horizontal scrolling - mice with another side scroller.
+    {
+        //m_pCamera->MouseWheelH += (float)(event->delta() / WHEEL_DELTA);
+    }
+    else if (event->angleDelta().y() != 0)
+    {
+        //m_pCamera->MouseWheel += (float)(event->delta() / WHEEL_DELTA);
+    }
+
+    QWidget::wheelEvent(event);
+}
+
+QPaintEngine* QDirect3D11Widget::paintEngine() const
+{
+    return Q_NULLPTR;
 }
 
 void QDirect3D11Widget::paintEvent(QPaintEvent * event)
@@ -198,8 +243,8 @@ bool QDirect3D11Widget::event(QEvent * event)
 {
     switch (event->type())
     {
-        // Workaround for https://bugreports.qt.io/browse/QTBUG-42183 to get key strokes.
-        // To make sure that we always have focus on the widget when we enter the rect area.
+    // Workaround for https://bugreports.qt.io/browse/QTBUG-42183 to get key strokes.
+    // To make sure that we always have focus on the widget when we enter the rect area.
     case QEvent::Enter:
     case QEvent::FocusIn:
     case QEvent::FocusAboutToChange:
@@ -220,17 +265,28 @@ bool QDirect3D11Widget::event(QEvent * event)
                 ::SetFocus(m_hWnd);
         }
         break;
+    case QEvent::KeyPress:
+        emit keyPressed((QKeyEvent*)event);
+        break;
+    case QEvent::MouseMove:
+        emit mouseMoved((QMouseEvent*)event);
+        break;
+    case QEvent::MouseButtonPress:
+        emit mouseClicked((QMouseEvent*)event);
+        break;
+    case QEvent::MouseButtonRelease:
+        emit mouseReleased((QMouseEvent*)event);
+        break;
     }
 
     return QWidget::event(event);
 }
 
-LRESULT QDirect3D11Widget::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT QDirect3D11Widget::WndProc(MSG * pMsg)
 {
-    // NOTE(Gilad): Windows messages can be handled here or you can also use the build-in Qt events.
-    //switch (msg)
-    //{
-    //}
+    // Process wheel events using Qt's event-system.
+    if (pMsg->message == WM_MOUSEWHEEL || pMsg->message == WM_MOUSEHWHEEL)
+        return true;
 
     return false;
 }
@@ -243,7 +299,7 @@ bool QDirect3D11Widget::nativeEvent(const QByteArray & eventType, void * message
 
 #ifdef Q_OS_WIN
     MSG * pMsg = reinterpret_cast<MSG *>(message);
-    return WndProc(pMsg->hwnd, pMsg->message, pMsg->wParam, pMsg->lParam);
+    return WndProc(pMsg);
 #endif
 
     return QWidget::nativeEvent(eventType, message, result);
@@ -256,7 +312,7 @@ bool QDirect3D11Widget::winEvent(MSG * message, long * result)
 
 #ifdef Q_OS_WIN
     MSG * pMsg = reinterpret_cast<MSG *>(message);
-    return WndProc(pMsg->hwnd, pMsg->message, pMsg->wParam, pMsg->lParam);
+    return WndProc(pMsg);
 #endif
 
     return QWidget::winEvent(message, result);

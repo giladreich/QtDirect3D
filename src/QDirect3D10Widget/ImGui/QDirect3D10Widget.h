@@ -1,7 +1,6 @@
 /*
  *
  */
-
 #pragma once
 
 #include <stdexcept>
@@ -55,7 +54,6 @@ private:
     bool winEvent(MSG * message, long * result) override;
 #endif
 
-
 signals:
     void deviceInitialized(bool success);
 
@@ -94,7 +92,6 @@ private:
     IDXGISwapChain*          m_pSwapChain;
     ID3D10RenderTargetView*  m_pRTView;
 
-
     QTimer                    m_qTimer;
 
     HWND                      m_hWnd;
@@ -104,7 +101,6 @@ private:
     bool                      m_bStarted;
 
     DirectX::XMVECTORF32      m_BackColor;
-
 };
 
 

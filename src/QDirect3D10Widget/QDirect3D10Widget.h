@@ -1,7 +1,6 @@
 /*
  *
  */
-
 #pragma once
 
 #include <stdexcept>
@@ -54,7 +53,6 @@ private:
     bool winEvent(MSG * message, long * result) override;
 #endif
 
-
 signals:
     void deviceInitialized(bool success);
 
@@ -86,12 +84,10 @@ public:
 
     DirectX::XMVECTORF32 * BackColor() { return &m_BackColor; }
 
-
 private:
     ID3D10Device*            m_pDevice;
     IDXGISwapChain*          m_pSwapChain;
     ID3D10RenderTargetView*  m_pRTView;
-
 
     QTimer                    m_qTimer;
 
@@ -102,7 +98,6 @@ private:
     bool                      m_bStarted;
 
     DirectX::XMVECTORF32      m_BackColor;
-
 };
 
 
