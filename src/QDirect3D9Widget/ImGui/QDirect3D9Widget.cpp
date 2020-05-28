@@ -296,15 +296,11 @@ bool QDirect3D9Widget::event(QEvent * event)
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-LRESULT QDirect3D9Widget::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+// NOTE: Native windows messages can be handled here or you can also use the build-in Qt events.
+LRESULT QDirect3D9Widget::WndProc(MSG * pMsg)
 {
-    if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+    if (ImGui_ImplWin32_WndProcHandler(pMsg->hwnd, pMsg->message, pMsg->wParam, pMsg->lParam))
         return true;
-
-    // NOTE(Gilad): Windows messages can be handled here or you can also use the build-in Qt events.
-    //switch (msg)
-    //{
-    //}
 
     return false;
 }
@@ -317,7 +313,7 @@ bool QDirect3D9Widget::nativeEvent(const QByteArray & eventType, void * message,
 
 #ifdef Q_OS_WIN
     MSG * pMsg = reinterpret_cast< MSG * >(message);
-    return WndProc(pMsg->hwnd, pMsg->message, pMsg->wParam, pMsg->lParam);
+    return WndProc(pMsg);
 #endif
 
     return QWidget::nativeEvent(eventType, message, result);
@@ -330,7 +326,7 @@ bool QDirect3D9Widget::winEvent(MSG * message, long * result)
 
 #ifdef Q_OS_WIN
     MSG * pMsg = reinterpret_cast< MSG * >(message);
-    return WndProc(pMsg->hwnd, pMsg->message, pMsg->wParam, pMsg->lParam);
+    return WndProc(pMsg);
 #endif
 
     return QWidget::winEvent(message, result);

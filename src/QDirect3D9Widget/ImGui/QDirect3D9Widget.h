@@ -41,13 +41,13 @@ private:
 
 // Qt Events
 private:
-    bool event(QEvent * event) override;
-    void showEvent(QShowEvent * event) override;
-    QPaintEngine * paintEngine() const override;
-    void paintEvent(QPaintEvent * event) override;
-    void resizeEvent(QResizeEvent * event) override;
+    bool                event(QEvent * event) override;
+    void                showEvent(QShowEvent * event) override;
+    QPaintEngine *      paintEngine() const override;
+    void                paintEvent(QPaintEvent * event) override;
+    void                resizeEvent(QResizeEvent * event) override;
 
-    LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+    LRESULT WINAPI WndProc(MSG * pMsg);
 
 #if QT_VERSION >= 0x050000
     bool nativeEvent(const QByteArray & eventType, void * message, long * result) override;
