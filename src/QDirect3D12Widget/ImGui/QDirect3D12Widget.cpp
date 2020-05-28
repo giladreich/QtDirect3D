@@ -5,49 +5,49 @@
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
-
 #include "QDirect3D12Widget.h"
 
 #include <QDebug>
 #include <QEvent>
-#include <QMessageBox>
-#include <QDateTime>
+#include <QWheelEvent>
 
-#include <exception>
-
-#define ImTextureID D3D12_GPU_DESCRIPTOR_HANDLE * // x32 builds
+//#define ImTextureID D3D12_GPU_DESCRIPTOR_HANDLE * // x32 builds
 #include "imgui.h"
 #include "imgui_impl_dx12.h"
 #include "imgui_impl_win32.h"
 
-
-#define RENDER_FRAME_MSECONDS 16
-
 using Microsoft::WRL::ComPtr;
+
+constexpr int FPS_LIMIT    = 60.0f;
+constexpr int MS_PER_FRAME = (int)((1.0f / FPS_LIMIT) * 1000.0f);
+
 
 QDirect3D12Widget::QDirect3D12Widget(QWidget *parent)
     : QWidget(parent)
     , m_iCurrFrameIndex(0)
-    , m_pDevice(nullptr)
-    , m_pFactory(nullptr)
-    , m_pSwapChain(nullptr)
-    , m_pCommandQueue(nullptr)
-    , m_pCommandList(nullptr)
-    , m_pRTVDescHeap(nullptr)
+    , m_pDevice(Q_NULLPTR)
+    , m_pFactory(Q_NULLPTR)
+    , m_pSwapChain(Q_NULLPTR)
+    , m_pCommandQueue(Q_NULLPTR)
+    , m_pCommandAllocators{}
+    , m_pCommandList(Q_NULLPTR)
+    , m_pRTVDescHeap(Q_NULLPTR)
     , m_iRTVDescSize(0)
     , m_pRTVResources{}
     , m_RTVDescriptors{}
-    , m_pSrvDescHeap(nullptr)
-    , m_hSwapChainEvent(nullptr)
-    , m_hFenceEvent(nullptr)
-    , m_pFence(nullptr)
+    , m_pSrvDescHeap(Q_NULLPTR)
+    , m_hSwapChainEvent(Q_NULLPTR)
+    , m_hFenceEvent(Q_NULLPTR)
+    , m_pFence(Q_NULLPTR)
     , m_iFenceValues{}
     , m_hWnd(reinterpret_cast<HWND>(winId()))
     , m_bDeviceInitialized(false)
     , m_bRenderActive(false)
+    , m_bStarted(false)
     , m_BackColor{ 0.0f, 0.135f, 0.481f, 1.0f }
 {
     qDebug() << "[QDirect3D12Widget::QDirect3D12Widget] - Widget Handle: " << m_hWnd;
+
     QPalette pal = palette();
     pal.setColor(QPalette::Background, Qt::black);
     setAutoFillBackground(true);
@@ -56,7 +56,7 @@ QDirect3D12Widget::QDirect3D12Widget(QWidget *parent)
     setFocusPolicy(Qt::StrongFocus);
     setAttribute(Qt::WA_NativeWindow);
 
-    // Setting these attributes to our widget and returning nullptr on paintEngine event 
+    // Setting these attributes to our widget and returning null on paintEngine event
     // tells Qt that we'll handle all drawing and updating the widget ourselves.
     setAttribute(Qt::WA_PaintOnScreen);
     setAttribute(Qt::WA_NoSystemBackground);
@@ -92,7 +92,31 @@ void QDirect3D12Widget::release()
     ReleaseObject(m_pFactory);
 }
 
-void QDirect3D12Widget::showEvent(QShowEvent * event)
+void QDirect3D12Widget::run()
+{
+    m_qTimer.start(MS_PER_FRAME);
+    m_bRenderActive = m_bStarted = true;
+}
+
+void QDirect3D12Widget::pauseFrames()
+{
+    if (!m_qTimer.isActive() || !m_bStarted) return;
+
+    disconnect(&m_qTimer, &QTimer::timeout, this, &QDirect3D12Widget::onFrame);
+    m_qTimer.stop();
+    m_bRenderActive = false;
+}
+
+void QDirect3D12Widget::continueFrames()
+{
+    if (m_qTimer.isActive() || !m_bStarted) return;
+
+    connect(&m_qTimer, &QTimer::timeout, this, &QDirect3D12Widget::onFrame);
+    m_qTimer.start(MS_PER_FRAME);
+    m_bRenderActive = true;
+}
+
+void QDirect3D12Widget::showEvent(QShowEvent* event)
 {
     if (!m_bDeviceInitialized)
     {
@@ -108,12 +132,9 @@ bool QDirect3D12Widget::init()
     create3DDevice();
     createImGuiContext();
 
-    // Activates the timer to render frames
-    connect(&m_qTimer, &QTimer::timeout, this, &QDirect3D12Widget::onFrame);
-    m_qTimer.start(RENDER_FRAME_MSECONDS);
-    m_bRenderActive = true;
-
     resetEnvironment();
+
+    connect(&m_qTimer, &QTimer::timeout, this, &QDirect3D12Widget::onFrame);
 
     return true;
 }
@@ -172,7 +193,7 @@ void QDirect3D12Widget::create3DDevice()
         fsSd.Windowed = TRUE;
 
         ComPtr<IDXGISwapChain1> swapChain1;
-        DXCall(m_pFactory->CreateSwapChainForHwnd(m_pCommandQueue, m_hWnd, &sd, &fsSd, nullptr, swapChain1.GetAddressOf()));
+        DXCall(m_pFactory->CreateSwapChainForHwnd(m_pCommandQueue, m_hWnd, &sd, &fsSd, Q_NULLPTR, swapChain1.GetAddressOf()));
         DXCall(swapChain1->QueryInterface(IID_PPV_ARGS(&m_pSwapChain)));
         m_iCurrFrameIndex = m_pSwapChain->GetCurrentBackBufferIndex();
     }
@@ -190,7 +211,7 @@ void QDirect3D12Widget::create3DDevice()
     {
         m_RTVDescriptors[i] = rtvHandle;
         DXCall(m_pSwapChain->GetBuffer(i, IID_PPV_ARGS(&m_pRTVResources[i])));
-        m_pDevice->CreateRenderTargetView(m_pRTVResources[i], nullptr, m_RTVDescriptors[i]);
+        m_pDevice->CreateRenderTargetView(m_pRTVResources[i], Q_NULLPTR, m_RTVDescriptors[i]);
         rtvHandle.Offset(1, m_iRTVDescSize);
     }
 
@@ -207,10 +228,10 @@ void QDirect3D12Widget::create3DDevice()
         DXCall(m_pDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_pCommandAllocators[i])));
     }
 
-    // Create command list. We don't create PSO here, so we set it to nullptr to use the default PSO.
+    // Create command list. We don't create PSO here, so we set it to Q_NULLPTR to use the default PSO.
     // Command list by default set on recording state when created, therefore we close it for now.
     DXCall(m_pDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_pCommandAllocators[m_iCurrFrameIndex],
-        nullptr, IID_PPV_ARGS(&m_pCommandList)));
+        Q_NULLPTR, IID_PPV_ARGS(&m_pCommandList)));
     DXCall(m_pCommandList->Close());
 
 
@@ -218,7 +239,7 @@ void QDirect3D12Widget::create3DDevice()
     DXCall(m_pDevice->CreateFence(m_iFenceValues[m_iCurrFrameIndex], D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_pFence)));
     m_iFenceValues[m_iCurrFrameIndex]++;
 
-    m_hFenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+    m_hFenceEvent = CreateEvent(Q_NULLPTR, FALSE, FALSE, Q_NULLPTR);
     if (!m_hFenceEvent)
         DXCall(HRESULT_FROM_WIN32(GetLastError()));
 
@@ -245,18 +266,20 @@ void QDirect3D12Widget::createImGuiContext()
 
 void QDirect3D12Widget::onFrame()
 {
+    // The ImGui and scene frames will always be rendered so the user can interact with the gui even if m_bRenderActive is false.
+    // But we are not going to update the scene so it remains frozen.
     if (m_bRenderActive) tick();
 
     beginScene();
     render();
-    uiRender();
+    renderUI();
     endScene();
 }
 
 void QDirect3D12Widget::beginScene()
 {
     DXCall(m_pCommandAllocators[m_iCurrFrameIndex]->Reset());
-    DXCall(m_pCommandList->Reset(m_pCommandAllocators[m_iCurrFrameIndex], nullptr));
+    DXCall(m_pCommandList->Reset(m_pCommandAllocators[m_iCurrFrameIndex], Q_NULLPTR));
 
     m_pCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
         m_pRTVResources[m_iCurrFrameIndex], D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET)
@@ -286,36 +309,42 @@ void QDirect3D12Widget::endScene()
 
 void QDirect3D12Widget::tick()
 {
-    // Wait for the previous Present to complete.
-    //WaitForSingleObject(m_hSwapChainEvent, 100);
+    // TODO: Update your scene here. For aesthetics reasons, only do it here if it's an
+    // important component, otherwise do it in the MainWindow.
+    //m_pCamera->Tick();
 
-
-    emit ticked(); // Signals the parent to do it's own update before we start rendering.
+    emit ticked();
 }
 
 void QDirect3D12Widget::render()
 {
     // Start recording the render commands
-    m_pCommandList->ClearRenderTargetView(m_RTVDescriptors[m_iCurrFrameIndex], reinterpret_cast<const float *>(&m_BackColor), 0, nullptr);
-    m_pCommandList->OMSetRenderTargets(1, &m_RTVDescriptors[m_iCurrFrameIndex], FALSE, nullptr);
+    m_pCommandList->ClearRenderTargetView(m_RTVDescriptors[m_iCurrFrameIndex], reinterpret_cast<const float*>(&m_BackColor), 0, Q_NULLPTR);
+    m_pCommandList->OMSetRenderTargets(1, &m_RTVDescriptors[m_iCurrFrameIndex], FALSE, Q_NULLPTR);
     m_pCommandList->SetDescriptorHeaps(1, &m_pSrvDescHeap);
 
+    // TODO: Present your scene here. For aesthetics reasons, only do it here if it's an
+    // important component, otherwise do it in the MainWindow.
+    //m_pCamera->Apply();
 
-    emit rendered(m_pCommandList); // Signals the parent to do it's own rendering before we presenting the scene.
+    emit rendered(m_pCommandList);
 }
 
-void QDirect3D12Widget::uiRender()
+void QDirect3D12Widget::renderUI()
 {
-    emit uiRendered(); // Signals the parent to add it's own ImGui widgets.
+    emit renderedUI();
 }
 
 void QDirect3D12Widget::onReset()
 {
-    m_qTimer.stop();
-    ImGui_ImplDX12_InvalidateDeviceObjects();
+    // TODO(Gilad): FIXME: this needs to be done in a synchronized manner. Need to look at DirectX-12 samples here:
+    // https://github.com/microsoft/DirectX-Graphics-Samples
+    // how to properly do this without leaking memory.
+    pauseFrames();
+    //ImGui_ImplDX12_InvalidateDeviceObjects();
     resizeSwapChain(width(), height());
-    ImGui_ImplDX12_CreateDeviceObjects();
-    m_qTimer.start(RENDER_FRAME_MSECONDS);
+    //ImGui_ImplDX12_CreateDeviceObjects();
+    continueFrames();
 }
 
 void QDirect3D12Widget::cleanupRenderTarget()
@@ -334,7 +363,7 @@ void QDirect3D12Widget::createRenderTarget()
     for (UINT i = 0; i < FRAME_COUNT; i++)
     {
         DXCall(m_pSwapChain->GetBuffer(i, IID_PPV_ARGS(&m_pRTVResources[i])));
-        m_pDevice->CreateRenderTargetView(m_pRTVResources[i], nullptr, m_RTVDescriptors[i]);
+        m_pDevice->CreateRenderTargetView(m_pRTVResources[i], Q_NULLPTR, m_RTVDescriptors[i]);
     }
 }
 
@@ -393,7 +422,7 @@ void QDirect3D12Widget::resizeSwapChain(int width, int height)
         fsSd.Windowed = TRUE;
 
         ComPtr<IDXGISwapChain1> swapChain;
-        DXCall(m_pFactory->CreateSwapChainForHwnd(m_pCommandQueue, m_hWnd, &sd, &fsSd, nullptr, 
+        DXCall(m_pFactory->CreateSwapChainForHwnd(m_pCommandQueue, m_hWnd, &sd, &fsSd, Q_NULLPTR,
             swapChain.GetAddressOf()));
         DXCall(swapChain->QueryInterface(IID_PPV_ARGS(&m_pSwapChain)));
 
@@ -409,7 +438,7 @@ void QDirect3D12Widget::resizeSwapChain(int width, int height)
 void QDirect3D12Widget::getHardwareAdapter(IDXGIFactory2* pFactory, IDXGIAdapter1** ppAdapter)
 {
     ComPtr<IDXGIAdapter1> adapter;
-    *ppAdapter = nullptr;
+    *ppAdapter = Q_NULLPTR;
 
     for (UINT adapterIndex = 0; DXGI_ERROR_NOT_FOUND != pFactory->EnumAdapters1(adapterIndex, &adapter); ++adapterIndex)
     {
@@ -421,7 +450,7 @@ void QDirect3D12Widget::getHardwareAdapter(IDXGIFactory2* pFactory, IDXGIAdapter
             continue;
 
         // Check to see if the adapter supports Direct3D 12, but don't create the actual device yet.
-        if (SUCCEEDED(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0, _uuidof(ID3D12Device), nullptr)))
+        if (SUCCEEDED(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0, _uuidof(ID3D12Device), Q_NULLPTR)))
             break;
     }
 
@@ -430,7 +459,7 @@ void QDirect3D12Widget::getHardwareAdapter(IDXGIFactory2* pFactory, IDXGIAdapter
 
 void QDirect3D12Widget::resetEnvironment()
 {
-    // TODO: Do your own custom default environment, i.e:
+    // TODO: Add your own custom default environment, i.e:
     //m_pCamera->resetCamera();
 
     onReset();
@@ -438,9 +467,27 @@ void QDirect3D12Widget::resetEnvironment()
     if (!m_bRenderActive) tick();
 }
 
-QPaintEngine * QDirect3D12Widget::paintEngine() const
+void QDirect3D12Widget::wheelEvent(QWheelEvent* event)
 {
-    return nullptr;
+    if (!ImGui::IsAnyWindowHovered() && event->angleDelta().x() == 0)
+    {
+        // TODO: Update your camera position based on the delta value.
+    }
+    else if (event->angleDelta().x() != 0) // horizontal scrolling - mice with another side scroller.
+    {
+        ImGui::GetIO().MouseWheelH += (float)(event->delta() / WHEEL_DELTA);
+    }
+    else if (event->angleDelta().y() != 0)
+    {
+        ImGui::GetIO().MouseWheel += (float)(event->delta() / WHEEL_DELTA);
+    }
+
+    QWidget::wheelEvent(event);
+}
+
+QPaintEngine* QDirect3D12Widget::paintEngine() const
+{
+    return Q_NULLPTR;
 }
 
 void QDirect3D12Widget::paintEvent(QPaintEvent * event)
@@ -483,6 +530,21 @@ bool QDirect3D12Widget::event(QEvent * event)
                 ::SetFocus(m_hWnd);
         }
         break;
+    case QEvent::KeyPress:
+        emit keyPressed((QKeyEvent*)event);
+        break;
+    case QEvent::MouseMove:
+        if (!ImGui::IsAnyWindowHovered())
+            emit mouseMoved((QMouseEvent*)event);
+        break;
+    case QEvent::MouseButtonPress:
+        if (!ImGui::IsAnyWindowHovered() && !ImGui::IsAnyWindowFocused())
+            emit mouseClicked((QMouseEvent*)event);
+        break;
+    case QEvent::MouseButtonRelease:
+        if (!ImGui::IsAnyWindowHovered() && !ImGui::IsAnyWindowFocused())
+            emit mouseReleased((QMouseEvent*)event);
+        break;
     }
 
     return QWidget::event(event);
@@ -490,15 +552,14 @@ bool QDirect3D12Widget::event(QEvent * event)
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-LRESULT QDirect3D12Widget::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT QDirect3D12Widget::WndProc(MSG * pMsg)
 {
-    if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+    // Process wheel events using Qt's event-system.
+    if (pMsg->message == WM_MOUSEWHEEL || pMsg->message == WM_MOUSEHWHEEL)
         return true;
 
-    // NOTE(Gilad): Native windows messages can be handled here or you can also use the build-in Qt events.
-    //switch (msg)
-    //{
-    //}
+    if (ImGui_ImplWin32_WndProcHandler(pMsg->hwnd, pMsg->message, pMsg->wParam, pMsg->lParam))
+        return true;
 
     return false;
 }
@@ -511,7 +572,7 @@ bool QDirect3D12Widget::nativeEvent(const QByteArray & eventType, void * message
 
 #ifdef Q_OS_WIN
     MSG * pMsg = reinterpret_cast<MSG *>(message);
-    return WndProc(pMsg->hwnd, pMsg->message, pMsg->wParam, pMsg->lParam);
+    return WndProc(pMsg);
 #endif
 
     return QWidget::nativeEvent(eventType, message, result);
@@ -524,7 +585,7 @@ bool QDirect3D12Widget::winEvent(MSG * message, long * result)
 
 #ifdef Q_OS_WIN
     MSG * pMsg = reinterpret_cast<MSG *>(message);
-    return WndProc(pMsg->hwnd, pMsg->message, pMsg->wParam, pMsg->lParam);
+    return WndProc(pMsg);
 #endif
 
     return QWidget::winEvent(message, result);

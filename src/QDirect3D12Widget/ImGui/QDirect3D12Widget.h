@@ -1,7 +1,6 @@
 /*
  *
  */
-
 #pragma once
 
 #include <stdexcept>
@@ -28,6 +27,10 @@ public:
     void release();
     void resetEnvironment();
 
+    void run();
+    void pauseFrames();
+    void continueFrames();
+
 private:
     bool init();
     void create3DDevice();
@@ -42,7 +45,7 @@ private:
 
     void tick();
     void render();
-    void uiRender();
+    void renderUI();
 
     void waitForGpu();
     void moveToNextFrame();
@@ -50,20 +53,20 @@ private:
 
 // Qt Events
 private:
-    bool event(QEvent * event) override;
-    void showEvent(QShowEvent * event) override;
-    QPaintEngine * paintEngine() const override;
-    void paintEvent(QPaintEvent * event) override;
-    void resizeEvent(QResizeEvent * event) override;
+    bool                event(QEvent * event) override;
+    void                showEvent(QShowEvent * event) override;
+    QPaintEngine *      paintEngine() const override;
+    void                paintEvent(QPaintEvent * event) override;
+    void                resizeEvent(QResizeEvent * event) override;
+    void                wheelEvent(QWheelEvent * event) override;
 
-    LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+    LRESULT WINAPI WndProc(MSG * pMsg);
 
 #if QT_VERSION >= 0x050000
     bool nativeEvent(const QByteArray & eventType, void * message, long * result) override;
 #else
     bool winEvent(MSG * message, long * result) override;
 #endif
-
 
 signals:
     void deviceInitialized(bool success);
@@ -73,8 +76,12 @@ signals:
 
     void ticked();
     void rendered(ID3D12GraphicsCommandList * cl);
-    void uiRendered();
+    void renderedUI();
 
+    void keyPressed(QKeyEvent *);
+    void mouseMoved(QMouseEvent *);
+    void mouseClicked(QMouseEvent *);
+    void mouseReleased(QMouseEvent *);
 
 private slots:
     void onFrame();
@@ -91,11 +98,10 @@ public:
     bool renderActive() const { return m_bRenderActive; }
     void setRenderActive(bool active) { m_bRenderActive = active; }
 
-    DirectX::XMVECTORF32 * backgroundColor() { return &m_BackColor; }
-
+    DirectX::XMVECTORF32 * BackColor() { return &m_BackColor; }
 
 private:
-    // Pipeline stuff.
+    // Pipeline objects.
     static int const             FRAME_COUNT = 3;
     UINT                         m_iCurrFrameIndex;
 
@@ -112,30 +118,30 @@ private:
     D3D12_CPU_DESCRIPTOR_HANDLE  m_RTVDescriptors[FRAME_COUNT];
     ID3D12DescriptorHeap *       m_pSrvDescHeap;
 
-
-    // Synchronization stuff.
+    // Synchronization objects.
     HANDLE                       m_hSwapChainEvent;
     HANDLE                       m_hFenceEvent;
     ID3D12Fence *                m_pFence;
     UINT64                       m_iFenceValues[FRAME_COUNT];
 
-    // Widget stuff.
+    // Widget objects.
     QTimer                       m_qTimer;
 
     HWND                         m_hWnd;
     bool                         m_bDeviceInitialized;
 
     bool                         m_bRenderActive;
+    bool                         m_bStarted;
 
     DirectX::XMVECTORF32         m_BackColor;
-
 };
+
 
 // ############################################################################
 // ############################## Utils #######################################
 // ############################################################################
-#define ReleaseObject(object) if((object) != nullptr) { object->Release(); object = nullptr; }
-#define ReleaseHandle(object) if((object) != nullptr) { CloseHandle(object); object = nullptr; }
+#define ReleaseObject(object) if((object) != Q_NULLPTR) { object->Release(); object = Q_NULLPTR; }
+#define ReleaseHandle(object) if((object) != Q_NULLPTR) { CloseHandle(object); object = Q_NULLPTR; }
 
 
 inline std::string HrToString(HRESULT hr)

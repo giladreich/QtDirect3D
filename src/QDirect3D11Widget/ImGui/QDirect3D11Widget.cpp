@@ -26,6 +26,7 @@ QDirect3D11Widget::QDirect3D11Widget(QWidget * parent)
     , m_hWnd(reinterpret_cast<HWND>(winId()))
     , m_bDeviceInitialized(false)
     , m_bRenderActive(false)
+    , m_bStarted(false)
     , m_BackColor{ 0.0f, 0.135f, 0.481f, 1.0f }
 {
     qDebug() << "[QDirect3D11Widget::QDirect3D11Widget] - Widget Handle: " << m_hWnd;
