@@ -108,8 +108,8 @@ private:
 // ############################################################################
 // ############################## Utils #######################################
 // ############################################################################
-#define ReleaseObject(object) if((object) != nullptr) { object->Release(); object = nullptr; }
-#define ReleaseHandle(object) if((object) != nullptr) { CloseHandle(object); object = nullptr; }
+#define ReleaseObject(object) if((object) != Q_NULLPTR) { object->Release(); object = Q_NULLPTR; }
+#define ReleaseHandle(object) if((object) != Q_NULLPTR) { CloseHandle(object); object = Q_NULLPTR; }
 
 
 inline std::string HrToString(HRESULT hr)

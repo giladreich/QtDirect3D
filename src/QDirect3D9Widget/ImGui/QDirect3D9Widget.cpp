@@ -24,8 +24,8 @@ constexpr int MS_PER_FRAME = (int)((1.0f / FPS_LIMIT) * 1000.0f);
 
 QDirect3D9Widget::QDirect3D9Widget(QWidget *parent)
     : QWidget(parent)
-    , m_pDevice(nullptr)
-    , m_pD3D(nullptr)
+    , m_pDevice(Q_NULLPTR)
+    , m_pD3D(Q_NULLPTR)
     , m_hWnd(reinterpret_cast<HWND>(winId()))
     , m_bDeviceInitialized(false)
     , m_bRenderActive(false)
@@ -42,7 +42,7 @@ QDirect3D9Widget::QDirect3D9Widget(QWidget *parent)
     setFocusPolicy(Qt::StrongFocus);
     setAttribute(Qt::WA_NativeWindow);
 
-    // Setting these attributes to our widget and returning nullptr on paintEngine event 
+    // Setting these attributes to our widget and returning null on paintEngine event
     // tells Qt that we'll handle all drawing and updating the widget ourselves.
     setAttribute(Qt::WA_PaintOnScreen);
     setAttribute(Qt::WA_NoSystemBackground);
@@ -118,9 +118,16 @@ bool QDirect3D9Widget::init()
     m_PresentParams.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
     m_PresentParams.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
 
-    DXCall(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL,
-                                m_hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING,
-                                &m_PresentParams, &m_pDevice));
+    HRESULT hr = m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL,
+                                      m_hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING,
+                                      &m_PresentParams, &m_pDevice);
+    // Can't create hardware device, try software.
+    if (hr != D3D_OK)
+    {
+        DXCall(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_REF,
+                                    m_hWnd, D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+                                    &m_PresentParams, &m_pDevice));
+    }
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -224,7 +231,7 @@ void QDirect3D9Widget::resetEnvironment()
 
 QPaintEngine * QDirect3D9Widget::paintEngine() const
 {
-    return nullptr;
+    return Q_NULLPTR;
 }
 
 void QDirect3D9Widget::paintEvent(QPaintEvent * event)
