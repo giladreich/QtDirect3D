@@ -25,13 +25,13 @@
     <QtMoc Include="MainWindow.h">
       <Filter>Sources</Filter>
     </QtMoc>
-    <QtMoc Include="..\..\src\QDirect3D11Widget\QDirect3D11Widget.h">
+    <QtMoc Include="..\..\source\QDirect3D11Widget\QDirect3D11Widget.h">
       <Filter>Widgets</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="..\..\src\QDirect3D11Widget\QDirect3D11Widget.cpp">
+    <ClCompile Include="..\..\source\QDirect3D11Widget\QDirect3D11Widget.cpp">
       <Filter>Widgets</Filter>
     </ClCompile>
   </ItemGroup>

@@ -126,28 +126,28 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\src\QDirect3D10Widget\ImGui;..\..\thirdparty\imgui;..\..\thirdparty\imgui\examples;$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\source\QDirect3D10Widget\ImGui;..\..\thirdparty\imgui;..\..\thirdparty\imgui\examples;$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\src\QDirect3D10Widget\ImGui;..\..\thirdparty\imgui;..\..\thirdparty\imgui\examples;$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\source\QDirect3D10Widget\ImGui;..\..\thirdparty\imgui;..\..\thirdparty\imgui\examples;$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\src\QDirect3D10Widget\ImGui;..\..\thirdparty\imgui;..\..\thirdparty\imgui\examples;$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\source\QDirect3D10Widget\ImGui;..\..\thirdparty\imgui;..\..\thirdparty\imgui\examples;$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\src\QDirect3D10Widget\ImGui;..\..\thirdparty\imgui;..\..\thirdparty\imgui\examples;$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\source\QDirect3D10Widget\ImGui;..\..\thirdparty\imgui;..\..\thirdparty\imgui\examples;$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <QtUic Include="MainWindow.ui" />
     <QtMoc Include="MainWindow.h" />
-    <ClCompile Include="..\..\src\QDirect3D10Widget\ImGui\QDirect3D10Widget.cpp" />
+    <ClCompile Include="..\..\source\QDirect3D10Widget\ImGui\QDirect3D10Widget.cpp" />
     <ClCompile Include="..\..\thirdparty\imgui\examples\imgui_impl_dx10.cpp" />
     <ClCompile Include="..\..\thirdparty\imgui\examples\imgui_impl_win32.cpp" />
     <ClCompile Include="..\..\thirdparty\imgui\imgui.cpp" />
@@ -158,7 +158,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="..\..\src\QDirect3D10Widget\ImGui\QDirect3D10Widget.h">
+    <QtMoc Include="..\..\source\QDirect3D10Widget\ImGui\QDirect3D10Widget.h">
       <QtMocDir>$(IntDir)moc</QtMocDir>
     </QtMoc>
     <ClInclude Include="..\..\thirdparty\imgui\examples\imgui_impl_dx10.h" />

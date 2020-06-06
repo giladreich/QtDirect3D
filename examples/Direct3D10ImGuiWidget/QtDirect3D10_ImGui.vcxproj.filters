@@ -36,7 +36,7 @@
     <QtMoc Include="MainWindow.h">
       <Filter>Sources</Filter>
     </QtMoc>
-    <QtMoc Include="..\..\src\QDirect3D10Widget\ImGui\QDirect3D10Widget.h">
+    <QtMoc Include="..\..\source\QDirect3D10Widget\ImGui\QDirect3D10Widget.h">
       <Filter>Widgets</Filter>
     </QtMoc>
   </ItemGroup>
@@ -60,7 +60,7 @@
     <ClCompile Include="..\..\thirdparty\imgui\imgui_widgets.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\QDirect3D10Widget\ImGui\QDirect3D10Widget.cpp">
+    <ClCompile Include="..\..\source\QDirect3D10Widget\ImGui\QDirect3D10Widget.cpp">
       <Filter>Widgets</Filter>
     </ClCompile>
   </ItemGroup>

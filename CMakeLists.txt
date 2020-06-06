@@ -25,6 +25,6 @@ set_property (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY
 ##################################################################################################################
 # Submodules
 ##################################################################################################################
-add_subdirectory(src)
+add_subdirectory(source)
 add_subdirectory(examples)
 
