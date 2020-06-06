@@ -13,7 +13,7 @@
 #include <dxgi1_4.h>
 #include <DirectXMath.h>
 #include <D3Dcompiler.h>
-#include "..\d3dx12.h"
+#include "d3dx12.h"
 
 
 class QDirect3D12Widget : public QWidget
@@ -34,7 +34,6 @@ public:
 private:
     bool init();
     void create3DDevice();
-    void createImGuiContext();
     void getHardwareAdapter(IDXGIFactory2* pFactory, IDXGIAdapter1** ppAdapter);
     void resizeSwapChain(int width, int height);
     void cleanupRenderTarget();
@@ -45,7 +44,6 @@ private:
 
     void tick();
     void render();
-    void renderUI();
 
     void waitForGpu();
     void moveToNextFrame();
@@ -76,7 +74,6 @@ signals:
 
     void ticked();
     void rendered(ID3D12GraphicsCommandList * cl);
-    void renderedUI();
 
     void keyPressed(QKeyEvent *);
     void mouseMoved(QMouseEvent *);
