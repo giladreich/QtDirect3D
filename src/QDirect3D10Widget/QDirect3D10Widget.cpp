@@ -276,7 +276,7 @@ LRESULT QDirect3D10Widget::WndProc(MSG * pMsg)
 {
     // Process wheel events using Qt's event-system.
     if (pMsg->message == WM_MOUSEWHEEL || pMsg->message == WM_MOUSEHWHEEL)
-        return true;
+        return false;
 
     return false;
 }
