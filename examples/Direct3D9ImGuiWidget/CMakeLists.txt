@@ -4,19 +4,36 @@ cmake_minimum_required(VERSION 3.12)
 ##################################################################################################################
 # Setup
 ##################################################################################################################
-project(Direct3D9ImGuiWidget)
+project(Direct3D9Widget_ImGui)
+
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${QtDirect3D_Widgets_Dir}/QDirect3D9Widget/ImGui
+    ${QTDIRECT3D_WIDGETS_DIR}/QDirect3D9Widget/ImGui
+    ${IMGUI_ROOT_DIR}
+    ${IMGUI_ROOT_DIR}/examples
 )
 
 ##################################################################################################################
 # Project Files
 ##################################################################################################################
 set(WIDGETS_CXX_FILES
-    ${QtDirect3D_Widgets_Dir}/QDirect3D9Widget/ImGui/QDirect3D9Widget.h
-    ${QtDirect3D_Widgets_Dir}/QDirect3D9Widget/ImGui/QDirect3D9Widget.cpp
+    ${QTDIRECT3D_WIDGETS_DIR}/QDirect3D9Widget/ImGui/QDirect3D9Widget.h
+    ${QTDIRECT3D_WIDGETS_DIR}/QDirect3D9Widget/ImGui/QDirect3D9Widget.cpp
+)
+set(IMGUI_IMPL_HEADERS_CXX_FILES
+    ${IMGUI_ROOT_DIR}/examples/imgui_impl_dx9.h
+    ${IMGUI_ROOT_DIR}/examples/imgui_impl_win32.h
+)
+set(IMGUI_IMPL_SOURCES_CXX_FILES
+    ${IMGUI_ROOT_DIR}/examples/imgui_impl_dx9.cpp
+    ${IMGUI_ROOT_DIR}/examples/imgui_impl_win32.cpp
+)
+set(IMGUI_FILES
+    ${IMGUI_HEADERS_CXX_FILES}
+    ${IMGUI_SOURCES_CXX_FILES}
+    ${IMGUI_IMPL_HEADERS_CXX_FILES}
+    ${IMGUI_IMPL_SOURCES_CXX_FILES}
 )
 set(HEADERS_CXX_FILES
     MainWindow.h
@@ -31,30 +48,28 @@ set(UI_FILES
 file(GLOB RESOURCE_FILES
     *.qrc
 )
-file(GLOB_RECURSE GENERATED_CXX_FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_autogen/*.h
-    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_autogen/*.cpp
-)
-list(FILTER GENERATED_CXX_FILES EXCLUDE REGEX "moc_.*\.*")
 
 ##################################################################################################################
 # IDE Representation
 ##################################################################################################################
-source_group("Sources" FILES
+source_group("Source Files" FILES
     ${SOURCES_CXX_FILES}
     ${HEADERS_CXX_FILES}
 )
-source_group("Form Files" FILES
+source_group("Resources" FILES
     ${UI_FILES}
+    ${RESOURCE_FILES}
 )
 source_group("Widgets" FILES
     ${WIDGETS_CXX_FILES}
 )
-source_group("Resource Files" FILES
-    ${RESOURCE_FILES}
+source_group("ImGui" FILES
+    ${IMGUI_HEADERS_CXX_FILES}
+    ${IMGUI_SOURCES_CXX_FILES}
 )
-source_group("Generated Files" FILES
-    ${GENERATED_CXX_FILES}
+source_group("ImGui\\Impl" FILES
+    ${IMGUI_IMPL_HEADERS_CXX_FILES}
+    ${IMGUI_IMPL_SOURCES_CXX_FILES}
 )
 
 ##################################################################################################################
@@ -75,7 +90,7 @@ add_executable(${PROJECT_NAME} WIN32
     ${SOURCES_CXX_FILES}
     ${UI_FILES}
     ${RESOURCE_FILES}
-    ${GENERATED_CXX_FILES}
+    ${IMGUI_FILES}
 )
 target_link_libraries(${PROJECT_NAME} PUBLIC
     d3d9
@@ -83,3 +98,5 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     Qt5::Gui
     Qt5::Widgets
 )
+
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER ImGui)

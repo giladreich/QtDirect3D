@@ -8,15 +8,15 @@ project(Direct3D11Widget)
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${QtDirect3D_Widgets_Dir}/QDirect3D11Widget
+    ${QTDIRECT3D_WIDGETS_DIR}/QDirect3D11Widget
 )
 
 ##################################################################################################################
 # Project Files
 ##################################################################################################################
 set(WIDGETS_CXX_FILES
-    ${QtDirect3D_Widgets_Dir}/QDirect3D11Widget/QDirect3D11Widget.h
-    ${QtDirect3D_Widgets_Dir}/QDirect3D11Widget/QDirect3D11Widget.cpp
+    ${QTDIRECT3D_WIDGETS_DIR}/QDirect3D11Widget/QDirect3D11Widget.h
+    ${QTDIRECT3D_WIDGETS_DIR}/QDirect3D11Widget/QDirect3D11Widget.cpp
 )
 set(HEADERS_CXX_FILES
     MainWindow.h
@@ -31,30 +31,20 @@ set(UI_FILES
 file(GLOB RESOURCE_FILES
     *.qrc
 )
-file(GLOB_RECURSE GENERATED_CXX_FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_autogen/*.h
-    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_autogen/*.cpp
-)
-list(FILTER GENERATED_CXX_FILES EXCLUDE REGEX "moc_.*\.*")
 
 ##################################################################################################################
 # IDE Representation
 ##################################################################################################################
-source_group("Sources" FILES
+source_group("Source Files" FILES
     ${SOURCES_CXX_FILES}
     ${HEADERS_CXX_FILES}
 )
-source_group("Form Files" FILES
+source_group("Resources" FILES
     ${UI_FILES}
+    ${RESOURCE_FILES}
 )
 source_group("Widgets" FILES
     ${WIDGETS_CXX_FILES}
-)
-source_group("Resource Files" FILES
-    ${RESOURCE_FILES}
-)
-source_group("Generated Files" FILES
-    ${GENERATED_CXX_FILES}
 )
 
 ##################################################################################################################
@@ -75,7 +65,6 @@ add_executable(${PROJECT_NAME} WIN32
     ${SOURCES_CXX_FILES}
     ${UI_FILES}
     ${RESOURCE_FILES}
-    ${GENERATED_CXX_FILES}
 )
 target_link_libraries(${PROJECT_NAME} PUBLIC
     d3d11
