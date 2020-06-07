@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D9_ImGui", "Direct3D9ImGuiWidget\QtDirect3D9_ImGui.vcxproj", "{B12702AD-ABFB-343A-A199-8E24837244A3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D9_ImGui", "Direct3D9Widget_ImGui\QtDirect3D9_ImGui.vcxproj", "{B12702AD-ABFB-343A-A199-8E24837244A3}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D10_ImGui", "Direct3D10ImGuiWidget\QtDirect3D10_ImGui.vcxproj", "{3714A2DD-57EA-49F6-845F-FAF1C1AFA156}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D10_ImGui", "Direct3D10Widget_ImGui\QtDirect3D10_ImGui.vcxproj", "{3714A2DD-57EA-49F6-845F-FAF1C1AFA156}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D11_ImGui", "Direct3D11ImGuiWidget\QtDirect3D11_ImGui.vcxproj", "{A7639B86-7FF9-495D-B6D1-53D9785EBA48}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D11_ImGui", "Direct3D11Widget_ImGui\QtDirect3D11_ImGui.vcxproj", "{A7639B86-7FF9-495D-B6D1-53D9785EBA48}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

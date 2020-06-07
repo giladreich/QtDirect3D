@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D9", "Direct3D9Widget\QtDirect3D9.vcxproj", "{B112E33D-BA9B-418C-8D5B-3FDC6898A330}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D11", "Direct3D11Widget\QtDirect3D11.vcxproj", "{A323E634-7404-4860-B4C8-55FD3443804C}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D10", "Direct3D10Widget\QtDirect3D10.vcxproj", "{21D450F4-D4EB-4C32-82F6-73E439591B1D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D11", "Direct3D11Widget\QtDirect3D11.vcxproj", "{A323E634-7404-4860-B4C8-55FD3443804C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

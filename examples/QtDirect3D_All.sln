@@ -3,19 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D9_ImGui", "Direct3D9ImGuiWidget\QtDirect3D9_ImGui.vcxproj", "{B12702AD-ABFB-343A-A199-8E24837244A3}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImGui", "ImGui", "{C7362413-E4F9-4012-875F-A7D81D9EBE96}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D11", "Direct3D11Widget\QtDirect3D11.vcxproj", "{B9E907AC-964B-415F-8F45-49A7483B285D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D9_ImGui", "Direct3D9Widget_ImGui\QtDirect3D9_ImGui.vcxproj", "{B12702AD-ABFB-343A-A199-8E24837244A3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D10_ImGui", "Direct3D10Widget_ImGui\QtDirect3D10_ImGui.vcxproj", "{3714A2DD-57EA-49F6-845F-FAF1C1AFA156}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D11_ImGui", "Direct3D11Widget_ImGui\QtDirect3D11_ImGui.vcxproj", "{A7639B86-7FF9-495D-B6D1-53D9785EBA48}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D9", "Direct3D9Widget\QtDirect3D9.vcxproj", "{B112E33D-BA9B-418C-8D5B-3FDC6898A330}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D11_ImGui", "Direct3D11ImGuiWidget\QtDirect3D11_ImGui.vcxproj", "{A7639B86-7FF9-495D-B6D1-53D9785EBA48}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D10_ImGui", "Direct3D10ImGuiWidget\QtDirect3D10_ImGui.vcxproj", "{3714A2DD-57EA-49F6-845F-FAF1C1AFA156}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D10", "Direct3D10Widget\QtDirect3D10.vcxproj", "{21D450F4-D4EB-4C32-82F6-73E439591B1D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ImGui", "ImGui", "{C7362413-E4F9-4012-875F-A7D81D9EBE96}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QtDirect3D11", "Direct3D11Widget\QtDirect3D11.vcxproj", "{B9E907AC-964B-415F-8F45-49A7483B285D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
