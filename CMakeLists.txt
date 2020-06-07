@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.12)
 ##################################################################################################################
 project(QtDirect3D
     LANGUAGES C CXX
-    DESCRIPTION "DirectX Widgets for Qt and demos."
+    DESCRIPTION "Qt DirectX Widgets & Demos."
 )
 
 include(CMakeOptions.cmake)
@@ -25,6 +25,9 @@ set_property (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY
 ##################################################################################################################
 # Submodules
 ##################################################################################################################
+if (BUILD_WITH_IMGUI)
+    add_subdirectory(thirdparty)
+endif()
+
 add_subdirectory(source)
 add_subdirectory(examples)
-
