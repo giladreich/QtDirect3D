@@ -1,0 +1,62 @@
+# BasedOnStyle: Gilad :-)
+Language: Cpp
+#Standard: Cpp17
+
+#DisableFormat: true
+
+IndentWidth: 4
+ColumnLimit: 95
+UseTab: Never
+AccessModifierOffset: -4
+ConstructorInitializerIndentWidth: 4
+IndentCaseLabels: true
+IndentPPDirectives: AfterHash
+CompactNamespaces: true
+NamespaceIndentation: Inner
+FixNamespaceComments: true
+SortUsingDeclarations: false
+SortIncludes: false
+#IncludeBlocks: Regroup
+ReflowComments: true
+BreakConstructorInitializers: BeforeComma
+SpaceAfterCStyleCast: false
+SpaceBeforeCpp11BracedList: false
+IndentWrappedFunctionNames: true
+
+BreakBeforeBraces: Allman
+#BreakBeforeBraces: Custom
+BraceWrapping: # Will be ignored if BreakBeforeBraces != Custom
+  AfterNamespace: false
+  AfterClass: true
+  AfterStruct: true
+  AfterUnion: true
+  AfterEnum: false
+  AfterFunction: true
+  SplitEmptyFunction: true
+  AfterExternBlock: true
+  SplitEmptyRecord: false
+  AfterCaseLabel: true
+  AfterControlStatement: MultiLine
+  BeforeCatch: false
+  BeforeElse: true
+  #BeforeLambdaBody: false # Not working unfortunately.
+
+AllowShortFunctionsOnASingleLine: Inline # Conflicts with BraceWrapping:AfterFunction
+AllowShortBlocksOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortLoopsOnASingleLine: true
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortLambdasOnASingleLine: All
+
+AlwaysBreakAfterReturnType: None
+AlwaysBreakTemplateDeclarations: true
+
+PointerAlignment: Middle
+AlignConsecutiveMacros: true
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+AlignTrailingComments: true
+AlignOperands: true
+BinPackParameters: false
+
+CommentPragmas: '^ NO-FORMAT:'
