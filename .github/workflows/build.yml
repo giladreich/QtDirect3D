@@ -1,0 +1,52 @@
+name: build
+
+on:
+  push: {}
+  pull_request: {}
+
+env:
+  QT_VERSION: 5.15.0
+
+jobs:
+  build:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      matrix:
+        config:
+        - {
+            name: "Windows Latest x64", artifact: "Windows-x64.zip",
+            msvc: win64_msvc2019_64,
+            os: windows-latest,
+            environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat",
+            cmake_config: "-G \"Visual Studio 16 2019\" -A x64"
+          }
+        - {
+            name: "Windows Latest x86", artifact: "Windows-x86.zip",
+            msvc: win32_msvc2019,
+            os: windows-latest,
+            environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars32.bat",
+            cmake_config: "-G \"Visual Studio 16 2019\" -A Win32"
+          }
+
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Download Qt modules
+      id: qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: "${{ env.QT_VERSION }}"
+        modules: core gui widgets
+        arch: "${{ matrix.config.msvc }}"
+
+    - name: CMake configure
+      run: |
+        mkdir build && cd build
+        cmake .. ${{ matrix.config.cmake_config }}
+
+    - name: CMake build
+      run: |
+        cd build
+        cmake --build .
