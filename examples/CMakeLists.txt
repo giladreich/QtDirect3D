@@ -18,29 +18,45 @@ find_package(Qt5 REQUIRED COMPONENTS
 )
 
 if (Qt5_FOUND)
-    message(STATUS "[INFO] Qt5 Found: ${Qt5_DIR}")
+    message(STATUS "[INFO] Qt5 Found -> ${Qt5_DIR}")
 else()
-    message(FATAL_ERROR "[ERROR] Could not find Qt5 package...")
-endif()
-
-if (BUILD_WITH_IMGUI)
-    # TODO: Find package or use Conan.
-    message(STATUS "[INFO] Building with Dear ImGui -> ENABLED.")
-else()
-    message(STATUS "[INFO] Building with Dear ImGui -> DISABLED.")
+    message(FATAL_ERROR "[ERROR] Failed to find Qt5. Did you add Qt installation kit bin directory to the system PATH?")
 endif()
 
 ##################################################################################################################
 # Submodules
 ##################################################################################################################
-add_subdirectory(Direct3D9Widget)
-#add_subdirectory(Direct3D10Widget)
-#add_subdirectory(Direct3D11Widget)
-#add_subdirectory(Direct3D12Widget)
+if (INCLUDE_DX9_EXAMPLE)
+    add_subdirectory(Direct3D9Widget)
+endif()
+
+if (INCLUDE_DX10_EXAMPLE)
+    add_subdirectory(Direct3D10Widget)
+endif()
+
+if (INCLUDE_DX11_EXAMPLE)
+    add_subdirectory(Direct3D11Widget)
+endif()
+
+if (INCLUDE_DX12_EXAMPLE)
+    add_subdirectory(Direct3D12Widget)
+endif()
 
 if (BUILD_WITH_IMGUI)
-    #add_subdirectory(Direct3D9ImGuiWidget)
-    #add_subdirectory(Direct3D10ImGuiWidget)
-    #add_subdirectory(Direct3D11ImGuiWidget)
-    #add_subdirectory(Direct3D12ImGuiWidget)
+    message(STATUS "[INFO] Adding Dear ImGui examples.")
+    if (INCLUDE_DX9_EXAMPLE)
+        add_subdirectory(Direct3D9Widget_ImGui)
+    endif()
+
+    if (INCLUDE_DX10_EXAMPLE)
+        add_subdirectory(Direct3D10Widget_ImGui)
+    endif()
+
+    if (INCLUDE_DX11_EXAMPLE)
+        add_subdirectory(Direct3D11Widget_ImGui)
+    endif()
+
+    if (INCLUDE_DX12_EXAMPLE AND "${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
+        add_subdirectory(Direct3D12Widget_ImGui)
+    endif()
 endif()

@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ImGui">
+      <UniqueIdentifier>{5e0c552a-15b1-47d6-813e-456c69d93997}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui\Impl">
+      <UniqueIdentifier>{9032cf27-f8a0-4de8-9e21-bc4d2321c257}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Widgets">
+      <UniqueIdentifier>{d4ead10b-5d32-458f-a5fd-5c3820fdaf37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="MainWindow.ui">
+      <Filter>Resources</Filter>
+    </QtUic>
+    <ClCompile Include="MainWindow.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="MainWindow.h">
+      <Filter>Sources</Filter>
+    </QtMoc>
+    <QtMoc Include="..\..\source\QDirect3D12Widget\ImGui\QDirect3D12Widget.h">
+      <Filter>Widgets</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="..\..\thirdparty\imgui\examples\imgui_impl_dx12.cpp">
+      <Filter>ImGui\Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\imgui\examples\imgui_impl_win32.cpp">
+      <Filter>ImGui\Impl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\imgui\imgui.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\imgui\imgui_demo.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\imgui\imgui_draw.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\imgui\imgui_widgets.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\QDirect3D12Widget\ImGui\QDirect3D12Widget.cpp">
+      <Filter>Widgets</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\thirdparty\imgui\examples\imgui_impl_dx12.h">
+      <Filter>ImGui\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\imgui\examples\imgui_impl_win32.h">
+      <Filter>ImGui\Impl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\imgui\imconfig.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\imgui\imgui.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\imgui\imgui_internal.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\imgui\imstb_rectpack.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\imgui\imstb_textedit.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\imgui\imstb_truetype.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

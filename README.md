@@ -1,5 +1,5 @@
 
-<p align="center"><img src="pictures/qt_dx_cube.png" width=256 height=256></p>
+<p align="center"><img src="media/qt_dx_cube.png" width=256 height=256></p>
 
 # Qt Direct3D / DirectX Widget
 
@@ -12,7 +12,7 @@ There are also Direct3D widgets that supports [Dear ImGui](https://github.com/oc
 
 `git clone --recursive https://github.com/giladreich/QtDirect3D`
 
-Under the `src` directory you'll find the widgets sources for each version. If you want the ImGui widget, you'll find it under `src/QDirect3D*Widget/ImGui`.
+Under the `source` directory you'll find the widgets sources for each version. If you want the ImGui widget, you'll find it under `source/QDirect3D*Widget/ImGui`.
 
 Under the `examples` directory there are few samples to demonstrate how to interact with the widget and how easy it is to get started.
 
@@ -81,7 +81,7 @@ void MainWindow::closeEvent(QCloseEvent * event)
 
 Using the widget with ImGui and creating a scene:
 
-![Qt and ImGui](/pictures/Qt_and_ImGui.gif)
+![Qt and ImGui](/media/Qt_and_ImGui.gif)
 
 [![YouTube Link](https://i.imgur.com/3wEI0cl.jpg)](https://www.youtube.com/watch?v=UGLJHiLUWI0 "YouTube Link")
 

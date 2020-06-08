@@ -1,47 +1,38 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Form Files">
-      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
-      <Extensions>ui</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
-      <Extensions>qrc;*</Extensions>
-      <ParseFiles>false</ParseFiles>
-    </Filter>
-    <Filter Include="Generated Files">
-      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
-      <Extensions>moc;h;cpp</Extensions>
-      <SourceControlFiles>False</SourceControlFiles>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
     <Filter Include="Widgets">
-      <UniqueIdentifier>{74fdec2c-12c9-46ec-b4c9-72621a3c805c}</UniqueIdentifier>
+      <UniqueIdentifier>{d4ead10b-5d32-458f-a5fd-5c3820fdaf37}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Sources">
-      <UniqueIdentifier>{117313b1-48da-45be-8339-e6d04c436254}</UniqueIdentifier>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <QtUic Include="MainWindow.ui">
+      <Filter>Resources</Filter>
+    </QtUic>
     <ClCompile Include="MainWindow.cpp">
       <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="..\..\src\QDirect3D10Widget\QDirect3D10Widget.cpp">
-      <Filter>Widgets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="MainWindow.h">
       <Filter>Sources</Filter>
     </QtMoc>
-    <QtMoc Include="..\..\src\QDirect3D10Widget\QDirect3D10Widget.h">
+    <QtMoc Include="..\..\source\QDirect3D10Widget\QDirect3D10Widget.h">
       <Filter>Widgets</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="MainWindow.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="..\..\source\QDirect3D10Widget\QDirect3D10Widget.cpp">
+      <Filter>Widgets</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
