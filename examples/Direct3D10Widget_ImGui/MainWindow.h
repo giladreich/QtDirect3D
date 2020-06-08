@@ -8,13 +8,12 @@
 
 #include "ui_MainWindow.h"
 
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = Q_NULLPTR);
+    MainWindow(QWidget * parent = Q_NULLPTR);
     ~MainWindow();
 
     void adjustWindowSize();

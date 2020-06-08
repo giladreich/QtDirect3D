@@ -10,7 +10,6 @@
 #include <QCloseEvent>
 #include <QDesktopWidget>
 
-
 MainWindow::MainWindow(QWidget * parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindowClass)
@@ -30,14 +29,8 @@ MainWindow::~MainWindow() = default;
 void MainWindow::adjustWindowSize()
 {
     resize(m_WindowSize.width(), m_WindowSize.height());
-    setGeometry(
-        QStyle::alignedRect(
-            Qt::LeftToRight,
-            Qt::AlignCenter,
-            size(),
-            qApp->desktop()->availableGeometry()
-        )
-    );
+    setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, size(),
+                                    qApp->desktop()->availableGeometry()));
 }
 
 void MainWindow::addToolbarWidgets()
@@ -50,7 +43,7 @@ void MainWindow::addToolbarWidgets()
             m_pScene->continueFrames();
         else
             m_pScene->pauseFrames();
-        });
+    });
     ui->mainToolBar->addWidget(m_pCbxDoFrames);
 }
 
@@ -61,24 +54,26 @@ void MainWindow::connectSlots()
     connect(m_pScene, &QDirect3D9Widget::rendered, this, &MainWindow::render);
 
     // NOTE: Additionally, you can listen to some basic IO events.
-    //connect(m_pScene, &QDirect3D9Widget::keyPressed, this, &MainWindow::onKeyPressed);
-    //connect(m_pScene, &QDirect3D9Widget::mouseMoved, this, &MainWindow::onMouseMoved);
-    //connect(m_pScene, &QDirect3D9Widget::mouseClicked, this, &MainWindow::onMouseClicked);
-    //connect(m_pScene, &QDirect3D9Widget::mouseReleased, this, &MainWindow::onMouseReleased);
+    // connect(m_pScene, &QDirect3D9Widget::keyPressed, this, &MainWindow::onKeyPressed);
+    // connect(m_pScene, &QDirect3D9Widget::mouseMoved, this, &MainWindow::onMouseMoved);
+    // connect(m_pScene, &QDirect3D9Widget::mouseClicked, this, &MainWindow::onMouseClicked);
+    // connect(m_pScene, &QDirect3D9Widget::mouseReleased, this, &MainWindow::onMouseReleased);
 }
 
 void MainWindow::init(bool success)
 {
     if (!success)
     {
-        QMessageBox::critical(this, "ERROR", "Direct3D widget initialization failed.", QMessageBox::Ok);
+        QMessageBox::critical(this, "ERROR", "Direct3D widget initialization failed.",
+                              QMessageBox::Ok);
         return;
     }
 
     // TODO: Add here your extra initialization here.
     // ...
 
-    // Start processing frames with a short delay in case things are still initializing/loading in the background.
+    // Start processing frames with a short delay in case things are still initializing/loading
+    // in the background.
     QTimer::singleShot(500, this, [&] { m_pScene->run(); });
     disconnect(m_pScene, &QDirect3D9Widget::deviceInitialized, this, &MainWindow::init);
 }
@@ -86,13 +81,13 @@ void MainWindow::init(bool success)
 void MainWindow::tick()
 {
     // TODO: Update the scene here.
-    //m_pMesh->Tick();
+    // m_pMesh->Tick();
 }
 
 void MainWindow::render()
 {
     // TODO: Present the scene here.
-    //m_pMesh->Render();
+    // m_pMesh->Render();
 }
 
 void MainWindow::closeEvent(QCloseEvent * event)

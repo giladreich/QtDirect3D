@@ -15,7 +15,6 @@
 #include <D3Dcompiler.h>
 #include "d3dx12.h"
 
-
 class QDirect3D12Widget : public QWidget
 {
     Q_OBJECT
@@ -34,7 +33,7 @@ public:
 private:
     bool init();
     void create3DDevice();
-    void getHardwareAdapter(IDXGIFactory2* pFactory, IDXGIAdapter1** ppAdapter);
+    void getHardwareAdapter(IDXGIFactory2 * pFactory, IDXGIAdapter1 ** ppAdapter);
     void resizeSwapChain(int width, int height);
     void cleanupRenderTarget();
     void createRenderTarget();
@@ -48,15 +47,14 @@ private:
     void waitForGpu();
     void moveToNextFrame();
 
-
-// Qt Events
+    // Qt Events
 private:
-    bool                event(QEvent * event) override;
-    void                showEvent(QShowEvent * event) override;
-    QPaintEngine *      paintEngine() const override;
-    void                paintEvent(QPaintEvent * event) override;
-    void                resizeEvent(QResizeEvent * event) override;
-    void                wheelEvent(QWheelEvent * event) override;
+    bool           event(QEvent * event) override;
+    void           showEvent(QShowEvent * event) override;
+    QPaintEngine * paintEngine() const override;
+    void           paintEvent(QPaintEvent * event) override;
+    void           resizeEvent(QResizeEvent * event) override;
+    void           wheelEvent(QWheelEvent * event) override;
 
     LRESULT WINAPI WndProc(MSG * pMsg);
 
@@ -84,12 +82,12 @@ private slots:
     void onFrame();
     void onReset();
 
-// Getters / Setters
+    // Getters / Setters
 public:
     HWND const & nativeHandle() const { return m_hWnd; }
 
-    ID3D12Device * device() const { return m_pDevice; }
-    IDXGISwapChain * swapChain() { return m_pSwapChain; }
+    ID3D12Device *              device() const { return m_pDevice; }
+    IDXGISwapChain *            swapChain() { return m_pSwapChain; }
     ID3D12GraphicsCommandList * commandList() const { return m_pCommandList; }
 
     bool renderActive() const { return m_bRenderActive; }
@@ -99,47 +97,55 @@ public:
 
 private:
     // Pipeline objects.
-    static int const             FRAME_COUNT = 3;
-    UINT                         m_iCurrFrameIndex;
+    static int const FRAME_COUNT = 3;
+    UINT             m_iCurrFrameIndex;
 
-    ID3D12Device *               m_pDevice;
-    IDXGIFactory4 *              m_pFactory;
-    IDXGISwapChain3 *            m_pSwapChain;
-    ID3D12CommandQueue *         m_pCommandQueue;
-    ID3D12CommandAllocator *     m_pCommandAllocators[FRAME_COUNT];
-    ID3D12GraphicsCommandList *  m_pCommandList;
+    ID3D12Device *              m_pDevice;
+    IDXGIFactory4 *             m_pFactory;
+    IDXGISwapChain3 *           m_pSwapChain;
+    ID3D12CommandQueue *        m_pCommandQueue;
+    ID3D12CommandAllocator *    m_pCommandAllocators[FRAME_COUNT];
+    ID3D12GraphicsCommandList * m_pCommandList;
 
-    ID3D12DescriptorHeap *       m_pRTVDescHeap;
-    UINT                         m_iRTVDescSize; // May vary from device to device.
-    ID3D12Resource *             m_pRTVResources[FRAME_COUNT];
-    D3D12_CPU_DESCRIPTOR_HANDLE  m_RTVDescriptors[FRAME_COUNT];
-    ID3D12DescriptorHeap *       m_pSrvDescHeap;
+    ID3D12DescriptorHeap *      m_pRTVDescHeap;
+    UINT                        m_iRTVDescSize; // May vary from device to device.
+    ID3D12Resource *            m_pRTVResources[FRAME_COUNT];
+    D3D12_CPU_DESCRIPTOR_HANDLE m_RTVDescriptors[FRAME_COUNT];
+    ID3D12DescriptorHeap *      m_pSrvDescHeap;
 
     // Synchronization objects.
-    HANDLE                       m_hSwapChainEvent;
-    HANDLE                       m_hFenceEvent;
-    ID3D12Fence *                m_pFence;
-    UINT64                       m_iFenceValues[FRAME_COUNT];
+    HANDLE        m_hSwapChainEvent;
+    HANDLE        m_hFenceEvent;
+    ID3D12Fence * m_pFence;
+    UINT64        m_iFenceValues[FRAME_COUNT];
 
     // Widget objects.
-    QTimer                       m_qTimer;
+    QTimer m_qTimer;
 
-    HWND                         m_hWnd;
-    bool                         m_bDeviceInitialized;
+    HWND m_hWnd;
+    bool m_bDeviceInitialized;
 
-    bool                         m_bRenderActive;
-    bool                         m_bStarted;
+    bool m_bRenderActive;
+    bool m_bStarted;
 
-    DirectX::XMVECTORF32         m_BackColor;
+    DirectX::XMVECTORF32 m_BackColor;
 };
-
 
 // ############################################################################
 // ############################## Utils #######################################
 // ############################################################################
-#define ReleaseObject(object) if((object) != Q_NULLPTR) { object->Release(); object = Q_NULLPTR; }
-#define ReleaseHandle(object) if((object) != Q_NULLPTR) { CloseHandle(object); object = Q_NULLPTR; }
-
+#define ReleaseObject(object)                                                                 \
+    if ((object) != Q_NULLPTR)                                                                \
+    {                                                                                         \
+        object->Release();                                                                    \
+        object = Q_NULLPTR;                                                                   \
+    }
+#define ReleaseHandle(object)                                                                 \
+    if ((object) != Q_NULLPTR)                                                                \
+    {                                                                                         \
+        CloseHandle(object);                                                                  \
+        object = Q_NULLPTR;                                                                   \
+    }
 
 inline std::string HrToString(HRESULT hr)
 {
@@ -151,19 +157,20 @@ inline std::string HrToString(HRESULT hr)
 class HrException : public std::runtime_error
 {
 public:
-    HrException(HRESULT hr) : std::runtime_error(HrToString(hr)), m_hr(hr) {}
+    HrException(HRESULT hr)
+        : std::runtime_error(HrToString(hr))
+        , m_hr(hr)
+    {
+    }
     HRESULT Error() const { return m_hr; }
+
 private:
     const HRESULT m_hr;
 };
 
 inline void ThrowIfFailed(HRESULT hr)
 {
-    if (FAILED(hr))
-    {
-        throw HrException(hr);
-    }
+    if (FAILED(hr)) { throw HrException(hr); }
 }
 
 #define DXCall(func) ThrowIfFailed(func)
-

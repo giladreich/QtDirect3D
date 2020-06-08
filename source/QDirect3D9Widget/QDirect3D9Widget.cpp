@@ -12,7 +12,6 @@
 constexpr int FPS_LIMIT    = 60.0f;
 constexpr int MS_PER_FRAME = (int)((1.0f / FPS_LIMIT) * 1000.0f);
 
-
 QDirect3D9Widget::QDirect3D9Widget(QWidget * parent)
     : QWidget(parent)
     , m_pDevice(Q_NULLPTR)
@@ -21,7 +20,7 @@ QDirect3D9Widget::QDirect3D9Widget(QWidget * parent)
     , m_bDeviceInitialized(false)
     , m_bRenderActive(false)
     , m_bStarted(false)
-    , m_BackColor{ 0.0f, 0.135f, 0.481f, 1.0f }
+    , m_BackColor{0.0f, 0.135f, 0.481f, 1.0f}
 {
     qDebug() << "[QDirect3D9Widget::QDirect3D9Widget] - Widget Handle: " << m_hWnd;
 
@@ -39,8 +38,7 @@ QDirect3D9Widget::QDirect3D9Widget(QWidget * parent)
     setAttribute(Qt::WA_NoSystemBackground);
 }
 
-QDirect3D9Widget::~QDirect3D9Widget()
-{ }
+QDirect3D9Widget::~QDirect3D9Widget() {}
 
 void QDirect3D9Widget::release()
 {
@@ -95,25 +93,25 @@ bool QDirect3D9Widget::init()
     }
 
     memset(&m_PresentParams, 0, sizeof(m_PresentParams));
-    m_PresentParams.Windowed = true;
-    m_PresentParams.SwapEffect = D3DSWAPEFFECT_DISCARD;
-    m_PresentParams.BackBufferFormat = D3DFMT_UNKNOWN;
-    m_PresentParams.EnableAutoDepthStencil = true;
-    m_PresentParams.AutoDepthStencilFormat = D3DFMT_D16;
-    m_PresentParams.BackBufferWidth = width();
-    m_PresentParams.BackBufferHeight = height();
+    m_PresentParams.Windowed                   = true;
+    m_PresentParams.SwapEffect                 = D3DSWAPEFFECT_DISCARD;
+    m_PresentParams.BackBufferFormat           = D3DFMT_UNKNOWN;
+    m_PresentParams.EnableAutoDepthStencil     = true;
+    m_PresentParams.AutoDepthStencilFormat     = D3DFMT_D16;
+    m_PresentParams.BackBufferWidth            = width();
+    m_PresentParams.BackBufferHeight           = height();
     m_PresentParams.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
-    m_PresentParams.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
+    m_PresentParams.PresentationInterval       = D3DPRESENT_INTERVAL_DEFAULT;
 
-    HRESULT hr = m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL,
-                                      m_hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING,
-                                      &m_PresentParams, &m_pDevice);
+    HRESULT hr = m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, m_hWnd,
+                                      D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_PresentParams,
+                                      &m_pDevice);
     // Can't create hardware device, try software.
     if (hr != D3D_OK)
     {
-        DXCall(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_REF,
-                                    m_hWnd, D3DCREATE_SOFTWARE_VERTEXPROCESSING,
-                                    &m_PresentParams, &m_pDevice));
+        DXCall(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_REF, m_hWnd,
+                                    D3DCREATE_SOFTWARE_VERTEXPROCESSING, &m_PresentParams,
+                                    &m_pDevice));
     }
 
     resetEnvironment();
@@ -134,7 +132,9 @@ void QDirect3D9Widget::onFrame()
 
 void QDirect3D9Widget::beginScene()
 {
-    D3DCOLOR clearColor = D3DCOLOR_ARGB(155, (int)(m_BackColor[0]*255.0f), (int)(m_BackColor[1]*255.0f), (int)(m_BackColor[2]*255.0f));
+    D3DCOLOR clearColor =
+        D3DCOLOR_ARGB(155, (int)(m_BackColor[0] * 255.0f), (int)(m_BackColor[1] * 255.0f),
+                      (int)(m_BackColor[2] * 255.0f));
     DXCall(m_pDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, clearColor, 1.0f, 0));
     DXCall(m_pDevice->BeginScene());
 }
@@ -142,19 +142,17 @@ void QDirect3D9Widget::beginScene()
 void QDirect3D9Widget::endScene()
 {
     DXCall(m_pDevice->EndScene());
-    RECT rc = { rect().left(), rect().top(), rect().right(), rect().bottom() };
+    RECT    rc = {rect().left(), rect().top(), rect().right(), rect().bottom()};
     HRESULT hr = m_pDevice->Present(&rc, &rc, m_hWnd, NULL);
     if (hr == D3DERR_DEVICELOST && m_pDevice->TestCooperativeLevel() == D3DERR_DEVICENOTRESET)
-    {
-        onReset();
-    }
+    { onReset(); }
 }
 
 void QDirect3D9Widget::tick()
 {
     // TODO: Update your scene here. For aesthetics reasons, only do it here if it's an
     // important component, otherwise do it in the MainWindow.
-    //m_pCamera->Tick();
+    // m_pCamera->Tick();
 
     emit ticked();
 }
@@ -163,14 +161,14 @@ void QDirect3D9Widget::render()
 {
     // TODO: Present your scene here. For aesthetics reasons, only do it here if it's an
     // important component, otherwise do it in the MainWindow.
-    //m_pCamera->Apply();
+    // m_pCamera->Apply();
 
     emit rendered();
 }
 
 void QDirect3D9Widget::onReset()
 {
-    m_PresentParams.BackBufferWidth = width();
+    m_PresentParams.BackBufferWidth  = width();
     m_PresentParams.BackBufferHeight = height();
     DXCall(m_pDevice->Reset(&m_PresentParams));
 }
@@ -178,9 +176,11 @@ void QDirect3D9Widget::onReset()
 void QDirect3D9Widget::resetEnvironment()
 {
     // TODO: Add your own custom default environment, i.e:
-    //m_pCamera->resetCamera();
+    // m_pCamera->resetCamera();
 
-    D3DCOLOR clearColor = D3DCOLOR_ARGB(155, (int)(m_BackColor[0]*255.0f), (int)(m_BackColor[1]*255.0f), (int)(m_BackColor[2]*255.0f));
+    D3DCOLOR clearColor =
+        D3DCOLOR_ARGB(155, (int)(m_BackColor[0] * 255.0f), (int)(m_BackColor[1] * 255.0f),
+                      (int)(m_BackColor[2] * 255.0f));
     DXCall(m_pDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, clearColor, 1.0f, 0));
     DXCall(m_pDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE));
     DXCall(m_pDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE));
@@ -199,13 +199,14 @@ void QDirect3D9Widget::wheelEvent(QWheelEvent * event)
     {
         // TODO: Update your camera position based on the delta value.
     }
-    else if (event->angleDelta().x() != 0) // horizontal scrolling - mice with another side scroller.
+    else if (event->angleDelta().x() !=
+             0) // horizontal scrolling - mice with another side scroller.
     {
-        //m_pCamera->MouseWheelH += (float)(event->delta() / WHEEL_DELTA);
+        // m_pCamera->MouseWheelH += (float)(event->delta() / WHEEL_DELTA);
     }
     else if (event->angleDelta().y() != 0)
     {
-        //m_pCamera->MouseWheel += (float)(event->delta() / WHEEL_DELTA);
+        // m_pCamera->MouseWheel += (float)(event->delta() / WHEEL_DELTA);
     }
 
     QWidget::wheelEvent(event);
@@ -216,10 +217,9 @@ QPaintEngine * QDirect3D9Widget::paintEngine() const
     return Q_NULLPTR;
 }
 
-void QDirect3D9Widget::paintEvent(QPaintEvent * event)
-{ }
+void QDirect3D9Widget::paintEvent(QPaintEvent * event) {}
 
-void QDirect3D9Widget::resizeEvent(QResizeEvent* event)
+void QDirect3D9Widget::resizeEvent(QResizeEvent * event)
 {
     if (m_bDeviceInitialized)
     {
@@ -234,51 +234,52 @@ bool QDirect3D9Widget::event(QEvent * event)
 {
     switch (event->type())
     {
-    // Workaround for https://bugreports.qt.io/browse/QTBUG-42183 to get key strokes.
-    // To make sure that we always have focus on the widget when we enter the rect area.
-    case QEvent::Enter:
-    case QEvent::FocusIn:
-    case QEvent::FocusAboutToChange:
-        if (::GetFocus() != m_hWnd)
-        {
-            QWidget * nativeParent = this;
-            while (true)
+        // Workaround for https://bugreports.qt.io/browse/QTBUG-42183 to get key strokes.
+        // To make sure that we always have focus on the widget when we enter the rect area.
+        case QEvent::Enter:
+        case QEvent::FocusIn:
+        case QEvent::FocusAboutToChange:
+            if (::GetFocus() != m_hWnd)
             {
-                if (nativeParent->isWindow()) break;
+                QWidget * nativeParent = this;
+                while (true)
+                {
+                    if (nativeParent->isWindow()) break;
 
-                QWidget * parent = nativeParent->nativeParentWidget();
-                if (!parent) break;
+                    QWidget * parent = nativeParent->nativeParentWidget();
+                    if (!parent) break;
 
-                nativeParent = parent;
+                    nativeParent = parent;
+                }
+
+                if (nativeParent && nativeParent != this &&
+                    ::GetFocus() == reinterpret_cast<HWND>(nativeParent->winId()))
+                    ::SetFocus(m_hWnd);
             }
-
-            if (nativeParent && nativeParent != this && ::GetFocus() == reinterpret_cast<HWND>(nativeParent->winId()))
-                ::SetFocus(m_hWnd);
-        }
-        break;
-    case QEvent::KeyPress:
-        emit keyPressed((QKeyEvent *)event);
-        break;
-    case QEvent::MouseMove:
-        emit mouseMoved((QMouseEvent *)event);
-        break;
-    case QEvent::MouseButtonPress:
-        emit mouseClicked((QMouseEvent *)event);
-        break;
-    case QEvent::MouseButtonRelease:
-        emit mouseReleased((QMouseEvent *)event);
-        break;
+            break;
+        case QEvent::KeyPress:
+            emit keyPressed((QKeyEvent *)event);
+            break;
+        case QEvent::MouseMove:
+            emit mouseMoved((QMouseEvent *)event);
+            break;
+        case QEvent::MouseButtonPress:
+            emit mouseClicked((QMouseEvent *)event);
+            break;
+        case QEvent::MouseButtonRelease:
+            emit mouseReleased((QMouseEvent *)event);
+            break;
     }
 
     return QWidget::event(event);
 }
 
-// NOTE: Native windows messages can be handled here or you can also use the build-in Qt events.
+// NOTE: Native windows messages can be handled here or you can also use the build-in Qt
+// events.
 LRESULT QDirect3D9Widget::WndProc(MSG * pMsg)
 {
     // Process wheel events using Qt's event-system.
-    if (pMsg->message == WM_MOUSEWHEEL || pMsg->message == WM_MOUSEHWHEEL)
-        return false;
+    if (pMsg->message == WM_MOUSEWHEEL || pMsg->message == WM_MOUSEHWHEEL) return false;
 
     return false;
 }
@@ -289,10 +290,10 @@ bool QDirect3D9Widget::nativeEvent(const QByteArray & eventType, void * message,
     Q_UNUSED(eventType);
     Q_UNUSED(result);
 
-#ifdef Q_OS_WIN
-    MSG * pMsg = reinterpret_cast< MSG * >(message);
+#    ifdef Q_OS_WIN
+    MSG * pMsg = reinterpret_cast<MSG *>(message);
     return WndProc(pMsg);
-#endif
+#    endif
 
     return QWidget::nativeEvent(eventType, message, result);
 }
@@ -302,10 +303,10 @@ bool QDirect3D9Widget::winEvent(MSG * message, long * result)
 {
     Q_UNUSED(result);
 
-#ifdef Q_OS_WIN
-    MSG * pMsg = reinterpret_cast< MSG * >(message);
+#    ifdef Q_OS_WIN
+    MSG * pMsg = reinterpret_cast<MSG *>(message);
     return WndProc(pMsg);
-#endif
+#    endif
 
     return QWidget::winEvent(message, result);
 }

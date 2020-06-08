@@ -37,14 +37,14 @@ private:
     void render();
     void renderUI();
 
-// Qt Events
+    // Qt Events
 private:
-    bool                event(QEvent * event) override;
-    void                showEvent(QShowEvent * event) override;
-    QPaintEngine *      paintEngine() const override;
-    void                paintEvent(QPaintEvent * event) override;
-    void                resizeEvent(QResizeEvent * event) override;
-    void                wheelEvent(QWheelEvent * event) override;
+    bool           event(QEvent * event) override;
+    void           showEvent(QShowEvent * event) override;
+    QPaintEngine * paintEngine() const override;
+    void           paintEvent(QPaintEvent * event) override;
+    void           resizeEvent(QResizeEvent * event) override;
+    void           wheelEvent(QWheelEvent * event) override;
 
     LRESULT WINAPI WndProc(MSG * pMsg);
 
@@ -73,45 +73,52 @@ private slots:
     void onFrame();
     void onReset();
 
-// Getters / Setters
+    // Getters / Setters
 public:
     HWND const & nativeHandle() const { return m_hWnd; }
 
-    ID3D11Device * device() const { return m_pDevice; }
-    ID3D11DeviceContext * deviceContext() { return m_pDeviceContext; }
-    IDXGISwapChain * swapChain() { return m_pSwapChain; }
-    ID3D11RenderTargetView* TargetView() const { return m_pRTView; }
+    ID3D11Device *           device() const { return m_pDevice; }
+    ID3D11DeviceContext *    deviceContext() { return m_pDeviceContext; }
+    IDXGISwapChain *         swapChain() { return m_pSwapChain; }
+    ID3D11RenderTargetView * TargetView() const { return m_pRTView; }
 
     bool renderActive() const { return m_bRenderActive; }
     void setRenderActive(bool active) { m_bRenderActive = active; }
 
     DirectX::XMVECTORF32 * BackColor() { return &m_BackColor; }
 
-
 private:
-    ID3D11Device*            m_pDevice;
-    ID3D11DeviceContext*     m_pDeviceContext;
-    IDXGISwapChain*          m_pSwapChain;
-    ID3D11RenderTargetView*  m_pRTView;
+    ID3D11Device *           m_pDevice;
+    ID3D11DeviceContext *    m_pDeviceContext;
+    IDXGISwapChain *         m_pSwapChain;
+    ID3D11RenderTargetView * m_pRTView;
 
-    QTimer                    m_qTimer;
+    QTimer m_qTimer;
 
-    HWND                      m_hWnd;
-    bool                      m_bDeviceInitialized;
+    HWND m_hWnd;
+    bool m_bDeviceInitialized;
 
-    bool                      m_bRenderActive;
-    bool                      m_bStarted;
+    bool m_bRenderActive;
+    bool m_bStarted;
 
-    DirectX::XMVECTORF32      m_BackColor;
+    DirectX::XMVECTORF32 m_BackColor;
 };
-
 
 // ############################################################################
 // ############################## Utils #######################################
 // ############################################################################
-#define ReleaseObject(object) if((object) != Q_NULLPTR) { object->Release(); object = Q_NULLPTR; }
-#define ReleaseHandle(object) if((object) != Q_NULLPTR) { CloseHandle(object); object = Q_NULLPTR; }
-
+#define ReleaseObject(object)                                                                 \
+    if ((object) != Q_NULLPTR)                                                                \
+    {                                                                                         \
+        object->Release();                                                                    \
+        object = Q_NULLPTR;                                                                   \
+    }
+#define ReleaseHandle(object)                                                                 \
+    if ((object) != Q_NULLPTR)                                                                \
+    {                                                                                         \
+        CloseHandle(object);                                                                  \
+        object = Q_NULLPTR;                                                                   \
+    }
 
 inline std::string HrToString(HRESULT hr)
 {
@@ -123,19 +130,20 @@ inline std::string HrToString(HRESULT hr)
 class HrException : public std::runtime_error
 {
 public:
-    HrException(HRESULT hr) : std::runtime_error(HrToString(hr)), m_hr(hr) {}
+    HrException(HRESULT hr)
+        : std::runtime_error(HrToString(hr))
+        , m_hr(hr)
+    {
+    }
     HRESULT Error() const { return m_hr; }
+
 private:
     const HRESULT m_hr;
 };
 
 inline void ThrowIfFailed(HRESULT hr)
 {
-    if (FAILED(hr))
-    {
-        throw HrException(hr);
-    }
+    if (FAILED(hr)) { throw HrException(hr); }
 }
 
 #define DXCall(func) ThrowIfFailed(func)
-

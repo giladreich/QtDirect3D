@@ -21,8 +21,7 @@ using Microsoft::WRL::ComPtr;
 constexpr int FPS_LIMIT    = 60.0f;
 constexpr int MS_PER_FRAME = (int)((1.0f / FPS_LIMIT) * 1000.0f);
 
-
-QDirect3D12Widget::QDirect3D12Widget(QWidget *parent)
+QDirect3D12Widget::QDirect3D12Widget(QWidget * parent)
     : QWidget(parent)
     , m_iCurrFrameIndex(0)
     , m_pDevice(Q_NULLPTR)
@@ -44,7 +43,7 @@ QDirect3D12Widget::QDirect3D12Widget(QWidget *parent)
     , m_bDeviceInitialized(false)
     , m_bRenderActive(false)
     , m_bStarted(false)
-    , m_BackColor{ 0.0f, 0.135f, 0.481f, 1.0f }
+    , m_BackColor{0.0f, 0.135f, 0.481f, 1.0f}
 {
     qDebug() << "[QDirect3D12Widget::QDirect3D12Widget] - Widget Handle: " << m_hWnd;
 
@@ -62,8 +61,7 @@ QDirect3D12Widget::QDirect3D12Widget(QWidget *parent)
     setAttribute(Qt::WA_NoSystemBackground);
 }
 
-QDirect3D12Widget::~QDirect3D12Widget()
-{ }
+QDirect3D12Widget::~QDirect3D12Widget() {}
 
 void QDirect3D12Widget::release()
 {
@@ -76,13 +74,11 @@ void QDirect3D12Widget::release()
     ImGui_ImplWin32_Shutdown();
     ImGui::DestroyContext();
 
-    for (UINT i = 0; i < FRAME_COUNT; i++)
-        ReleaseObject(m_pRTVResources[i]);
+    for (UINT i = 0; i < FRAME_COUNT; i++) ReleaseObject(m_pRTVResources[i]);
     ReleaseObject(m_pSwapChain);
     ReleaseHandle(m_hSwapChainEvent);
     ReleaseObject(m_pCommandQueue);
-    for (UINT i = 0; i < FRAME_COUNT; i++)
-        ReleaseObject(m_pCommandAllocators[i]);
+    for (UINT i = 0; i < FRAME_COUNT; i++) ReleaseObject(m_pCommandAllocators[i]);
     ReleaseObject(m_pCommandList);
     ReleaseObject(m_pRTVDescHeap);
     ReleaseObject(m_pSrvDescHeap);
@@ -116,7 +112,7 @@ void QDirect3D12Widget::continueFrames()
     m_bRenderActive = true;
 }
 
-void QDirect3D12Widget::showEvent(QShowEvent* event)
+void QDirect3D12Widget::showEvent(QShowEvent * event)
 {
     if (!m_bDeviceInitialized)
     {
@@ -161,52 +157,54 @@ void QDirect3D12Widget::create3DDevice()
     // Try and get hardware adapter compatible with d3d12, if not found, use wrap.
     ComPtr<IDXGIAdapter1> adapter;
     getHardwareAdapter(m_pFactory, adapter.GetAddressOf());
-    if (!adapter)
-        DXCall(m_pFactory->EnumWarpAdapter(IID_PPV_ARGS(&adapter)));
+    if (!adapter) DXCall(m_pFactory->EnumWarpAdapter(IID_PPV_ARGS(&adapter)));
 
     DXCall(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_pDevice)));
 
     // Describe and create the command queue.
     D3D12_COMMAND_QUEUE_DESC queueDesc = {};
-    queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-    queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+    queueDesc.Flags                    = D3D12_COMMAND_QUEUE_FLAG_NONE;
+    queueDesc.Type                     = D3D12_COMMAND_LIST_TYPE_DIRECT;
     DXCall(m_pDevice->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&m_pCommandQueue)));
 
     // Describe and create the swap chain.
     {
         DXGI_SWAP_CHAIN_DESC1 sd = {};
-        sd.BufferCount = FRAME_COUNT;
-        sd.Width = width();
-        sd.Height = height();
-        sd.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-        //sd.Flags = DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
-        sd.Flags = 0;
-        sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-        sd.SampleDesc.Count = 1;
+        sd.BufferCount           = FRAME_COUNT;
+        sd.Width                 = width();
+        sd.Height                = height();
+        sd.Format                = DXGI_FORMAT_R8G8B8A8_UNORM;
+        // sd.Flags = DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
+        sd.Flags              = 0;
+        sd.BufferUsage        = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+        sd.SampleDesc.Count   = 1;
         sd.SampleDesc.Quality = 0;
-        sd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-        sd.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
-        sd.Scaling = DXGI_SCALING_NONE;
-        sd.Stereo = FALSE;
+        sd.SwapEffect         = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+        sd.AlphaMode          = DXGI_ALPHA_MODE_UNSPECIFIED;
+        sd.Scaling            = DXGI_SCALING_NONE;
+        sd.Stereo             = FALSE;
 
         DXGI_SWAP_CHAIN_FULLSCREEN_DESC fsSd = {};
-        fsSd.Windowed = TRUE;
+        fsSd.Windowed                        = TRUE;
 
         ComPtr<IDXGISwapChain1> swapChain1;
-        DXCall(m_pFactory->CreateSwapChainForHwnd(m_pCommandQueue, m_hWnd, &sd, &fsSd, Q_NULLPTR, swapChain1.GetAddressOf()));
+        DXCall(m_pFactory->CreateSwapChainForHwnd(m_pCommandQueue, m_hWnd, &sd, &fsSd,
+                                                  Q_NULLPTR, swapChain1.GetAddressOf()));
         DXCall(swapChain1->QueryInterface(IID_PPV_ARGS(&m_pSwapChain)));
         m_iCurrFrameIndex = m_pSwapChain->GetCurrentBackBufferIndex();
     }
 
     // Create render target view(RTV) descriptor heaps and handles.
     D3D12_DESCRIPTOR_HEAP_DESC rtvDesc = {};
-    rtvDesc.NumDescriptors = FRAME_COUNT;
-    rtvDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-    rtvDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+    rtvDesc.NumDescriptors             = FRAME_COUNT;
+    rtvDesc.Type                       = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+    rtvDesc.Flags                      = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
     DXCall(m_pDevice->CreateDescriptorHeap(&rtvDesc, IID_PPV_ARGS(&m_pRTVDescHeap)));
-    m_iRTVDescSize = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+    m_iRTVDescSize =
+        m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
-    CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_pRTVDescHeap->GetCPUDescriptorHandleForHeapStart());
+    CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(
+        m_pRTVDescHeap->GetCPUDescriptorHandleForHeapStart());
     for (UINT i = 0; i < FRAME_COUNT; i++)
     {
         m_RTVDescriptors[i] = rtvHandle;
@@ -217,34 +215,36 @@ void QDirect3D12Widget::create3DDevice()
 
     // Create shader resource view(SRV) descriptor heap.
     D3D12_DESCRIPTOR_HEAP_DESC srvDesc = {};
-    srvDesc.NumDescriptors = 1;
-    srvDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-    srvDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+    srvDesc.NumDescriptors             = 1;
+    srvDesc.Type                       = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+    srvDesc.Flags                      = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
     DXCall(m_pDevice->CreateDescriptorHeap(&srvDesc, IID_PPV_ARGS(&m_pSrvDescHeap)));
 
     // Create command allocator for each frame.
     for (UINT i = 0; i < FRAME_COUNT; i++)
     {
-        DXCall(m_pDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_pCommandAllocators[i])));
+        DXCall(m_pDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT,
+                                                 IID_PPV_ARGS(&m_pCommandAllocators[i])));
     }
 
-    // Create command list. We don't create PSO here, so we set it to Q_NULLPTR to use the default PSO.
-    // Command list by default set on recording state when created, therefore we close it for now.
-    DXCall(m_pDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_pCommandAllocators[m_iCurrFrameIndex],
-        Q_NULLPTR, IID_PPV_ARGS(&m_pCommandList)));
+    // Create command list. We don't create PSO here, so we set it to Q_NULLPTR to use the
+    // default PSO. Command list by default set on recording state when created, therefore we
+    // close it for now.
+    DXCall(m_pDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT,
+                                        m_pCommandAllocators[m_iCurrFrameIndex], Q_NULLPTR,
+                                        IID_PPV_ARGS(&m_pCommandList)));
     DXCall(m_pCommandList->Close());
 
-
     // Create synchronized objects.
-    DXCall(m_pDevice->CreateFence(m_iFenceValues[m_iCurrFrameIndex], D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_pFence)));
+    DXCall(m_pDevice->CreateFence(m_iFenceValues[m_iCurrFrameIndex], D3D12_FENCE_FLAG_NONE,
+                                  IID_PPV_ARGS(&m_pFence)));
     m_iFenceValues[m_iCurrFrameIndex]++;
 
     m_hFenceEvent = CreateEvent(Q_NULLPTR, FALSE, FALSE, Q_NULLPTR);
-    if (!m_hFenceEvent)
-        DXCall(HRESULT_FROM_WIN32(GetLastError()));
+    if (!m_hFenceEvent) DXCall(HRESULT_FROM_WIN32(GetLastError()));
 
-    //DXCall(m_pSwapChain->SetMaximumFrameLatency(FRAME_COUNT));
-    //m_hSwapChainEvent = m_pSwapChain->GetFrameLatencyWaitableObject();
+    // DXCall(m_pSwapChain->SetMaximumFrameLatency(FRAME_COUNT));
+    // m_hSwapChainEvent = m_pSwapChain->GetFrameLatencyWaitableObject();
 
     // Wait for the GPU to complete our setup before proceeding.
     waitForGpu();
@@ -254,20 +254,21 @@ void QDirect3D12Widget::createImGuiContext()
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGuiIO & io = ImGui::GetIO();
+    (void)io;
     ImGui::StyleColorsDark();
 
     ImGui_ImplWin32_Init(m_hWnd);
-    ImGui_ImplDX12_Init(m_pDevice, FRAME_COUNT,
-        DXGI_FORMAT_R8G8B8A8_UNORM, m_pSrvDescHeap,
-        m_pSrvDescHeap->GetCPUDescriptorHandleForHeapStart(),
-        m_pSrvDescHeap->GetGPUDescriptorHandleForHeapStart());
+    ImGui_ImplDX12_Init(m_pDevice, FRAME_COUNT, DXGI_FORMAT_R8G8B8A8_UNORM, m_pSrvDescHeap,
+                        m_pSrvDescHeap->GetCPUDescriptorHandleForHeapStart(),
+                        m_pSrvDescHeap->GetGPUDescriptorHandleForHeapStart());
 }
 
 void QDirect3D12Widget::onFrame()
 {
-    // The ImGui and scene frames will always be rendered so the user can interact with the gui even if m_bRenderActive is false.
-    // But we are not going to update the scene so it remains frozen.
+    // The ImGui and scene frames will always be rendered so the user can interact with the gui
+    // even if m_bRenderActive is false. But we are not going to update the scene so it remains
+    // frozen.
     if (m_bRenderActive) tick();
 
     beginScene();
@@ -281,9 +282,10 @@ void QDirect3D12Widget::beginScene()
     DXCall(m_pCommandAllocators[m_iCurrFrameIndex]->Reset());
     DXCall(m_pCommandList->Reset(m_pCommandAllocators[m_iCurrFrameIndex], Q_NULLPTR));
 
-    m_pCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
-        m_pRTVResources[m_iCurrFrameIndex], D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET)
-    );
+    m_pCommandList->ResourceBarrier(
+        1, &CD3DX12_RESOURCE_BARRIER::Transition(m_pRTVResources[m_iCurrFrameIndex],
+                                                 D3D12_RESOURCE_STATE_PRESENT,
+                                                 D3D12_RESOURCE_STATE_RENDER_TARGET));
 
     ImGui_ImplDX12_NewFrame();
     ImGui_ImplWin32_NewFrame();
@@ -295,12 +297,14 @@ void QDirect3D12Widget::endScene()
     ImGui::Render();
     ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), m_pCommandList);
 
-    m_pCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
-        m_pRTVResources[m_iCurrFrameIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT)
-    );
+    m_pCommandList->ResourceBarrier(
+        1, &CD3DX12_RESOURCE_BARRIER::Transition(m_pRTVResources[m_iCurrFrameIndex],
+                                                 D3D12_RESOURCE_STATE_RENDER_TARGET,
+                                                 D3D12_RESOURCE_STATE_PRESENT));
 
     DXCall(m_pCommandList->Close());
-    m_pCommandQueue->ExecuteCommandLists(1, reinterpret_cast<ID3D12CommandList* const*>(&m_pCommandList));
+    m_pCommandQueue->ExecuteCommandLists(
+        1, reinterpret_cast<ID3D12CommandList * const *>(&m_pCommandList));
 
     DXCall(m_pSwapChain->Present(1, 0));
 
@@ -311,7 +315,7 @@ void QDirect3D12Widget::tick()
 {
     // TODO: Update your scene here. For aesthetics reasons, only do it here if it's an
     // important component, otherwise do it in the MainWindow.
-    //m_pCamera->Tick();
+    // m_pCamera->Tick();
 
     emit ticked();
 }
@@ -319,13 +323,16 @@ void QDirect3D12Widget::tick()
 void QDirect3D12Widget::render()
 {
     // Start recording the render commands
-    m_pCommandList->ClearRenderTargetView(m_RTVDescriptors[m_iCurrFrameIndex], reinterpret_cast<const float*>(&m_BackColor), 0, Q_NULLPTR);
-    m_pCommandList->OMSetRenderTargets(1, &m_RTVDescriptors[m_iCurrFrameIndex], FALSE, Q_NULLPTR);
+    m_pCommandList->ClearRenderTargetView(m_RTVDescriptors[m_iCurrFrameIndex],
+                                          reinterpret_cast<const float *>(&m_BackColor), 0,
+                                          Q_NULLPTR);
+    m_pCommandList->OMSetRenderTargets(1, &m_RTVDescriptors[m_iCurrFrameIndex], FALSE,
+                                       Q_NULLPTR);
     m_pCommandList->SetDescriptorHeaps(1, &m_pSrvDescHeap);
 
     // TODO: Present your scene here. For aesthetics reasons, only do it here if it's an
     // important component, otherwise do it in the MainWindow.
-    //m_pCamera->Apply();
+    // m_pCamera->Apply();
 
     emit rendered(m_pCommandList);
 }
@@ -337,13 +344,13 @@ void QDirect3D12Widget::renderUI()
 
 void QDirect3D12Widget::onReset()
 {
-    // TODO(Gilad): FIXME: this needs to be done in a synchronized manner. Need to look at DirectX-12 samples here:
-    // https://github.com/microsoft/DirectX-Graphics-Samples
-    // how to properly do this without leaking memory.
+    // TODO(Gilad): FIXME: this needs to be done in a synchronized manner. Need to look at
+    // DirectX-12 samples here: https://github.com/microsoft/DirectX-Graphics-Samples how to
+    // properly do this without leaking memory.
     pauseFrames();
-    //ImGui_ImplDX12_InvalidateDeviceObjects();
+    // ImGui_ImplDX12_InvalidateDeviceObjects();
     resizeSwapChain(width(), height());
-    //ImGui_ImplDX12_CreateDeviceObjects();
+    // ImGui_ImplDX12_CreateDeviceObjects();
     continueFrames();
 }
 
@@ -385,7 +392,8 @@ void QDirect3D12Widget::moveToNextFrame()
     m_iCurrFrameIndex = m_pSwapChain->GetCurrentBackBufferIndex();
     if (m_pFence->GetCompletedValue() < m_iFenceValues[m_iCurrFrameIndex])
     {
-        DXCall(m_pFence->SetEventOnCompletion(m_iFenceValues[m_iCurrFrameIndex], m_hFenceEvent));
+        DXCall(
+            m_pFence->SetEventOnCompletion(m_iFenceValues[m_iCurrFrameIndex], m_hFenceEvent));
         WaitForSingleObject(m_hFenceEvent, INFINITE);
     }
 
@@ -394,40 +402,41 @@ void QDirect3D12Widget::moveToNextFrame()
 
 void QDirect3D12Widget::resizeSwapChain(int width, int height)
 {
-    //ReleaseHandle(m_hSwapChainEvent);
+    // ReleaseHandle(m_hSwapChainEvent);
     cleanupRenderTarget();
 
     if (m_pSwapChain)
     {
-        DXCall(m_pSwapChain->ResizeBuffers(FRAME_COUNT, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 0));
+        DXCall(m_pSwapChain->ResizeBuffers(FRAME_COUNT, width, height,
+                                           DXGI_FORMAT_R8G8B8A8_UNORM, 0));
     }
     else
     {
         DXGI_SWAP_CHAIN_DESC1 sd = {};
-        sd.BufferCount = FRAME_COUNT;
-        sd.Width = width;
-        sd.Height = height;
-        sd.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-        //sd.Flags = DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
-        sd.Flags = 0;
-        sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-        sd.SampleDesc.Count = 1;
+        sd.BufferCount           = FRAME_COUNT;
+        sd.Width                 = width;
+        sd.Height                = height;
+        sd.Format                = DXGI_FORMAT_R8G8B8A8_UNORM;
+        // sd.Flags = DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
+        sd.Flags              = 0;
+        sd.BufferUsage        = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+        sd.SampleDesc.Count   = 1;
         sd.SampleDesc.Quality = 0;
-        sd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-        sd.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
-        sd.Scaling = DXGI_SCALING_NONE;
-        sd.Stereo = FALSE;
+        sd.SwapEffect         = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+        sd.AlphaMode          = DXGI_ALPHA_MODE_UNSPECIFIED;
+        sd.Scaling            = DXGI_SCALING_NONE;
+        sd.Stereo             = FALSE;
 
         DXGI_SWAP_CHAIN_FULLSCREEN_DESC fsSd = {};
-        fsSd.Windowed = TRUE;
+        fsSd.Windowed                        = TRUE;
 
         ComPtr<IDXGISwapChain1> swapChain;
-        DXCall(m_pFactory->CreateSwapChainForHwnd(m_pCommandQueue, m_hWnd, &sd, &fsSd, Q_NULLPTR,
-            swapChain.GetAddressOf()));
+        DXCall(m_pFactory->CreateSwapChainForHwnd(m_pCommandQueue, m_hWnd, &sd, &fsSd,
+                                                  Q_NULLPTR, swapChain.GetAddressOf()));
         DXCall(swapChain->QueryInterface(IID_PPV_ARGS(&m_pSwapChain)));
 
-        //DXCall(m_pSwapChain->SetMaximumFrameLatency(FRAME_COUNT));
-        //m_hSwapChainEvent = m_pSwapChain->GetFrameLatencyWaitableObject();
+        // DXCall(m_pSwapChain->SetMaximumFrameLatency(FRAME_COUNT));
+        // m_hSwapChainEvent = m_pSwapChain->GetFrameLatencyWaitableObject();
     }
 
     createRenderTarget();
@@ -435,22 +444,26 @@ void QDirect3D12Widget::resizeSwapChain(int width, int height)
     m_iCurrFrameIndex = m_pSwapChain->GetCurrentBackBufferIndex();
 }
 
-void QDirect3D12Widget::getHardwareAdapter(IDXGIFactory2* pFactory, IDXGIAdapter1** ppAdapter)
+void QDirect3D12Widget::getHardwareAdapter(IDXGIFactory2 *  pFactory,
+                                           IDXGIAdapter1 ** ppAdapter)
 {
     ComPtr<IDXGIAdapter1> adapter;
     *ppAdapter = Q_NULLPTR;
 
-    for (UINT adapterIndex = 0; DXGI_ERROR_NOT_FOUND != pFactory->EnumAdapters1(adapterIndex, &adapter); ++adapterIndex)
+    for (UINT adapterIndex = 0;
+         DXGI_ERROR_NOT_FOUND != pFactory->EnumAdapters1(adapterIndex, &adapter);
+         ++adapterIndex)
     {
         DXGI_ADAPTER_DESC1 desc;
         adapter->GetDesc1(&desc);
 
         // Skip software adapter.
-        if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE)
-            continue;
+        if (desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) continue;
 
-        // Check to see if the adapter supports Direct3D 12, but don't create the actual device yet.
-        if (SUCCEEDED(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0, _uuidof(ID3D12Device), Q_NULLPTR)))
+        // Check to see if the adapter supports Direct3D 12, but don't create the actual device
+        // yet.
+        if (SUCCEEDED(D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0,
+                                        _uuidof(ID3D12Device), Q_NULLPTR)))
             break;
     }
 
@@ -460,20 +473,21 @@ void QDirect3D12Widget::getHardwareAdapter(IDXGIFactory2* pFactory, IDXGIAdapter
 void QDirect3D12Widget::resetEnvironment()
 {
     // TODO: Add your own custom default environment, i.e:
-    //m_pCamera->resetCamera();
+    // m_pCamera->resetCamera();
 
     onReset();
 
     if (!m_bRenderActive) tick();
 }
 
-void QDirect3D12Widget::wheelEvent(QWheelEvent* event)
+void QDirect3D12Widget::wheelEvent(QWheelEvent * event)
 {
     if (!ImGui::IsAnyWindowHovered() && event->angleDelta().x() == 0)
     {
         // TODO: Update your camera position based on the delta value.
     }
-    else if (event->angleDelta().x() != 0) // horizontal scrolling - mice with another side scroller.
+    else if (event->angleDelta().x() !=
+             0) // horizontal scrolling - mice with another side scroller.
     {
         ImGui::GetIO().MouseWheelH += (float)(event->delta() / WHEEL_DELTA);
     }
@@ -485,15 +499,14 @@ void QDirect3D12Widget::wheelEvent(QWheelEvent* event)
     QWidget::wheelEvent(event);
 }
 
-QPaintEngine* QDirect3D12Widget::paintEngine() const
+QPaintEngine * QDirect3D12Widget::paintEngine() const
 {
     return Q_NULLPTR;
 }
 
-void QDirect3D12Widget::paintEvent(QPaintEvent * event)
-{ }
+void QDirect3D12Widget::paintEvent(QPaintEvent * event) {}
 
-void QDirect3D12Widget::resizeEvent(QResizeEvent* event)
+void QDirect3D12Widget::resizeEvent(QResizeEvent * event)
 {
     if (m_bDeviceInitialized)
     {
@@ -508,55 +521,55 @@ bool QDirect3D12Widget::event(QEvent * event)
 {
     switch (event->type())
     {
-    // Workaround for https://bugreports.qt.io/browse/QTBUG-42183 to get key strokes.
-    // To make sure that we always have focus on the widget when we enter the rect area.
-    case QEvent::Enter:
-    case QEvent::FocusIn:
-    case QEvent::FocusAboutToChange:
-        if (::GetFocus() != m_hWnd)
-        {
-            QWidget * nativeParent = this;
-            while (true)
+        // Workaround for https://bugreports.qt.io/browse/QTBUG-42183 to get key strokes.
+        // To make sure that we always have focus on the widget when we enter the rect area.
+        case QEvent::Enter:
+        case QEvent::FocusIn:
+        case QEvent::FocusAboutToChange:
+            if (::GetFocus() != m_hWnd)
             {
-                if (nativeParent->isWindow()) break;
+                QWidget * nativeParent = this;
+                while (true)
+                {
+                    if (nativeParent->isWindow()) break;
 
-                QWidget * parent = nativeParent->nativeParentWidget();
-                if (!parent) break;
+                    QWidget * parent = nativeParent->nativeParentWidget();
+                    if (!parent) break;
 
-                nativeParent = parent;
+                    nativeParent = parent;
+                }
+
+                if (nativeParent && nativeParent != this &&
+                    ::GetFocus() == reinterpret_cast<HWND>(nativeParent->winId()))
+                    ::SetFocus(m_hWnd);
             }
-
-            if (nativeParent && nativeParent != this && ::GetFocus() == reinterpret_cast<HWND>(nativeParent->winId()))
-                ::SetFocus(m_hWnd);
-        }
-        break;
-    case QEvent::KeyPress:
-        emit keyPressed((QKeyEvent*)event);
-        break;
-    case QEvent::MouseMove:
-        if (!ImGui::IsAnyWindowHovered())
-            emit mouseMoved((QMouseEvent*)event);
-        break;
-    case QEvent::MouseButtonPress:
-        if (!ImGui::IsAnyWindowHovered() && !ImGui::IsAnyWindowFocused())
-            emit mouseClicked((QMouseEvent*)event);
-        break;
-    case QEvent::MouseButtonRelease:
-        if (!ImGui::IsAnyWindowHovered() && !ImGui::IsAnyWindowFocused())
-            emit mouseReleased((QMouseEvent*)event);
-        break;
+            break;
+        case QEvent::KeyPress:
+            emit keyPressed((QKeyEvent *)event);
+            break;
+        case QEvent::MouseMove:
+            if (!ImGui::IsAnyWindowHovered()) emit mouseMoved((QMouseEvent *)event);
+            break;
+        case QEvent::MouseButtonPress:
+            if (!ImGui::IsAnyWindowHovered() && !ImGui::IsAnyWindowFocused())
+                emit mouseClicked((QMouseEvent *)event);
+            break;
+        case QEvent::MouseButtonRelease:
+            if (!ImGui::IsAnyWindowHovered() && !ImGui::IsAnyWindowFocused())
+                emit mouseReleased((QMouseEvent *)event);
+            break;
     }
 
     return QWidget::event(event);
 }
 
-extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+extern LRESULT
+    ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 LRESULT QDirect3D12Widget::WndProc(MSG * pMsg)
 {
     // Process wheel events using Qt's event-system.
-    if (pMsg->message == WM_MOUSEWHEEL || pMsg->message == WM_MOUSEHWHEEL)
-        return false;
+    if (pMsg->message == WM_MOUSEWHEEL || pMsg->message == WM_MOUSEHWHEEL) return false;
 
     if (ImGui_ImplWin32_WndProcHandler(pMsg->hwnd, pMsg->message, pMsg->wParam, pMsg->lParam))
         return true;
@@ -565,15 +578,17 @@ LRESULT QDirect3D12Widget::WndProc(MSG * pMsg)
 }
 
 #if QT_VERSION >= 0x050000
-bool QDirect3D12Widget::nativeEvent(const QByteArray & eventType, void * message, long * result)
+bool QDirect3D12Widget::nativeEvent(const QByteArray & eventType,
+                                    void *             message,
+                                    long *             result)
 {
     Q_UNUSED(eventType);
     Q_UNUSED(result);
 
-#ifdef Q_OS_WIN
+#    ifdef Q_OS_WIN
     MSG * pMsg = reinterpret_cast<MSG *>(message);
     return WndProc(pMsg);
-#endif
+#    endif
 
     return QWidget::nativeEvent(eventType, message, result);
 }
@@ -583,10 +598,10 @@ bool QDirect3D12Widget::winEvent(MSG * message, long * result)
 {
     Q_UNUSED(result);
 
-#ifdef Q_OS_WIN
+#    ifdef Q_OS_WIN
     MSG * pMsg = reinterpret_cast<MSG *>(message);
     return WndProc(pMsg);
-#endif
+#    endif
 
     return QWidget::winEvent(message, result);
 }

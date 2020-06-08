@@ -12,7 +12,6 @@
 #include <DirectXMath.h>
 #include <D3Dcompiler.h>
 
-
 class QDirect3D9Widget : public QWidget
 {
     Q_OBJECT
@@ -37,14 +36,14 @@ private:
     void tick();
     void render();
 
-// Qt Events
+    // Qt Events
 private:
-    bool                event(QEvent * event) override;
-    void                showEvent(QShowEvent * event) override;
-    QPaintEngine *      paintEngine() const override;
-    void                paintEvent(QPaintEvent * event) override;
-    void                resizeEvent(QResizeEvent * event) override;
-    void                wheelEvent(QWheelEvent * event) override;
+    bool           event(QEvent * event) override;
+    void           showEvent(QShowEvent * event) override;
+    QPaintEngine * paintEngine() const override;
+    void           paintEvent(QPaintEvent * event) override;
+    void           resizeEvent(QResizeEvent * event) override;
+    void           wheelEvent(QWheelEvent * event) override;
 
     LRESULT WINAPI WndProc(MSG * pMsg);
 
@@ -72,13 +71,13 @@ private slots:
     void onFrame();
     void onReset();
 
-// Getters / Setters
+    // Getters / Setters
 public:
     HWND const & nativeHandle() const { return m_hWnd; }
 
-    IDirect3DDevice9 * device() const { return m_pDevice; }
+    IDirect3DDevice9 *      device() const { return m_pDevice; }
     D3DPRESENT_PARAMETERS * devicePresentParams() { return &m_PresentParams; }
-    IDirect3D9 * direct3D() const { return m_pD3D; }
+    IDirect3D9 *            direct3D() const { return m_pD3D; }
 
     bool renderActive() const { return m_bRenderActive; }
     void setRenderActive(bool active) { m_bRenderActive = active; }
@@ -86,28 +85,36 @@ public:
     DirectX::XMVECTORF32 * BackColor() { return &m_BackColor; }
 
 private:
-    IDirect3DDevice9 *       m_pDevice;
-    IDirect3D9 *             m_pD3D;
-    D3DPRESENT_PARAMETERS    m_PresentParams;
+    IDirect3DDevice9 *    m_pDevice;
+    IDirect3D9 *          m_pD3D;
+    D3DPRESENT_PARAMETERS m_PresentParams;
 
-    QTimer                    m_qTimer;
+    QTimer m_qTimer;
 
-    HWND                      m_hWnd;
-    bool                      m_bDeviceInitialized;
+    HWND m_hWnd;
+    bool m_bDeviceInitialized;
 
-    bool                      m_bRenderActive;
-    bool                      m_bStarted;
+    bool m_bRenderActive;
+    bool m_bStarted;
 
-    DirectX::XMVECTORF32      m_BackColor;
+    DirectX::XMVECTORF32 m_BackColor;
 };
-
 
 // ############################################################################
 // ############################## Utils #######################################
 // ############################################################################
-#define ReleaseObject(object) if((object) != Q_NULLPTR) { object->Release(); object = Q_NULLPTR; }
-#define ReleaseHandle(object) if((object) != Q_NULLPTR) { CloseHandle(object); object = Q_NULLPTR; }
-
+#define ReleaseObject(object)                                                                 \
+    if ((object) != Q_NULLPTR)                                                                \
+    {                                                                                         \
+        object->Release();                                                                    \
+        object = Q_NULLPTR;                                                                   \
+    }
+#define ReleaseHandle(object)                                                                 \
+    if ((object) != Q_NULLPTR)                                                                \
+    {                                                                                         \
+        CloseHandle(object);                                                                  \
+        object = Q_NULLPTR;                                                                   \
+    }
 
 inline std::string HrToString(HRESULT hr)
 {
@@ -119,19 +126,20 @@ inline std::string HrToString(HRESULT hr)
 class HrException : public std::runtime_error
 {
 public:
-    HrException(HRESULT hr) : std::runtime_error(HrToString(hr)), m_hr(hr) {}
+    HrException(HRESULT hr)
+        : std::runtime_error(HrToString(hr))
+        , m_hr(hr)
+    {
+    }
     HRESULT Error() const { return m_hr; }
+
 private:
     const HRESULT m_hr;
 };
 
 inline void ThrowIfFailed(HRESULT hr)
 {
-    if (FAILED(hr))
-    {
-        throw HrException(hr);
-    }
+    if (FAILED(hr)) { throw HrException(hr); }
 }
 
 #define DXCall(func) ThrowIfFailed(func)
-
