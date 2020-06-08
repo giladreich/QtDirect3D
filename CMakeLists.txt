@@ -31,3 +31,18 @@ endif()
 
 add_subdirectory(source)
 add_subdirectory(examples)
+
+##################################################################################################################
+# clang-format
+##################################################################################################################
+if (USE_CLANG_FORMAT)
+    set(DIRS_TO_FORMAT
+        source/*
+        examples/*
+    )
+    file(GLOB_RECURSE FILES_TO_FORMAT ${DIRS_TO_FORMAT})
+    list(FILTER FILES_TO_FORMAT INCLUDE REGEX "^.*\.(cpp|h|hpp|cc|cxx)$")
+    list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+    include(ClangFormat)
+    clangformat_setup(${FILES_TO_FORMAT})
+endif()
