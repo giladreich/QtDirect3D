@@ -5,9 +5,11 @@ set(THIRDPARTY_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "")
 
 set(IMGUI_ROOT_DIR ${THIRDPARTY_ROOT_DIR}/imgui CACHE STRING "")
 
-if (NOT EXISTS ${IMGUI_ROOT_DIR})
+if (NOT EXISTS "${IMGUI_ROOT_DIR}/imgui.h")
     find_package(Git REQUIRED)
-    if (NOT Git_FOUND)
+    if (Git_FOUND)
+        message(STATUS "[INFO] Found Git Client -> ${GIT_EXECUTABLE}")
+    else()
         message(FATAL_ERROR "[ERROR] Failed to find Git client. Please install Git and try again.")
     endif()
     
