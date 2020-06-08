@@ -12,4 +12,4 @@ option(INCLUDE_DX11_EXAMPLE  "Set to ON if you want to include Direct3D11 Exampl
 
 option(INCLUDE_DX12_EXAMPLE  "Set to ON if you want to include Direct3D12 Examples."  ON)
 
-option(USE_CLANG_FORMAT      "Set to ON if you want to generate clang-format custom target." ON)
+option(USE_CLANG_FORMAT      "Set to ON if you want to generate clang-format custom target." OFF)
