@@ -1,5 +1,9 @@
 
-<p align="center"><img src="media/qt_dx_cube.png" width=256 height=256></p>
+<p align="center"><img src="/media/qt_dx_cube.png" width=256 height=256></p>
+
+![build](https://github.com/giladreich/QtDirect3D/workflows/build/badge.svg) [![Pull Requests Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
+
+---
 
 # Qt Direct3D / DirectX Widget
 
@@ -112,5 +116,5 @@ See also the list of [contributors](https://github.com/giladreich/QtDirect3D/gra
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [license](/docs/LICENSE) for more details
 
