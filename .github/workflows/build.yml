@@ -1,4 +1,4 @@
-name: build
+name: QtDirect3D Build Matrix
 
 on:
   push: {}
@@ -6,6 +6,7 @@ on:
 
 env:
   QT_VERSION: 5.15.0
+  MSC_VERSION: "vc142"
 
 jobs:
   build:
@@ -15,22 +16,27 @@ jobs:
       matrix:
         config:
         - {
-            name: "Windows Latest x64", artifact: "Windows-x64.zip",
-            msvc: win64_msvc2019_64,
+            name: "Windows Latest x64",
             os: windows-latest,
-            environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat",
-            cmake_config: "-G \"Visual Studio 16 2019\" -A x64"
+            arch: "x64",
+            artifact: "Windows-x64-Release.zip",
+            msvc: win64_msvc2019_64,
+            config: "Release",
+            cmake_config: "-G \"Visual Studio 16 2019\" -A x64",
+            vs_env_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
           }
         - {
-            name: "Windows Latest x86", artifact: "Windows-x86.zip",
-            msvc: win32_msvc2019,
+            name: "Windows Latest x86",
             os: windows-latest,
-            environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars32.bat",
-            cmake_config: "-G \"Visual Studio 16 2019\" -A Win32"
+            arch: "x86",
+            artifact: "Windows-x86-Release.zip",
+            msvc: win32_msvc2019,
+            config: "Release",
+            cmake_config: "-G \"Visual Studio 16 2019\" -A Win32",
+            vs_env_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars32.bat"
           }
 
     steps:
-
     - uses: actions/checkout@v2
 
     - name: Download Qt modules
@@ -42,11 +48,20 @@ jobs:
         arch: "${{ matrix.config.msvc }}"
 
     - name: CMake configure
+      id: cmake_configure
       run: |
         mkdir build && cd build
         cmake .. ${{ matrix.config.cmake_config }}
 
     - name: CMake build
+      id: cmake_build
       run: |
         cd build
-        cmake --build .
+        cmake --build . --config ${{ matrix.config.config }} -- /M
+        windeployqt bin/${{ matrix.config.arch }}-${{ env.MSC_VERSION }}/${{ matrix.config.config }}
+
+    - uses: actions/upload-artifact@v2
+      id: upload_artifact
+      with:
+        name: ${{ matrix.config.artifact }}
+        path: ./build/bin/${{ matrix.config.arch }}-${{ env.MSC_VERSION }}/${{ matrix.config.config }}/
