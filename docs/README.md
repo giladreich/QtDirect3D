@@ -16,6 +16,7 @@ There are also Direct3D widgets that supports [Dear ImGui](https://github.com/oc
 
 - [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
+  * [Build Examples](#build-examples)
   * [Using the Widget](#using-the-widget)
   * [Handling Close Event](#handling-close-event)
 - [Show Case](#show-case)
@@ -32,7 +33,6 @@ Clone the repository:
 
 The main interesting directories within this project are `source` and `examples`:
 
-
 * `source` - Containing the widgets that you can copy to your projects - depending on the Direct3D version you use. Note that under each Direct3D version, there are also ImGui widgets - depending on your use case, you can decide which widget to use.
 
 * `examples` - Containing Qt projects that integrate the widgets - showing real examples of how to use and interact with the widgets.
@@ -42,9 +42,16 @@ The main interesting directories within this project are `source` and `examples`
 
 * Visual Studio 2019 - Also note that if you prefer to use Visual Studio as the IDE, rather than QtCreator, make sure to also install [Qt VS Tools](https://marketplace.visualstudio.com/items?itemName=TheQtCompany.QtVisualStudioTools-19123) extension.
 
-* Qt 5.15.0 - msvc2019 & msvc2019_64 (might work with other Qt versions that uses [QtMsBuild](https://www.qt.io/blog/2018/01/24/qt-visual-studio-new-approach-based-msbuild)).
+* Qt 5.15.0 - install the following kits -> msvc2019 & msvc2019_64 (might work with other Qt versions that uses [QtMsBuild](https://www.qt.io/blog/2018/01/24/qt-visual-studio-new-approach-based-msbuild)).
 
 * CMake - You can install any version greater than v12.
+
+#### Build Examples
+
+Building the project can be done in the following ways:
+* [Building with CMake](/docs/BUILD.md/#building-using-cmake).
+* [Building with the VS solution files under the `examples` directory](/docs/BUILD.md/#building-using-visual-studio).
+* [Building using QtCreator](/docs/BUILD.md/#building-using-qtcreator).
 
 #### Using the Widget
 
@@ -166,3 +173,4 @@ See also the list of [contributors](https://github.com/giladreich/QtDirect3D/gra
 ## License
 
 This project is licensed under the MIT License - see the [license](/docs/LICENSE) for more details.
+
