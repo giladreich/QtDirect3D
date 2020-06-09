@@ -29,7 +29,7 @@ QDirect3D9Widget::QDirect3D9Widget(QWidget * parent)
     qDebug() << "[QDirect3D9Widget::QDirect3D9Widget] - Widget Handle: " << m_hWnd;
 
     QPalette pal = palette();
-    pal.setColor(QPalette::Background, Qt::black);
+    pal.setColor(QPalette::Window, Qt::black);
     setAutoFillBackground(true);
     setPalette(pal);
 
@@ -237,11 +237,11 @@ void QDirect3D9Widget::wheelEvent(QWheelEvent * event)
     else if (event->angleDelta().x() !=
              0) // horizontal scrolling - mice with another side scroller.
     {
-        ImGui::GetIO().MouseWheelH += (float)(event->delta() / WHEEL_DELTA);
+        ImGui::GetIO().MouseWheelH += (float)(event->angleDelta().y() / WHEEL_DELTA);
     }
     else if (event->angleDelta().y() != 0)
     {
-        ImGui::GetIO().MouseWheel += (float)(event->delta() / WHEEL_DELTA);
+        ImGui::GetIO().MouseWheel += (float)(event->angleDelta().y() / WHEEL_DELTA);
     }
 
     QWidget::wheelEvent(event);

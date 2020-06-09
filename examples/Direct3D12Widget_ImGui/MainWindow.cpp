@@ -6,6 +6,7 @@
 #include <QStyle>
 #include <QDebug>
 #include <QTime>
+#include <QScreen>
 #include <QMessageBox>
 #include <QCloseEvent>
 #include <QDesktopWidget>
@@ -32,7 +33,7 @@ void MainWindow::adjustWindowSize()
 {
     resize(m_WindowSize.width(), m_WindowSize.height());
     setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, size(),
-                                    qApp->desktop()->availableGeometry()));
+                                    qApp->screens().first()->availableGeometry()));
 }
 
 void MainWindow::addToolbarWidgets()
