@@ -26,7 +26,7 @@ QDirect3D10Widget::QDirect3D10Widget(QWidget * parent)
     qDebug() << "[QDirect3D10Widget::QDirect3D10Widget] - Widget Handle: " << m_hWnd;
 
     QPalette pal = palette();
-    pal.setColor(QPalette::Background, Qt::black);
+    pal.setColor(QPalette::Window, Qt::black);
     setAutoFillBackground(true);
     setPalette(pal);
 
@@ -194,11 +194,11 @@ void QDirect3D10Widget::wheelEvent(QWheelEvent * event)
     else if (event->angleDelta().x() !=
              0) // horizontal scrolling - mice with another side scroller.
     {
-        // m_pCamera->MouseWheelH += (float)(event->delta() / WHEEL_DELTA);
+        // m_pCamera->MouseWheelH += (float)(event->angleDelta().y() / WHEEL_DELTA);
     }
     else if (event->angleDelta().y() != 0)
     {
-        // m_pCamera->MouseWheel += (float)(event->delta() / WHEEL_DELTA);
+        // m_pCamera->MouseWheel += (float)(event->angleDelta().y() / WHEEL_DELTA);
     }
 
     QWidget::wheelEvent(event);
