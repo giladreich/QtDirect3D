@@ -1,65 +1,114 @@
 
 <p align="center"><img src="/media/qt_dx_cube.png" width=256 height=256></p>
 
-![build](https://github.com/giladreich/QtDirect3D/workflows/build/badge.svg) [![Pull Requests Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
+[![Project Status](https://github.com/giladreich/QtDirect3D/workflows/build/badge.svg)](https://github.com/giladreich/QtDirect3D/actions) [![Pull Requests Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
 ---
 
-# Qt Direct3D / DirectX Widget
+# Qt Direct3D / DirectX Widgets
 
-This project contains Direct3D/DirectX widgets to use within the Qt Framework for DirectX 9, 10, 11 and 12.
+This project contains Direct3D widgets to use within the Qt Framework for DirectX 9, 10, 11 and 12.
 
-There are also Direct3D widgets that supports [Dear ImGui](https://github.com/ocornut/imgui), so you can decide whether you want to use only Direct3D widget or Direct3D widget with ImGui.
+There are also Direct3D widgets that supports [Dear ImGui](https://github.com/ocornut/imgui) that you can find within this project.
 
+
+## Contents
+
+- [Getting Started](#getting-started)
+  * [Prerequisites](#prerequisites)
+  * [Using the Widget](#using-the-widget)
+  * [Handling Close Event](#handling-close-event)
+- [Show Case](#show-case)
+- [Motivation](#motivation)
+- [Contributing](#contributing)
+- [Authors](#authors)
+- [License](#license)
 
 ## Getting Started
 
-`git clone --recursive https://github.com/giladreich/QtDirect3D`
+Clone the repository:
 
-Under the `source` directory you'll find the widgets sources for each version. If you want the ImGui widget, you'll find it under `source/QDirect3D*Widget/ImGui`.
+`git clone --recursive https://github.com/giladreich/QtDirect3D.git`
 
-Under the `examples` directory there are few samples to demonstrate how to interact with the widget and how easy it is to get started.
+The main interesting directories within this project are `source` and `examples`:
 
-When you start a new `Qt GUI Application` project, do the following steps:
 
-* Copy the widget you want to use into your project and add it as existing item.
-* In your `MainWindow.ui` file you'll need to promote the `centeralWidget` when you start a fresh project so it will draw the Direct3D widget.
-* Compile and run. 
+* `source` - Containing the widgets that you can copy to your projects - depending on the Direct3D version you use. Note that under each Direct3D version, there are also ImGui widgets - depending on your use case, you can decide which widget to use.
 
-At this point you should have a basic Direct3D scene.
+* `examples` - Containing Qt projects that integrate the widgets - showing real examples of how to use and interact with the widgets.
 
-NOTE: If you're using the demo projects, make sure you have `$(QTDIR)` environment variable to the qt version/kit you have.
 
-### Using the Widget
+#### Prerequisites
 
-In the `MainWindow.h` file, you'll need to create 3(4 if using ImGui) slots:
+* Visual Studio 2019 - Also note that if you prefer to use Visual Studio as the IDE, rather than QtCreator, make sure to also install [Qt VS Tools](https://marketplace.visualstudio.com/items?itemName=TheQtCompany.QtVisualStudioTools-19123) extension.
+
+* Qt 5.15.0 - msvc2019 & msvc2019_64 (might work with other Qt versions that uses [QtMsBuild](https://www.qt.io/blog/2018/01/24/qt-visual-studio-new-approach-based-msbuild)).
+
+* CMake - You can install any version greater than v12.
+
+#### Using the Widget
+
+In your Qt Widgets Application project, do the following steps:
+
+* Copy into your project the widget you chose to use and add it as an existing item.
+* In your `MainWindow.ui` file, you will need to promote the `centeralWidget` to the widget you copied.
+* For simplicity and purpose of this example, rename `centeralWidget` to `view`.
+* Compile in order to let Qt uic & moc compiler do their magic and have proper intellisense.
+
+At this point you should have a basic setup to get started and interact with the widget.
+
+In the `MainWindow.h` file, you will need to create the following Qt slots:
 ```cpp
 public slots:
-	bool init(bool success);
-	void tick();
-	void render();
-	void uiRender(); // ImGui
+    void init(bool success);
+    void tick();
+    void render();
+    void renderUI();
 ```
+<table width=100%>
+  <tr>
+    <th>Slot</th>
+    <th>Remarks</th>
+  </tr>
+  <tr>
+    <td>bool init(bool success)</td>
+    <td>Additional initialization step. success will be true if the widget successfully initialized.</td>
+  </tr>
+  <tr>
+    <td>void tick()</td>
+    <td>Update the scene, i.e. change vertices positions.</td>
+  </tr>
+  <tr>
+    <td>void render()</td>
+    <td>Present the scene.</td>
+  </tr>
+  <tr>
+    <td>void renderUI()</td>
+    <td>Present ImGui windows.</td>
+  </tr>
+</table>
 
-In your `MainWindow.cpp` file, connect the signals and slots with the widget:
+In your `MainWindow.cpp` file, connect the Widget's signals to our previously created slots:
 ```cpp
-connect(ui->view, &QDirect3D11Widget::deviceInitialized, this, &MainWindow::init);
-connect(ui->view, &QDirect3D11Widget::ticked, this, &MainWindow::tick);
-connect(ui->view, &QDirect3D11Widget::rendered, this, &MainWindow::render);
-connect(ui->view, &QDirect3D11Widget::uiRendered, this, &MainWindow::uiRender);
+connect(ui->view, &QDirect3DXXWidget::deviceInitialized, this, &MainWindow::init);
+connect(ui->view, &QDirect3DXXWidget::ticked, this, &MainWindow::tick);
+connect(ui->view, &QDirect3DXXWidget::rendered, this, &MainWindow::render);
+connect(ui->view, &QDirect3DXXWidget::renderedUI, this, &MainWindow::renderUI);
 ```
 
-Then do your own implemenetation to the following slots:
-* `init` - Additional initialization. True is passed from the widget if the 3d device and scene successfully created.
-* `tick` - Scene update (i.e moving vertices positions).
-* `render` - Drawing.
-* `uiRender` - ImGui widgets drawing.
+That's it! At this point you can start adding your own implementation to it.
 
-At this point everything should be up and running.
+Note that the scene will not start processing frames immediately, because it gives us better control in the MainWindow when we are ready to start. A good practice would be to add this line in the `MainWindow::init` function:
 
-##### Handling close event
+```cpp
+QTimer::singleShot(500, this, [&] { ui->view->run(); });
+```
 
-To properly clean up the application, we override the [closeEvent](http://doc.qt.io/archives/qt-4.8/qcloseevent.html), call `release` and give it at least 500 milliseconds delay before we close the application:
+We give it a short delay of 500 milliseconds in case things are still initializing in the background before we start processing frames.
+
+##### Handling Close Event
+
+To properly close the application and clean up any used resources, we override and manipulate the [closeEvent](http://doc.qt.io/archives/qt-4.8/qcloseevent.html). When the user exit the application, we call `event->ignore()` to postpone the close event and then we call `release` on our widget. Lastly, giving the application a short delay of 500 milliseconds before we finally accept the close event:
 
 ```cpp
 void MainWindow::closeEvent(QCloseEvent * event)
@@ -76,37 +125,36 @@ void MainWindow::closeEvent(QCloseEvent * event)
 }
 ```
 
-### Prerequisites
-
-* Qt msvc compiler (I use msvc141, but should work also with older versions).
-* Qt VS Plugin(if you want to use the VS solutions). You could also load the demos in `QtCreator` by loading the `CMakeLists.txt` in the root of the project.
-
 ## Show Case
 
-Using the widget with ImGui and creating a scene:
+Using the widget with ImGui and creating a basic scene:
 
 ![Qt and ImGui](/media/Qt_and_ImGui.gif)
 
-[![YouTube Link](https://i.imgur.com/3wEI0cl.jpg)](https://www.youtube.com/watch?v=UGLJHiLUWI0 "YouTube Link")
+Game Engine editor using the widget (YouTube playlist):
+
+[![YouTube Playlist](https://i.imgur.com/3wEI0cl.jpg)](https://www.youtube.com/playlist?list=PLDwf9d3YRfPEEA7RwwMjd3O8UzhY5-abR)
+
+![FX Editor](https://i.imgur.com/JvoPR66.png)
+
+![Flag Editor](https://i.imgur.com/eVxLK5X.png)
 
 
 ## Motivation
 
-I've been working with [MFC](https://en.wikipedia.org/wiki/Microsoft_Foundation_Class_Library) GUI Applications for quiet a while now and at the same time used Qt.
+I've been working with [MFC](https://en.wikipedia.org/wiki/Microsoft_Foundation_Class_Library) GUI applications for quite a while and also used Qt in other projects of mine. When it comes to Desktop GUI applications, I think there is no question or doubt that using Qt is probably a better choice for many reasons.
 
-When it comes to Desktop GUI Application, I think there is no question or doubt that using Qt is the best decision for many reasons.
+While trying to port some of the MFC applications to use Qt, I noticed that Qt only provides QOpenGLWidget, but no QDirect3DWidget. This is the point where I started researching the subject and realized that it can be done in different ways.
 
-In my spare time I made few more projects using the MFC framework because they are easier to use when working with the WinAPI, because I wanted to render 3D stuff using DirectX.
+For simplicity and portability reasons, I decided to disable the rendering engine Qt internally are using for painting into the widget surface. This allowed me to draw into the surface of the widget without other rendering engines interfering with the scene. Having this achieved, made it exciting using the power of Qt, whilst using Direct3D API as the rendering engine.
 
-Qt always seem to me more of an OpenGL thing, the fact that they only provide `QOpenGLWidget` build-in and not `QDirect3DWidget` and it's based on OpenGL in general.
-
-I therefore decided to challenge myself using DirectX in Qt and was happy to see the end-results.
 
 ## Contributing
 
-Pull-Requests are more than welcome and will be very appreciated. So feel free to contribute if you want to improve the project or fix any bugs.
+Pull-Requests are greatly appreciated should you like to contribute to the project.
 
-Same goes for opening issues, if you have any suggestions, feedback or you found any bugs, please do not hesitate to open an [issue](https://github.com/giladreich/QtDirect3D/issues).
+Same goes for opening issues; if you have any suggestions, feedback or you found any bugs, please do not hesitate to open an [issue](https://github.com/giladreich/QtDirect3D/issues).
+
 
 ## Authors
 
@@ -114,7 +162,7 @@ Same goes for opening issues, if you have any suggestions, feedback or you found
 
 See also the list of [contributors](https://github.com/giladreich/QtDirect3D/graphs/contributors) who participated in this project.
 
+
 ## License
 
-This project is licensed under the MIT License - see the [license](/docs/LICENSE) for more details
-
+This project is licensed under the MIT License - see the [license](/docs/LICENSE) for more details.
