@@ -9,7 +9,6 @@
 #include <QTimer>
 
 #include <d3d10.h>
-#include <DirectXMath.h>
 #include <D3Dcompiler.h>
 
 class QDirect3D10Widget : public QWidget
@@ -84,7 +83,7 @@ public:
     bool renderActive() const { return m_bRenderActive; }
     void setRenderActive(bool active) { m_bRenderActive = active; }
 
-    DirectX::XMVECTORF32 * BackColor() { return &m_BackColor; }
+    D3DCOLORVALUE * BackColor() { return &m_BackColor; }
 
 private:
     ID3D10Device *           m_pDevice;
@@ -99,7 +98,7 @@ private:
     bool m_bRenderActive;
     bool m_bStarted;
 
-    DirectX::XMVECTORF32 m_BackColor;
+    D3DCOLORVALUE m_BackColor;
 };
 
 // ############################################################################

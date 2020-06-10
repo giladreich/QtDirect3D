@@ -11,7 +11,6 @@
 #include <wrl.h>
 #include <d3d12.h>
 #include <dxgi1_4.h>
-#include <DirectXMath.h>
 #include <D3Dcompiler.h>
 #include "d3dx12.h"
 
@@ -93,7 +92,7 @@ public:
     bool renderActive() const { return m_bRenderActive; }
     void setRenderActive(bool active) { m_bRenderActive = active; }
 
-    DirectX::XMVECTORF32 * BackColor() { return &m_BackColor; }
+    D3DCOLORVALUE * BackColor() { return &m_BackColor; }
 
 private:
     // Pipeline objects.
@@ -128,7 +127,7 @@ private:
     bool m_bRenderActive;
     bool m_bStarted;
 
-    DirectX::XMVECTORF32 m_BackColor;
+    D3DCOLORVALUE m_BackColor;
 };
 
 // ############################################################################
