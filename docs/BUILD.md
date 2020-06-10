@@ -31,7 +31,7 @@ Note that you can launch the generated solution file from the terminal. By doing
 
 ### Building using Visual Studio
 
-As previously mentioned in the [Prerequisites](#prerequisites), you will need to install `Qt VS Tools` extension and configure it to the path of your installed Qt-Kits (msvc2019 & msvc2019_64).
+As previously mentioned in the [Prerequisites](/docs/README.md/#prerequisites), you will need to install `Qt VS Tools` extension and configure it to the path of your installed Qt-Kits (msvc2019 & msvc2019_64).
 
 Also make sure to add one of the Qt-Kits bin directory to your PATH environment variable. Alternatively, you can launch the `VS IDE` (devenv.exe) from the `Qt 5.15.0 (MSVC 2019 XX-bit)` terminal. By doing so, you should have all the required environment variables to debug the project.
 

@@ -16,20 +16,40 @@ jobs:
       matrix:
         config:
         - {
-            name: "Windows Latest x64",
+            name: "Windows Latest x64 Debug",
             os: windows-latest,
             arch: "x64",
-            artifact: "Windows-x64-Release.zip",
+            artifact: "Windows-x64-Debug",
+            msvc: win64_msvc2019_64,
+            config: "Debug",
+            cmake_config: "-G \"Visual Studio 16 2019\" -A x64",
+            vs_env_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
+          }
+        - {
+            name: "Windows Latest x64 Release",
+            os: windows-latest,
+            arch: "x64",
+            artifact: "Windows-x64-Release",
             msvc: win64_msvc2019_64,
             config: "Release",
             cmake_config: "-G \"Visual Studio 16 2019\" -A x64",
             vs_env_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
           }
         - {
-            name: "Windows Latest x86",
+            name: "Windows Latest x86 Debug",
             os: windows-latest,
             arch: "x86",
-            artifact: "Windows-x86-Release.zip",
+            artifact: "Windows-x86-Debug",
+            msvc: win32_msvc2019,
+            config: "Debug",
+            cmake_config: "-G \"Visual Studio 16 2019\" -A Win32",
+            vs_env_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars32.bat"
+          }
+        - {
+            name: "Windows Latest x86 Release",
+            os: windows-latest,
+            arch: "x86",
+            artifact: "Windows-x86-Release",
             msvc: win32_msvc2019,
             config: "Release",
             cmake_config: "-G \"Visual Studio 16 2019\" -A Win32",
