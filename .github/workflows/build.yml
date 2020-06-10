@@ -21,8 +21,8 @@ jobs:
             arch: "x64",
             artifact: "Windows-x64-Debug",
             msvc: win64_msvc2019_64,
-            config: "Debug",
-            cmake_config: "-G \"Visual Studio 16 2019\" -A x64",
+            build_type: "Debug",
+            cmake_generator: "-G \"Visual Studio 16 2019\" -A x64",
             vs_env_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
           }
         - {
@@ -31,8 +31,8 @@ jobs:
             arch: "x64",
             artifact: "Windows-x64-Release",
             msvc: win64_msvc2019_64,
-            config: "Release",
-            cmake_config: "-G \"Visual Studio 16 2019\" -A x64",
+            build_type: "Release",
+            cmake_generator: "-G \"Visual Studio 16 2019\" -A x64",
             vs_env_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
           }
         - {
@@ -41,8 +41,8 @@ jobs:
             arch: "x86",
             artifact: "Windows-x86-Debug",
             msvc: win32_msvc2019,
-            config: "Debug",
-            cmake_config: "-G \"Visual Studio 16 2019\" -A Win32",
+            build_type: "Debug",
+            cmake_generator: "-G \"Visual Studio 16 2019\" -A Win32",
             vs_env_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars32.bat"
           }
         - {
@@ -51,8 +51,8 @@ jobs:
             arch: "x86",
             artifact: "Windows-x86-Release",
             msvc: win32_msvc2019,
-            config: "Release",
-            cmake_config: "-G \"Visual Studio 16 2019\" -A Win32",
+            build_type: "Release",
+            cmake_generator: "-G \"Visual Studio 16 2019\" -A Win32",
             vs_env_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars32.bat"
           }
 
@@ -71,17 +71,17 @@ jobs:
       id: cmake_configure
       run: |
         mkdir build && cd build
-        cmake .. ${{ matrix.config.cmake_config }}
+        cmake .. ${{ matrix.config.cmake_generator }} -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
 
     - name: CMake build
       id: cmake_build
       run: |
         cd build
-        cmake --build . --config ${{ matrix.config.config }} -- /M
-        windeployqt bin/${{ matrix.config.arch }}-${{ env.MSC_VERSION }}/${{ matrix.config.config }}
+        cmake --build . --config ${{ matrix.config.build_type }} -- /M
+        windeployqt bin/${{ matrix.config.arch }}-${{ env.MSC_VERSION }}/${{ matrix.config.build_type }}
 
     - uses: actions/upload-artifact@v2
       id: upload_artifact
       with:
         name: ${{ matrix.config.artifact }}
-        path: ./build/bin/${{ matrix.config.arch }}-${{ env.MSC_VERSION }}/${{ matrix.config.config }}/
+        path: ./build/bin/${{ matrix.config.arch }}-${{ env.MSC_VERSION }}/${{ matrix.config.build_type }}/

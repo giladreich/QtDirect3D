@@ -6,3 +6,4 @@ Release/
 x64/
 GeneratedFiles/
 build*
+.vscode/
