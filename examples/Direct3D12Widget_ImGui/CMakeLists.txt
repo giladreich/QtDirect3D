@@ -6,6 +6,12 @@ cmake_minimum_required(VERSION 3.12)
 ##################################################################################################################
 project(Direct3D12Widget_ImGui)
 
+
+add_compile_definitions(
+    # https://github.com/ocornut/imgui/pull/2406
+    ImTextureID=ImU64
+)
+
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${QTDIRECT3D_WIDGETS_DIR}/QDirect3D12Widget/ImGui

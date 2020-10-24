@@ -78,7 +78,7 @@ jobs:
       run: |
         cd build
         cmake --build . --config ${{ matrix.config.build_type }} -- /M
-        windeployqt bin/${{ matrix.config.arch }}-${{ env.MSC_VERSION }}/${{ matrix.config.build_type }}
+        windeployqt ./bin/${{ matrix.config.arch }}-${{ env.MSC_VERSION }}/${{ matrix.config.build_type }}
 
     - uses: actions/upload-artifact@v2
       id: upload_artifact
