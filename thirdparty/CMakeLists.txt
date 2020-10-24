@@ -12,7 +12,7 @@ if (NOT EXISTS "${IMGUI_ROOT_DIR}/imgui.h")
     else()
         message(FATAL_ERROR "[ERROR] Failed to find Git client. Please install Git and try again.")
     endif()
-    
+
     set(IMGUI_REPO "https://github.com/ocornut/imgui.git")
     set(IMGUI_TAG  "v1.76")
     message(STATUS "[INFO] Cloning imgui. Please wait...")
