@@ -1,11 +1,15 @@
 
-## Build Instructions
+## Prerequisites
 
-Before getting started, make sure to install everything that is specified in the [Prerequisites](/docs/README.md/#prerequisites).
+* [Qt 5.15.0](https://www.qt.io/download) - install the following versions `msvc2019` & `msvc2019_64` (might work with other Qt versions that uses [QtMsBuild](https://www.qt.io/blog/2018/01/24/qt-visual-studio-new-approach-based-msbuild)).
 
-### Building using CMake
+* [Visual Studio 2019](https://visualstudio.microsoft.com/downloads/) - also note that when using Visual Studio as the IDE, it requires to install [Qt VS Tools](https://marketplace.visualstudio.com/items?itemName=TheQtCompany.QtVisualStudioTools-19123) extension.
 
-Once you have Qt installed, just like the `Developer Command Prompt for VS` to setup environment variables to the terminal, Qt provides their own environment tools in:
+* [CMake](https://cmake.org/download/) - this is optional for building with cmake, requires to install any version greater than v12.
+
+### Building with CMake
+
+Once you have Qt installed, just like the `Developer Command Prompt for VS` to setup environment variables in the terminal session, Qt provides their own environment tools:
 
 `%AppData%\Microsoft\Windows\Start Menu\Programs\Qt\5.15.0`
 
@@ -27,16 +31,14 @@ cmake --build . --config Release -- /M
 windeployqt .\bin\x64-vc142\Release\
 ```
 
-Note that you can launch the generated solution file from the terminal. By doing that, it will pass-forward all the environment variables to IDE, without having to manually change any environment variables in your system.
+Note that you should launch the generated solution file from the terminal. By doing that, it will pass-forward all the environment variables to the IDE without having to manually configure system's environment variables.
 
-### Building using Visual Studio
+### Building with Visual Studio
 
-As previously mentioned in the [Prerequisites](/docs/README.md/#prerequisites), you will need to install `Qt VS Tools` extension and configure it to the path of your installed Qt-Kits (msvc2019 & msvc2019_64).
+As mentioned in the [Prerequisites](#prerequisites), you will need to install `Qt VS Tools` extension and configure it to the path of your installed Qt-Kits (`msvc2019` & `msvc2019_64`).
 
-Also make sure to add one of the Qt-Kits bin directory to your PATH environment variable. Alternatively, you can launch the `VS IDE` (devenv.exe) from the `Qt 5.15.0 (MSVC 2019 XX-bit)` terminal. By doing so, you should have all the required environment variables to debug the project.
+Under the `examples` directory, there are multiple VS solution files depending on the use case.
 
-### Building using QtCreator
+### Building with QtCreator
 
-In QtCreator you need to make sure to properly [configure your Qt-Kits](https://doc.qt.io/qtcreator/creator-targets.html). Once you have that done, you can load the project using the `CMakeLists.txt` file in the root directory of the project.
-
-If everything went right, you should be able to compile and debug the project.
+In QtCreator you need to make sure to properly [configure your Qt-Kits](https://doc.qt.io/qtcreator/creator-targets.html). Then you can load the project using the `CMakeLists.txt` file in the root directory of the project.
