@@ -1,9 +1,10 @@
 .vs/
-*.ini
-*.user
+.vscode/
+build*/
 Debug/
 Release/
 x64/
 GeneratedFiles/
-build*
-.vscode/
+
+*.ini
+*.user

@@ -56,7 +56,7 @@ if (BUILD_WITH_IMGUI)
         add_subdirectory(Direct3D11Widget_ImGui)
     endif()
 
-    if (INCLUDE_DX12_EXAMPLE AND "${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
+    if (INCLUDE_DX12_EXAMPLE)
         add_subdirectory(Direct3D12Widget_ImGui)
     endif()
 endif()
