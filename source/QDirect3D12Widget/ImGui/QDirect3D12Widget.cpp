@@ -281,10 +281,11 @@ void QDirect3D12Widget::beginScene()
     DXCall(m_pCommandAllocators[m_iCurrFrameIndex]->Reset());
     DXCall(m_pCommandList->Reset(m_pCommandAllocators[m_iCurrFrameIndex], Q_NULLPTR));
 
-    m_pCommandList->ResourceBarrier(
-        1, &CD3DX12_RESOURCE_BARRIER::Transition(m_pRTVResources[m_iCurrFrameIndex],
-                                                 D3D12_RESOURCE_STATE_PRESENT,
-                                                 D3D12_RESOURCE_STATE_RENDER_TARGET));
+    const auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+        m_pRTVResources[m_iCurrFrameIndex], D3D12_RESOURCE_STATE_PRESENT,
+        D3D12_RESOURCE_STATE_RENDER_TARGET);
+
+    m_pCommandList->ResourceBarrier(1, &barrier);
 
     ImGui_ImplDX12_NewFrame();
     ImGui_ImplWin32_NewFrame();
@@ -296,10 +297,11 @@ void QDirect3D12Widget::endScene()
     ImGui::Render();
     ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), m_pCommandList);
 
-    m_pCommandList->ResourceBarrier(
-        1, &CD3DX12_RESOURCE_BARRIER::Transition(m_pRTVResources[m_iCurrFrameIndex],
-                                                 D3D12_RESOURCE_STATE_RENDER_TARGET,
-                                                 D3D12_RESOURCE_STATE_PRESENT));
+    const auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+        m_pRTVResources[m_iCurrFrameIndex], D3D12_RESOURCE_STATE_RENDER_TARGET,
+        D3D12_RESOURCE_STATE_PRESENT);
+
+    m_pCommandList->ResourceBarrier(1, &barrier);
 
     DXCall(m_pCommandList->Close());
     m_pCommandQueue->ExecuteCommandLists(
