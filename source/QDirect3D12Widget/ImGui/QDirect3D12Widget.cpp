@@ -549,14 +549,17 @@ bool QDirect3D12Widget::event(QEvent * event)
             emit keyPressed((QKeyEvent *)event);
             break;
         case QEvent::MouseMove:
-            if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)) emit mouseMoved((QMouseEvent *)event);
+            if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow))
+                emit mouseMoved((QMouseEvent *)event);
             break;
         case QEvent::MouseButtonPress:
-            if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow))
+            if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) &&
+                !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow))
                 emit mouseClicked((QMouseEvent *)event);
             break;
         case QEvent::MouseButtonRelease:
-            if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow))
+            if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) &&
+                !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow))
                 emit mouseReleased((QMouseEvent *)event);
             break;
     }
