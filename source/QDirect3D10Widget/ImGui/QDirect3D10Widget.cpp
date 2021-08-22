@@ -10,8 +10,8 @@
 #include <QWheelEvent>
 
 #include "imgui.h"
-#include "imgui_impl_dx10.h"
-#include "imgui_impl_win32.h"
+#include "backends/imgui_impl_dx10.h"
+#include "backends/imgui_impl_win32.h"
 
 constexpr int FPS_LIMIT    = 60.0f;
 constexpr int MS_PER_FRAME = (int)((1.0f / FPS_LIMIT) * 1000.0f);
@@ -220,7 +220,7 @@ void QDirect3D10Widget::resetEnvironment()
 
 void QDirect3D10Widget::wheelEvent(QWheelEvent * event)
 {
-    if (!ImGui::IsAnyWindowHovered() && event->angleDelta().x() == 0)
+    if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) && event->angleDelta().x() == 0)
     {
         // TODO: Update your camera position based on the delta value.
     }
@@ -286,14 +286,14 @@ bool QDirect3D10Widget::event(QEvent * event)
             emit keyPressed((QKeyEvent *)event);
             break;
         case QEvent::MouseMove:
-            if (!ImGui::IsAnyWindowHovered()) emit mouseMoved((QMouseEvent *)event);
+            if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)) emit mouseMoved((QMouseEvent *)event);
             break;
         case QEvent::MouseButtonPress:
-            if (!ImGui::IsAnyWindowHovered() && !ImGui::IsAnyWindowFocused())
+            if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow))
                 emit mouseClicked((QMouseEvent *)event);
             break;
         case QEvent::MouseButtonRelease:
-            if (!ImGui::IsAnyWindowHovered() && !ImGui::IsAnyWindowFocused())
+            if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) && !ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow))
                 emit mouseReleased((QMouseEvent *)event);
             break;
     }
