@@ -142,25 +142,25 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\source\QDirect3D12Widget\ImGui;..\..\thirdparty\imgui;..\..\thirdparty\imgui\examples;$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\source\QDirect3D12Widget\ImGui;..\..\thirdparty\imgui;$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>ImTextureID=ImU64;$(Qt_DEFINES_);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\source\QDirect3D12Widget\ImGui;..\..\thirdparty\imgui;..\..\thirdparty\imgui\examples;$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\source\QDirect3D12Widget\ImGui;..\..\thirdparty\imgui;$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>ImTextureID=ImU64;$(Qt_DEFINES_);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\source\QDirect3D12Widget\ImGui;..\..\thirdparty\imgui;..\..\thirdparty\imgui\examples;$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\source\QDirect3D12Widget\ImGui;..\..\thirdparty\imgui;$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>ImTextureID=ImU64;$(Qt_DEFINES_);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\source\QDirect3D12Widget\ImGui;..\..\thirdparty\imgui;..\..\thirdparty\imgui\examples;$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\source\QDirect3D12Widget\ImGui;..\..\thirdparty\imgui;$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>ImTextureID=ImU64;$(Qt_DEFINES_);%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
@@ -168,11 +168,12 @@
     <QtUic Include="MainWindow.ui" />
     <QtMoc Include="MainWindow.h" />
     <ClCompile Include="..\..\source\QDirect3D12Widget\ImGui\QDirect3D12Widget.cpp" />
-    <ClCompile Include="..\..\thirdparty\imgui\examples\imgui_impl_dx12.cpp" />
-    <ClCompile Include="..\..\thirdparty\imgui\examples\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\..\thirdparty\imgui\backends\imgui_impl_dx12.cpp" />
+    <ClCompile Include="..\..\thirdparty\imgui\backends\imgui_impl_win32.cpp" />
     <ClCompile Include="..\..\thirdparty\imgui\imgui.cpp" />
     <ClCompile Include="..\..\thirdparty\imgui\imgui_demo.cpp" />
     <ClCompile Include="..\..\thirdparty\imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\..\thirdparty\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\thirdparty\imgui\imgui_widgets.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="main.cpp" />
@@ -181,8 +182,8 @@
     <QtMoc Include="..\..\source\QDirect3D12Widget\ImGui\QDirect3D12Widget.h">
       <QtMocDir>$(IntDir)moc</QtMocDir>
     </QtMoc>
-    <ClInclude Include="..\..\thirdparty\imgui\examples\imgui_impl_dx12.h" />
-    <ClInclude Include="..\..\thirdparty\imgui\examples\imgui_impl_win32.h" />
+    <ClInclude Include="..\..\thirdparty\imgui\backends\imgui_impl_dx12.h" />
+    <ClInclude Include="..\..\thirdparty\imgui\backends\imgui_impl_win32.h" />
     <ClInclude Include="..\..\thirdparty\imgui\imconfig.h" />
     <ClInclude Include="..\..\thirdparty\imgui\imgui.h" />
     <ClInclude Include="..\..\thirdparty\imgui\imgui_internal.h" />

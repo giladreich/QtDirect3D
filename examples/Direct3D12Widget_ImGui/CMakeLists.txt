@@ -27,12 +27,12 @@ set(WIDGETS_CXX_FILES
     ${QTDIRECT3D_WIDGETS_DIR}/QDirect3D12Widget/ImGui/QDirect3D12Widget.cpp
 )
 set(IMGUI_IMPL_HEADERS_CXX_FILES
-    ${IMGUI_ROOT_DIR}/examples/imgui_impl_dx12.h
-    ${IMGUI_ROOT_DIR}/examples/imgui_impl_win32.h
+    ${IMGUI_ROOT_DIR}/backends/imgui_impl_dx12.h
+    ${IMGUI_ROOT_DIR}/backends/imgui_impl_win32.h
 )
 set(IMGUI_IMPL_SOURCES_CXX_FILES
-    ${IMGUI_ROOT_DIR}/examples/imgui_impl_dx12.cpp
-    ${IMGUI_ROOT_DIR}/examples/imgui_impl_win32.cpp
+    ${IMGUI_ROOT_DIR}/backends/imgui_impl_dx12.cpp
+    ${IMGUI_ROOT_DIR}/backends/imgui_impl_win32.cpp
 )
 set(IMGUI_FILES
     ${IMGUI_HEADERS_CXX_FILES}
@@ -72,7 +72,7 @@ source_group("ImGui" FILES
     ${IMGUI_HEADERS_CXX_FILES}
     ${IMGUI_SOURCES_CXX_FILES}
 )
-source_group("ImGui\\Impl" FILES
+source_group("ImGui\\Backend" FILES
     ${IMGUI_IMPL_HEADERS_CXX_FILES}
     ${IMGUI_IMPL_SOURCES_CXX_FILES}
 )

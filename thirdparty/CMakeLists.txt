@@ -14,7 +14,7 @@ if (NOT EXISTS "${IMGUI_ROOT_DIR}/imgui.h")
     endif()
 
     set(IMGUI_REPO "https://github.com/ocornut/imgui.git")
-    set(IMGUI_TAG  "v1.76")
+    set(IMGUI_TAG  "v1.84.1")
     message(STATUS "[INFO] Cloning imgui. Please wait...")
     execute_process(
         COMMAND           ${GIT_EXECUTABLE} clone --recursive --branch ${IMGUI_TAG} ${IMGUI_REPO} ${IMGUI_ROOT_DIR}
@@ -27,6 +27,7 @@ set(IMGUI_SOURCES_CXX_FILES
     ${IMGUI_ROOT_DIR}/imgui.cpp
     ${IMGUI_ROOT_DIR}/imgui_demo.cpp
     ${IMGUI_ROOT_DIR}/imgui_draw.cpp
+    ${IMGUI_ROOT_DIR}/imgui_tables.cpp
     ${IMGUI_ROOT_DIR}/imgui_widgets.cpp
     CACHE STRING ""
 )
