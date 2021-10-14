@@ -44,9 +44,6 @@ set(SOURCES_CXX_FILES
 set(UI_FILES
     mainwindow.ui
 )
-file(GLOB RESOURCE_FILES
-    *.qrc
-)
 
 ##################################################################################################################
 # IDE Representation
@@ -57,7 +54,6 @@ source_group("Source Files" FILES
 )
 source_group("Resources" FILES
     ${UI_FILES}
-    ${RESOURCE_FILES}
 )
 source_group("Widgets" FILES
     ${WIDGETS_CXX_FILES}
@@ -88,7 +84,6 @@ add_executable(${PROJECT_NAME} WIN32
     ${HEADERS_CXX_FILES}
     ${SOURCES_CXX_FILES}
     ${UI_FILES}
-    ${RESOURCE_FILES}
     ${IMGUI_FILES}
 )
 target_link_libraries(${PROJECT_NAME} PUBLIC

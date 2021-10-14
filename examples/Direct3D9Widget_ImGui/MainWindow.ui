@@ -43,8 +43,5 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="MainWindow.qrc"/>
- </resources>
  <connections/>
 </ui>
